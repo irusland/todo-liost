@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		29376B9360CE7C71417EC7FC /* Pods_TodoLiost_TodoLiostUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44A28518CDEABB9BC03A906 /* Pods_TodoLiost_TodoLiostUITests.framework */; };
+		36CDF1007EDF5EEBD5468105 /* Pods_TodoLiostTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8EA8D7046DB94B86BE64DD /* Pods_TodoLiostTests.framework */; };
 		981A3823271C7E89007739C6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3822271C7E89007739C6 /* AppDelegate.swift */; };
 		981A3825271C7E89007739C6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3824271C7E89007739C6 /* SceneDelegate.swift */; };
 		981A3827271C7E89007739C6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3826271C7E89007739C6 /* ViewController.swift */; };
@@ -15,6 +17,7 @@
 		981A382F271C7E8C007739C6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 981A382D271C7E8C007739C6 /* LaunchScreen.storyboard */; };
 		981A383A271C7E8C007739C6 /* TodoLiostTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3839271C7E8C007739C6 /* TodoLiostTests.swift */; };
 		981A3845271C7E8C007739C6 /* TodoLiostUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3844271C7E8C007739C6 /* TodoLiostUITests.swift */; };
+		CE8D053443168C6F2A115613 /* Pods_TodoLiost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFC6D09E256F8AFA9F79A2B4 /* Pods_TodoLiost.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +38,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4201924FF6D23D5CC0D49461 /* Pods-TodoLiost.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiost.release.xcconfig"; path = "Target Support Files/Pods-TodoLiost/Pods-TodoLiost.release.xcconfig"; sourceTree = "<group>"; };
+		43253673FE88AAEDF186D924 /* Pods-TodoLiostTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiostTests.debug.xcconfig"; path = "Target Support Files/Pods-TodoLiostTests/Pods-TodoLiostTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5DF46C765176316A44D4D402 /* Pods-TodoLiostTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiostTests.release.xcconfig"; path = "Target Support Files/Pods-TodoLiostTests/Pods-TodoLiostTests.release.xcconfig"; sourceTree = "<group>"; };
 		981A381F271C7E89007739C6 /* TodoLiost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoLiost.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		981A3822271C7E89007739C6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		981A3824271C7E89007739C6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -49,6 +55,12 @@
 		981A3840271C7E8C007739C6 /* TodoLiostUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TodoLiostUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		981A3844271C7E8C007739C6 /* TodoLiostUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoLiostUITests.swift; sourceTree = "<group>"; };
 		981A3846271C7E8C007739C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AFC6D09E256F8AFA9F79A2B4 /* Pods_TodoLiost.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodoLiost.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BBA76BAE79B1C4E70FF1A50A /* Pods-TodoLiost-TodoLiostUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiost-TodoLiostUITests.debug.xcconfig"; path = "Target Support Files/Pods-TodoLiost-TodoLiostUITests/Pods-TodoLiost-TodoLiostUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		D2B37F65BAD328CB89DD5CDD /* Pods-TodoLiost.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiost.debug.xcconfig"; path = "Target Support Files/Pods-TodoLiost/Pods-TodoLiost.debug.xcconfig"; sourceTree = "<group>"; };
+		D44A28518CDEABB9BC03A906 /* Pods_TodoLiost_TodoLiostUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodoLiost_TodoLiostUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA8EA8D7046DB94B86BE64DD /* Pods_TodoLiostTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodoLiostTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC075C82CA1D41D6BA0E34AE /* Pods-TodoLiost-TodoLiostUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiost-TodoLiostUITests.release.xcconfig"; path = "Target Support Files/Pods-TodoLiost-TodoLiostUITests/Pods-TodoLiost-TodoLiostUITests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE8D053443168C6F2A115613 /* Pods_TodoLiost.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36CDF1007EDF5EEBD5468105 /* Pods_TodoLiostTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29376B9360CE7C71417EC7FC /* Pods_TodoLiost_TodoLiostUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +98,8 @@
 				981A3838271C7E8C007739C6 /* TodoLiostTests */,
 				981A3843271C7E8C007739C6 /* TodoLiostUITests */,
 				981A3820271C7E89007739C6 /* Products */,
+				AC86502F7F5513FC38098266 /* Pods */,
+				F86FED2FBB9D5F49B3321BE2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -128,6 +145,30 @@
 			path = TodoLiostUITests;
 			sourceTree = "<group>";
 		};
+		AC86502F7F5513FC38098266 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D2B37F65BAD328CB89DD5CDD /* Pods-TodoLiost.debug.xcconfig */,
+				4201924FF6D23D5CC0D49461 /* Pods-TodoLiost.release.xcconfig */,
+				BBA76BAE79B1C4E70FF1A50A /* Pods-TodoLiost-TodoLiostUITests.debug.xcconfig */,
+				EC075C82CA1D41D6BA0E34AE /* Pods-TodoLiost-TodoLiostUITests.release.xcconfig */,
+				43253673FE88AAEDF186D924 /* Pods-TodoLiostTests.debug.xcconfig */,
+				5DF46C765176316A44D4D402 /* Pods-TodoLiostTests.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		F86FED2FBB9D5F49B3321BE2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AFC6D09E256F8AFA9F79A2B4 /* Pods_TodoLiost.framework */,
+				D44A28518CDEABB9BC03A906 /* Pods_TodoLiost_TodoLiostUITests.framework */,
+				DA8EA8D7046DB94B86BE64DD /* Pods_TodoLiostTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -135,9 +176,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 981A3849271C7E8C007739C6 /* Build configuration list for PBXNativeTarget "TodoLiost" */;
 			buildPhases = (
+				0AC0E557D9F44B0D85866DFA /* [CP] Check Pods Manifest.lock */,
 				981A381B271C7E89007739C6 /* Sources */,
 				981A381C271C7E89007739C6 /* Frameworks */,
 				981A381D271C7E89007739C6 /* Resources */,
+				947C42DF4B3AAC166944018A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -152,6 +195,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 981A384C271C7E8C007739C6 /* Build configuration list for PBXNativeTarget "TodoLiostTests" */;
 			buildPhases = (
+				2D6870B90CC3790976171681 /* [CP] Check Pods Manifest.lock */,
 				981A3831271C7E8C007739C6 /* Sources */,
 				981A3832271C7E8C007739C6 /* Frameworks */,
 				981A3833271C7E8C007739C6 /* Resources */,
@@ -170,9 +214,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 981A384F271C7E8C007739C6 /* Build configuration list for PBXNativeTarget "TodoLiostUITests" */;
 			buildPhases = (
+				576EFD1278B78860F850E842 /* [CP] Check Pods Manifest.lock */,
 				981A383C271C7E8C007739C6 /* Sources */,
 				981A383D271C7E8C007739C6 /* Frameworks */,
 				981A383E271C7E8C007739C6 /* Resources */,
+				613AEA58DF3A1E43138126CD /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -252,6 +298,109 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0AC0E557D9F44B0D85866DFA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TodoLiost-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2D6870B90CC3790976171681 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TodoLiostTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		576EFD1278B78860F850E842 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TodoLiost-TodoLiostUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		613AEA58DF3A1E43138126CD /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TodoLiost-TodoLiostUITests/Pods-TodoLiost-TodoLiostUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TodoLiost-TodoLiostUITests/Pods-TodoLiost-TodoLiostUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TodoLiost-TodoLiostUITests/Pods-TodoLiost-TodoLiostUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		947C42DF4B3AAC166944018A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TodoLiost/Pods-TodoLiost-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TodoLiost/Pods-TodoLiost-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TodoLiost/Pods-TodoLiost-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		981A381B271C7E89007739C6 /* Sources */ = {
@@ -433,6 +582,7 @@
 		};
 		981A384A271C7E8C007739C6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D2B37F65BAD328CB89DD5CDD /* Pods-TodoLiost.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -452,6 +602,7 @@
 		};
 		981A384B271C7E8C007739C6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4201924FF6D23D5CC0D49461 /* Pods-TodoLiost.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -471,6 +622,7 @@
 		};
 		981A384D271C7E8C007739C6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 43253673FE88AAEDF186D924 /* Pods-TodoLiostTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -493,6 +645,7 @@
 		};
 		981A384E271C7E8C007739C6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5DF46C765176316A44D4D402 /* Pods-TodoLiostTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -515,6 +668,7 @@
 		};
 		981A3850271C7E8C007739C6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BBA76BAE79B1C4E70FF1A50A /* Pods-TodoLiost-TodoLiostUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -535,6 +689,7 @@
 		};
 		981A3851271C7E8C007739C6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EC075C82CA1D41D6BA0E34AE /* Pods-TodoLiost-TodoLiostUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;

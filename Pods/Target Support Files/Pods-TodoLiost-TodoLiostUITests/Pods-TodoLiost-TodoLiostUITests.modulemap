@@ -1,0 +1,6 @@
+framework module Pods_TodoLiost_TodoLiostUITests {
+  umbrella header "Pods-TodoLiost-TodoLiostUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
