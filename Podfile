@@ -6,7 +6,7 @@ target 'TodoLiost' do
   use_frameworks!
 
   # Pods for TodoLiost
-  pod 'CocoaLumberjack'
+  pod 'CocoaLumberjack/Swift'
 
   target 'TodoLiostTests' do
     inherit! :search_paths
