@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,6 +17,9 @@
 		981A382F271C7E8C007739C6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 981A382D271C7E8C007739C6 /* LaunchScreen.storyboard */; };
 		981A383A271C7E8C007739C6 /* TodoLiostTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3839271C7E8C007739C6 /* TodoLiostTests.swift */; };
 		981A3845271C7E8C007739C6 /* TodoLiostUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3844271C7E8C007739C6 /* TodoLiostUITests.swift */; };
+		981A3853271C82B9007739C6 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3852271C82B9007739C6 /* TodoItem.swift */; };
+		981A3855271C82DD007739C6 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3854271C82DD007739C6 /* FileCache.swift */; };
+		981A3857271C831D007739C6 /* TodoListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3856271C831D007739C6 /* TodoListTests.swift */; };
 		CE8D053443168C6F2A115613 /* Pods_TodoLiost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFC6D09E256F8AFA9F79A2B4 /* Pods_TodoLiost.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +58,9 @@
 		981A3840271C7E8C007739C6 /* TodoLiostUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TodoLiostUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		981A3844271C7E8C007739C6 /* TodoLiostUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoLiostUITests.swift; sourceTree = "<group>"; };
 		981A3846271C7E8C007739C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		981A3852271C82B9007739C6 /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
+		981A3854271C82DD007739C6 /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
+		981A3856271C831D007739C6 /* TodoListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListTests.swift; sourceTree = "<group>"; };
 		AFC6D09E256F8AFA9F79A2B4 /* Pods_TodoLiost.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodoLiost.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBA76BAE79B1C4E70FF1A50A /* Pods-TodoLiost-TodoLiostUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiost-TodoLiostUITests.debug.xcconfig"; path = "Target Support Files/Pods-TodoLiost-TodoLiostUITests/Pods-TodoLiost-TodoLiostUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		D2B37F65BAD328CB89DD5CDD /* Pods-TodoLiost.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiost.debug.xcconfig"; path = "Target Support Files/Pods-TodoLiost/Pods-TodoLiost.debug.xcconfig"; sourceTree = "<group>"; };
@@ -123,6 +129,8 @@
 				981A382B271C7E8C007739C6 /* Assets.xcassets */,
 				981A382D271C7E8C007739C6 /* LaunchScreen.storyboard */,
 				981A3830271C7E8C007739C6 /* Info.plist */,
+				981A3852271C82B9007739C6 /* TodoItem.swift */,
+				981A3854271C82DD007739C6 /* FileCache.swift */,
 			);
 			path = TodoLiost;
 			sourceTree = "<group>";
@@ -132,6 +140,7 @@
 			children = (
 				981A3839271C7E8C007739C6 /* TodoLiostTests.swift */,
 				981A383B271C7E8C007739C6 /* Info.plist */,
+				981A3856271C831D007739C6 /* TodoListTests.swift */,
 			);
 			path = TodoLiostTests;
 			sourceTree = "<group>";
@@ -155,7 +164,6 @@
 				43253673FE88AAEDF186D924 /* Pods-TodoLiostTests.debug.xcconfig */,
 				5DF46C765176316A44D4D402 /* Pods-TodoLiostTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -409,6 +417,8 @@
 			files = (
 				981A3827271C7E89007739C6 /* ViewController.swift in Sources */,
 				981A3823271C7E89007739C6 /* AppDelegate.swift in Sources */,
+				981A3853271C82B9007739C6 /* TodoItem.swift in Sources */,
+				981A3855271C82DD007739C6 /* FileCache.swift in Sources */,
 				981A3825271C7E89007739C6 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -418,6 +428,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				981A383A271C7E8C007739C6 /* TodoLiostTests.swift in Sources */,
+				981A3857271C831D007739C6 /* TodoListTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

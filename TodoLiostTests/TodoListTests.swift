@@ -1,13 +1,12 @@
 //
 //  TodoListTests.swift
-//  TodoListTests
+//  TodoLiostTests
 //
-//  Created by Ruslan Sirazhetdinov on 10.10.2021.
+//  Created by Ruslan Sirazhetdinov on 17.10.2021.
 //
 
 import XCTest
-@testable import TodoList
-
+@testable import TodoLiost
 
 // todo написать UI тест https://swiftbook.ru/post/koposhilka/test-making-via-xctest/
 class TodoListTests: XCTestCase {
