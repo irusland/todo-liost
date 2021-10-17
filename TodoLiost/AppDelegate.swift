@@ -28,16 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         DDLogWarn("Warn")
         DDLogError("Error")
         
-        let sut = FileCache()
-        let todoItem1 = TodoItem(text: "sample", priority: .important)
-        let todoItem2 = TodoItem(text: "sample", priority: .normal)
-        let todoItem3 = TodoItem(text: "sample", priority: .no)
-        
-        for item in [todoItem1, todoItem2, todoItem3]{
-            sut.add(item)
-        }
-        
-        // TODO
         
 
         return true
