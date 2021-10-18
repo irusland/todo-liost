@@ -64,6 +64,18 @@ class TodoListTests: XCTestCase {
         XCTAssertEqual(sut.todoItems[0], expected)
     }
     
+    func testCacheAddWithSameId() throws {
+        let sut = FileCache()
+        let item1 = TodoItem(text: "sample1")
+        let item2 = TodoItem(id: item1.id, text: "sample2")
+        
+        sut.add(item1)
+        sut.add(item2)
+        
+        XCTAssertTrue(sut.todoItems.count == 1)
+        XCTAssertEqual(sut.todoItems, [item1])
+    }
+    
     func testCacheAddGet() throws {
         let sut = FileCache()
         let expected = TodoItem(text: "sample")

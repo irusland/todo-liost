@@ -8,10 +8,6 @@
 import Foundation
 
 
-// todo use as settings file content protocol
-struct _DataFile : Equatable, Codable {
-    let items: [TodoItemJson]
-}
 typealias DataFile = [String: Any]
 
 class FileCache {
@@ -23,6 +19,11 @@ class FileCache {
     }
     
     public func add(_ todoItem: TodoItem) {
+        if self.todoItems.contains(where: { item in
+            item.id == todoItem.id
+        }) {
+            return
+        }
         self.todoItems.append(todoItem)
     }
     
