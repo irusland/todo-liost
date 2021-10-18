@@ -9,9 +9,9 @@ import Foundation
 import UIKit
 
 public enum TodoItemPriority: String {
-    case no = "неважная"
-    case normal = "обычная"
-    case important = "важная"
+    case no
+    case normal
+    case important
 }
 
 public struct TodoItem : Equatable {
