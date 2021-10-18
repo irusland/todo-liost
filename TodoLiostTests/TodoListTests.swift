@@ -252,7 +252,6 @@ class TodoListTests: XCTestCase {
         let todoItem1 = TodoItem(text: "sample", priority: .important, deadLine: Date())
         let todoItem2 = TodoItem(text: "sample", priority: .normal, deadLine: Date(), color: .black)
         let todoItem3 = TodoItem(text: "sample", priority: .no)
-        let encoder = JSONEncoder()
         let expected = [
             "items": [
                 [
@@ -283,10 +282,6 @@ class TodoListTests: XCTestCase {
         
         XCTAssertTrue(isLoaded)
         XCTAssertNotNil(actual)
-//        for item in [todoItem1, todoItem2, todoItem3]{
-//            let loadedItem = sut.get(by: item.id)
-//            XCTAssertEqual(loadedItem, item)
-//        }
         XCTAssertTrue(NSDictionary(dictionary: expected).isEqual(to: actual), "expected \(expected) but was \(String(describing: actual))")
     }
     
