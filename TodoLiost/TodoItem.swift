@@ -43,7 +43,7 @@ public extension TodoItem{
             self.id = UUID()
         }
         guard let text = json["text"] as? String else {
-            throw TodoItemParsingErrors.requiredFieldIsNotDefined("")
+            throw TodoItemParsingErrors.requiredFieldIsNotDefined("key: text")
         }
         self.text = text
 
