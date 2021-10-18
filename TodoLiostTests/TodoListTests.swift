@@ -41,10 +41,10 @@ class TodoListTests: XCTestCase {
         
         for (k, v) in expected {
             XCTAssertNotNil(actual[k])
-            XCTAssertEqual(actual[k], v)
+            XCTAssertEqual(actual[k] as? String, v as? String)
         }
         
-        XCTAssertEqual(expected, actual, "expected \(expected) but was \(String(describing: actual))")
+        XCTAssertEqual(expected as? [String: String], actual as? [String: String], "expected \(expected) but was \(String(describing: actual))")
     }
     
     func testCacheInit() throws {

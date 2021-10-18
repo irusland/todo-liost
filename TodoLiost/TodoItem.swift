@@ -29,7 +29,7 @@ public struct TodoItem : Equatable {
     }
 }
 
-public typealias TodoItemJson = [String: String]
+public typealias TodoItemJson = [String: Any]
 
 private enum TodoItemParsingErrors: Error {
     case requiredFieldIsNotDefined(String)
