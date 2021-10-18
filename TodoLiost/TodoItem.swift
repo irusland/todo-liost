@@ -54,9 +54,12 @@ public extension TodoItem{
         }
 
         self.deadLine = json["deadLine"] as? Date
-        self.color = json["deadLine"] as? UIColor
-        
-        // почему тут не xcode ничего не говорит если не все поля заполнены? А в init структуры говорит
+
+        if let color = json["color"] as? String {
+            self.color = UIColor(ciColor: CIColor(string: color))
+        } else {
+            self.color = nil
+        }
     }
     
     static func parse(json: [String: Any]) -> TodoItem? {
@@ -85,8 +88,9 @@ public extension TodoItem{
                 }
             } catch {}
         }
-        // json["color"] = self.color
-        
+        if color != nil {
+            json["color"] = CIColor(color: color!).stringRepresentation
+        }
         return json
     }
 }

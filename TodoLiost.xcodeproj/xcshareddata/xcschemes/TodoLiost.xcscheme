@@ -38,16 +38,6 @@
                ReferencedContainer = "container:TodoLiost.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "981A383F271C7E8C007739C6"
-               BuildableName = "TodoLiostUITests.xctest"
-               BlueprintName = "TodoLiostUITests"
-               ReferencedContainer = "container:TodoLiost.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

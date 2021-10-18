@@ -230,6 +230,7 @@ class TodoListTests: XCTestCase {
                 [
                     "id": todoItem.id.uuidString,
                     "text": todoItem.text,
+                    "color": "0.6 0.4 0.2 1",
                 ],
             ]
         ]
@@ -262,6 +263,7 @@ class TodoListTests: XCTestCase {
                 [
                     "id": todoItem2.id.uuidString,
                     "text": todoItem2.text,
+                    "color": "0 0 0 1",
                 ],
                 [
                     "id": todoItem3.id.uuidString,
