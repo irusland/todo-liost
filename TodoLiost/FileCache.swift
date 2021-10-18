@@ -10,6 +10,12 @@ import Foundation
 
 typealias DataFile = [String: Any]
 
+
+private enum FileCacheErrors: Error {
+    case dumpError(String)
+}
+
+
 class FileCache {
     private(set) var todoItems: [TodoItem]
     private let itemKey: String = "items"
@@ -75,7 +81,10 @@ class FileCache {
     public func dumps() throws -> String {
         let jsonObject = dump()
         let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
-        return String(data: data, encoding: String.Encoding.utf8)! // вот тут как без ! по компактнее бросать эксепшон?
+        guard let string = String(data: data, encoding: String.Encoding.utf8) else {
+            throw FileCacheErrors.dumpError("Dumped data is nil")
+        }
+        return string
     }
     
     public func load(from file: String) -> Bool {
