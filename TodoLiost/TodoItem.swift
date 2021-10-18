@@ -70,14 +70,14 @@ public extension TodoItem{
     var json: TodoItemJson {
         var json: TodoItemJson = TodoItemJson()
         // todo json[\TodoItem.id]=...  (use keyPath https://stackoverflow.com/questions/26005654/get-a-swift-variables-actual-name-as-string)
-        json["id"] = self.id.uuidString
-        json["text"] = self.text
-        if self.priority != .normal {
-            json["priority"] = self.priority.rawValue
+        json["id"] = id.uuidString
+        json["text"] = text
+        if priority != .normal {
+            json["priority"] = priority.rawValue
         }
         
         let encoder = JSONEncoder()
-        if self.deadLine != nil {
+        if deadLine != nil {
             do {
                 let jsonDeadLine = try encoder.encode(self.deadLine)
                 if let deadLine = String(data: jsonDeadLine, encoding: .utf8) {
