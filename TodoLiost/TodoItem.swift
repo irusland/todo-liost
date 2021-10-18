@@ -61,7 +61,7 @@ public extension TodoItem{
     
     static func parse(json: [String: Any]) -> TodoItem? {
         do {
-            return try TodoItem.init(json)
+            return try TodoItem(json)
         } catch {
             return nil
         }
