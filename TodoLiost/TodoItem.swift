@@ -53,7 +53,7 @@ public extension TodoItem{
             self.priority = .normal
         }
 
-        self.deadLine = json["deadLine"] as? Date
+        self.deadLine = nil
 
         if let color = json["color"] as? String {
             self.color = UIColor(ciColor: CIColor(string: color))
