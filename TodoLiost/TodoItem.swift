@@ -88,8 +88,8 @@ public extension TodoItem{
                 }
             } catch {}
         }
-        if color != nil {
-            json["color"] = CIColor(color: color!).stringRepresentation
+        if let color = color {
+            json["color"] = CIColor(color: color).stringRepresentation
         }
         return json
     }
