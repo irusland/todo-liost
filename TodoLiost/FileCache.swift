@@ -34,10 +34,7 @@ class FileCache {
     }
     
     private func getIndex(by id: UUID) -> Int? {
-        guard let itemIndex = self.todoItems.firstIndex(where: { $0.id == id }) else {
-            return nil
-        }
-        return itemIndex
+        return self.todoItems.firstIndex(where: { $0.id == id })
     }
     
     public func remove(by id: UUID) -> Bool {
@@ -49,10 +46,7 @@ class FileCache {
     }
     
     public func get(by id: UUID) -> TodoItem? {
-        guard let itemIndex = self.todoItems.first(where: { $0.id == id }) else {
-            return nil
-        }
-        return itemIndex
+        return self.todoItems.first(where: { $0.id == id })
     }
     
     public func save(to file: String) -> Bool {
