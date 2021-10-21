@@ -52,8 +52,15 @@ public extension TodoItem{
         } else {
             self.priority = .normal
         }
+        
+        let decoder = JSONDecoder()
+        if let deadLine = json["deadLine"] as? String {
+            let data = Data(deadLine.utf8)
+            self.deadLine = try decoder.decode(Date.self, from: data)
+        } else {
+            self.deadLine = nil
+        }
 
-        self.deadLine = nil
 
         if let color = json["color"] as? String {
             self.color = UIColor(ciColor: CIColor(string: color))

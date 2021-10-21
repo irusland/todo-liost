@@ -249,8 +249,10 @@ class TodoListTests: XCTestCase {
     func testCacheSavesAndLoadsDatePriority() throws {
         let fileCache = FileCache()
         let file = "file.json"
-        let todoItem1 = TodoItem(text: "sample", priority: .important, deadLine: Date())
-        let todoItem2 = TodoItem(text: "sample", priority: .normal, deadLine: Date(), color: .black)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+        let todoItem1 = TodoItem(text: "sample", priority: .important, deadLine: formatter.date(from: "2021/10/22 20:00"))
+        let todoItem2 = TodoItem(text: "sample", priority: .normal, deadLine: formatter.date(from: "2021/10/22 21:30"), color: .black)
         let todoItem3 = TodoItem(text: "sample", priority: .no)
         let expected = [
             "items": [
@@ -258,11 +260,13 @@ class TodoListTests: XCTestCase {
                     "id": todoItem1.id.uuidString,
                     "text": todoItem1.text,
                     "priority": todoItem1.priority.rawValue,
+                    "deadLine": "656607600",
                 ],
                 [
                     "id": todoItem2.id.uuidString,
                     "text": todoItem2.text,
                     "color": "0 0 0 1",
+                    "deadLine": "656613000",
                 ],
                 [
                     "id": todoItem3.id.uuidString,
