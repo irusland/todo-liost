@@ -55,8 +55,8 @@ class FileCache {
         }
         let fileURL = dir.appendingPathComponent(file)
         do {
-            let jsonString = try dumps()
-            try jsonString.write(to: fileURL, atomically: false, encoding: .utf8)
+            let data = try dumps()
+            try data.write(to: fileURL)
         } catch let error as NSError {
             print("Failed: \(error.localizedDescription)")
             return false
@@ -72,13 +72,10 @@ class FileCache {
         return jsonData
     }
     
-    public func dumps() throws -> String {
+    public func dumps() throws -> Data {
         let jsonObject = dump()
         let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [])
-        guard let string = String(data: data, encoding: String.Encoding.utf8) else {
-            throw FileCacheErrors.dumpError("Dumped data is nil")
-        }
-        return string
+        return data
     }
     
     public func load(from file: String) -> Bool {
