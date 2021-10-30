@@ -10,38 +10,36 @@ import CocoaLumberjack
 
 
 
-class CustomCell: UICollectionViewCell {
-    
+class TodoItemCell: UICollectionViewCell {
     static let reuseIdentifier = "ItemCell"
     
-    let someLabel = UILabel(frame: .zero)
-    
+    public let todoItemText = UITextView(frame: .zero)
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
     }
-    
+
     private func setupViews() {
-        someLabel.translatesAutoresizingMaskIntoConstraints = false
-        someLabel.numberOfLines = 0
-        contentView.addSubview(someLabel)
-        NSLayoutConstraint.constraints(
-            withVisualFormat: "H:|-[V]-|",
-            options: [],
-            metrics: nil,
-            views: ["V": someLabel]
-        ).forEach { $0.isActive = true }
-        NSLayoutConstraint.constraints(
-            withVisualFormat: "V:|-[V]-|",
-            options: [],
-            metrics: nil,
-            views: ["V": someLabel]
-        ).forEach { $0.isActive = true }
+        todoItemText.translatesAutoresizingMaskIntoConstraints = false
+//        todoItemText.numberOfLines = 0
+        contentView.addSubview(todoItemText)
+
+        var constraints = [NSLayoutConstraint]()
+        
+        constraints.append(contentsOf: [
+            
+            todoItemText.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            todoItemText.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(10)),
+            todoItemText.trailingAnchor.constraint(equalTo: self.centerXAnchor),
+        ])
+        
+        NSLayoutConstraint.activate(constraints)
     }
 }
 
@@ -50,42 +48,33 @@ class CustomCell: UICollectionViewCell {
 class MainViewController: UIViewController {
     static let storyboardId = "MainViewController"
     
-    private let mainView: MainView
-    
     private var fileCache: FileCache
     private let squaresViewController: SquaresViewController
     
     required init?(coder: NSCoder) {
         
         fileCache = FileCache()
-        let todoItem1 = TodoItem(text: "sample", priority: .important)
-        let todoItem2 = TodoItem(text: "sample", priority: .normal)
-        let todoItem3 = TodoItem(text: "sample", priority: .no)
+        let todoItem1 = TodoItem(text: "sample", priority: .important, color: .red)
+        let todoItem2 = TodoItem(text: "sample", priority: .normal, color: .green)
+        let todoItem3 = TodoItem(text: "sample", priority: .no, color: .blue)
         
         for item in [todoItem1, todoItem2, todoItem3]{
             self.fileCache.add(item)
         }
         
-        mainView = MainView(frame: UIScreen.main.bounds, fileCache: fileCache)
-        mainView.translatesAutoresizingMaskIntoConstraints = false
-        mainView.backgroundColor = UIColor(hue: CGFloat(1), saturation: CGFloat(1), brightness: CGFloat(1), alpha: CGFloat(0.1))
-        
-        squaresViewController = SquaresViewController(collectionViewLayout: CustomFlowLayout())
-        squaresViewController.collectionView.register(CustomCell.self, forCellWithReuseIdentifier: CustomCell.reuseIdentifier)
-        
+        squaresViewController = SmallViewController(with: fileCache)
+
         super.init(coder: coder)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(mainView)
-        put(viewController: squaresViewController)
+//        put(viewController: squaresViewController)
         addConstraints()
-        
     }
-    
+
     func put(viewController vc: UIViewController) {
-        vc.view.frame = view.frame
+        vc.view.frame = view.bounds
         addChild(vc)
         view.addSubview(vc.view)
         vc.didMove(toParent: self)
@@ -95,122 +84,22 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         
         
-        guard let presentingViewController = self.presentingViewController else {
-            return
-        }
+        squaresViewController.modalPresentationStyle = .automatic
+        squaresViewController.collectionView.register(TodoItemCell.self, forCellWithReuseIdentifier: TodoItemCell.reuseIdentifier)
         
-        squaresViewController.modalPresentationStyle = .formSheet
-        squaresViewController.view.backgroundColor = .blue
-        presentingViewController.present(squaresViewController, animated: true, completion: nil)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            self.squaresViewController.dismiss(animated: true, completion: nil)
-        }
         
+        show(squaresViewController, sender: self)
         
     }
     
     private func addConstraints() {
         var constraints = [NSLayoutConstraint]()
         
-        constraints.append(contentsOf: [
-            mainView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            mainView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            mainView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            mainView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
-        ])
+        constraints.append(contentsOf: [])
         
         NSLayoutConstraint.activate(constraints)
     }
 }
-
-class MainView: UIView {
-    private var fileCache: FileCache
-    
-    init(frame: CGRect, fileCache: FileCache) {
-        self.fileCache = fileCache
-        super.init(frame: frame)
-        
-        //        self.backgroundColor = .white
-        //        self.translatesAutoresizingMaskIntoConstraints = false
-        setUpViews()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    @objc func pressed(sender: UIButton!) {
-        likeButton.setTitle(fileCache.todoItems[0].text, for: .normal)
-        todoItemText.text = fileCache.todoItems[0].text
-        //        fileCache.todoItems[0] = TodoItem(text: todoItemText.text, priority: .no)
-        todoItemView.todoItemText.text = todoItemText.text
-    }
-    
-    func setUpViews() {
-        self.addSubview(contentView)
-        self.addSubview(likeButton)
-        self.addSubview(todoItemText)
-        self.addSubview(todoItemView)
-        
-        likeButton.addTarget(self, action: #selector(pressed), for: .touchUpInside)
-        
-        
-        var constraints = [NSLayoutConstraint]()
-        
-        constraints.append(contentsOf: [
-            contentView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            contentView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            contentView.widthAnchor.constraint(equalTo: self.widthAnchor, constant: CGFloat(-10)),
-            contentView.heightAnchor.constraint(equalTo: self.heightAnchor, constant: CGFloat(-10)),
-            
-            likeButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            likeButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            
-            todoItemText.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            todoItemText.topAnchor.constraint(equalTo: self.topAnchor),
-            todoItemText.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(10)),
-            todoItemText.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: CGFloat(-10)),
-            todoItemText.heightAnchor.constraint(lessThanOrEqualToConstant: CGFloat(100)),
-            
-            todoItemView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            todoItemView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            todoItemView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            todoItemView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-        ])
-        
-        NSLayoutConstraint.activate(constraints)
-    }
-    
-    let contentView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .clear
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    let likeButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("liek", for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    let todoItemText: UITextView = {
-        let todoItemText = UITextView(frame: .zero, textContainer: nil)
-        todoItemText.backgroundColor = .yellow // visual debugging
-        //        todoItemText.isScrollEnabled = false
-        todoItemText.translatesAutoresizingMaskIntoConstraints = false
-        return todoItemText
-    }()
-    
-    let todoItemView: TodoItemUIView = {
-        let todoItemView = TodoItemUIView()
-        todoItemView.backgroundColor = .green
-        todoItemView.translatesAutoresizingMaskIntoConstraints = false
-        return todoItemView
-    }()
-}
-
 
 
 class TodoItemUIView: UIView {
@@ -297,24 +186,29 @@ class CustomFlowLayout : UICollectionViewFlowLayout {
     override func initialLayoutAttributesForAppearingItem(at itemIndexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         let attributes = super.initialLayoutAttributesForAppearingItem(at: itemIndexPath)
         
-        //if insertingIndexPaths.contains(itemIndexPath) {
-        attributes?.alpha = 0.0
-        attributes?.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
-        //attributes?.transform = CGAffineTransform(translationX: 0, y: 500.0)
-        
-        print(attributes)
-        //}
+        if insertingIndexPaths.contains(itemIndexPath) {
+            attributes?.alpha = 0.0
+            attributes?.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+            attributes?.transform = CGAffineTransform(translationX: 0, y: 500.0)
+            
+            print(attributes)
+        }
         
         return attributes
     }
 }
 
-public struct Item {
-    let color: UIColor
-}
-
 class SquaresViewController: UICollectionViewController {
-    var items = [Item]()
+    var fileCache: FileCache
+    
+    init(collectionViewLayout layout: UICollectionViewLayout, _ fileCache: FileCache) {
+        self.fileCache = fileCache
+        super.init(collectionViewLayout: layout)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     var small: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
@@ -336,39 +230,32 @@ class SquaresViewController: UICollectionViewController {
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        return items.count
+        DDLogInfo("Item count \(fileCache.todoItems.count)")
+        return fileCache.todoItems.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let newLayout = (collectionView.collectionViewLayout == small ? big : small)
-
-        collectionView.setCollectionViewLayout(newLayout, animated: true)
+//        let newLayout = (collectionView.collectionViewLayout == small ? big : small)
+//        collectionView.setCollectionViewLayout(newLayout, animated: true)
     }
 
     override func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        let cell = collectionView
-            .dequeueReusableCell(
-                withReuseIdentifier: CustomCell.reuseIdentifier,
+        let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: TodoItemCell.reuseIdentifier,
                 for: indexPath
             )
+        guard let todoCell = cell as? TodoItemCell else {
+            return cell
+        }
         
-        cell.backgroundColor = items[indexPath.item].color
-        
-        return cell
-    }
-    
-    func addItem() {
-        items.append(Item(color: .random()))
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        
-        for _ in 0...100 { addItem() }
+        let item = fileCache.todoItems[indexPath.item]
+//        todoCell.backgroundColor = item.color
+        todoCell.backgroundColor = item.color
+        todoCell.todoItemText.text = item.text
+        return todoCell
     }
 }
 
@@ -384,63 +271,43 @@ extension UIColor {
 }
 
 class SmallViewController : SquaresViewController {
-    init() {
-        let layout = UICollectionViewFlowLayout()
+    let todoItemDetailViewController: TodoItemDetailViewController
+
+    init(with fileCache: FileCache) {
+        let layout = CustomFlowLayout()
         layout.itemSize = CGSize(width: 50, height: 20)
+        todoItemDetailViewController = TodoItemDetailViewController(fileCache: fileCache)
         
-        super.init(collectionViewLayout: layout)
+        super.init(collectionViewLayout: layout, fileCache)
         
         useLayoutToLayoutNavigationTransitions = false
-        
-        items = (0...50).map { _ in Item(color: .random()) }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let newLayout = (collectionView.collectionViewLayout == small ? big : small)
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        let cell = collectionView.dequeueReusableCell(
+//            withReuseIdentifier: TodoItemCell.reuseIdentifier,
+//            for: indexPath
+//        )
+//        guard let todoCell = cell as? TodoItemCell else {
+//            return
+//        }
 //
-//        collectionView.setCollectionViewLayout(newLayout, animated: true)
-//    }
+//        let item = fileCache.todoItems[indexPath.item]
+//        //        todoCell.backgroundColor = item.color
+//        todoCell.backgroundColor = .red
+//        todoCell.todoItemText.text = item.text
 
-    override func collectionView(
-        _ collectionView: UICollectionView,
-        didSelectItemAt indexPath: IndexPath
-    ) {
-//
-//        DDLogInfo("TAP \(indexPath) \(navController) \(viewController)")
-//
-        let bigVC = BigViewController()
+        let itemToShow = fileCache.todoItems[indexPath.item]
+        todoItemDetailViewController.loadItem(item: itemToShow)
+        DDLogInfo("Presenting todo item details")
+        present(todoItemDetailViewController, animated: true) {
+            DDLogInfo("Details Completed")
+        }
         
-        bigVC.items = items
-        
-        presentingViewController?.navigationController?
-            .pushViewController(bigVC, animated: true)
-    }
-}
-
-
-class BigViewController : SquaresViewController {
-    init() {
-        let layout = UICollectionViewFlowLayout()
-        
-        layout.itemSize = CGSize(width: 100, height: 100)
-        
-        super.init(collectionViewLayout: layout)
-        
-        useLayoutToLayoutNavigationTransitions = true
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    override func collectionView(
-        _ collectionView: UICollectionView,
-        didSelectItemAt indexPath: IndexPath
-    ) {
-        presentingViewController?.navigationController?.popViewController(animated: true)
     }
 }
 
