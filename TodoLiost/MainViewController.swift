@@ -276,7 +276,7 @@ class SmallViewController : SquaresViewController {
     init(with fileCache: FileCache) {
         let layout = CustomFlowLayout()
         layout.itemSize = CGSize(width: 50, height: 20)
-        todoItemDetailViewController = TodoItemDetailViewController(fileCache: fileCache)
+        todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), fileCache: fileCache)
         
         super.init(collectionViewLayout: layout, fileCache)
         
@@ -308,6 +308,12 @@ class SmallViewController : SquaresViewController {
             DDLogInfo("Details Completed")
         }
         
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        DDLogInfo("Collection Appear")
+        collectionView.reloadData()
     }
 }
 
