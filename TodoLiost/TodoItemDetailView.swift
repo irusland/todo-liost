@@ -9,17 +9,28 @@ import Foundation
 import UIKit
 import CocoaLumberjack
 
-class TodoItemDetailViewController: UINavigationController {
+class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate {
+    func ColorColorPickerTouched(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State) {
+        DDLogInfo("Custom color = \(color)")
+        
+        todoItemColor = color
+        colorLabel.layer.borderColor = color.cgColor
+        if let fvc = self.presentingViewController as? UICollectionViewController {
+            self.dismiss(animated: true)
+        }
+    }
+    
     let fileCache: FileCache
     var itemPresented: TodoItem
     
     var todoItemColor: UIColor?
     
+    var colorPickerController: ColorPickerController
     
     @objc func deleteItem() {
         DDLogInfo("Deleted")
         
-        fileCache.remove(by: itemPresented.id)
+        let _ = fileCache.remove(by: itemPresented.id)
         DDLogInfo("after delete: \(fileCache.todoItems)")
         
         if let fvc = self.presentingViewController as? UICollectionViewController {
@@ -55,6 +66,51 @@ class TodoItemDetailViewController: UINavigationController {
             }
         }
     }
+    
+    let colorLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Color"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.layer.borderWidth = 2
+        return label
+    }()
+    
+    @objc func buttonAction(sender: UIButton!) {
+        let btnsendtag: UIButton = sender
+        if btnsendtag.tag == 0 {
+            DDLogInfo("Custom color button pressed, opening color picker")
+            present(colorPickerController, animated: true)
+        }
+    }
+    
+    let colorStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        for idx in 0...10 {
+            let button = UIButton()
+            button.backgroundColor = .gray
+            button.setTitle("\(idx)", for: .normal)
+            button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+            button.tag = idx
+            // add button to row stack view
+            stackView.addArrangedSubview(button)
+            
+            // buttons should be 50x50
+            NSLayoutConstraint.activate([
+                button.widthAnchor.constraint(equalToConstant: 50.0),
+                button.heightAnchor.constraint(equalToConstant: 50.0),
+            ])
+        }
+        
+       return stackView
+    }()
+    
+    let colorScrollView: UIScrollView = {
+        let view = UIScrollView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
     
     let dateLabel: UILabel = {
         let label = UILabel()
@@ -120,17 +176,10 @@ class TodoItemDetailViewController: UINavigationController {
         DDLogInfo("ROOT Init Details view controller")
         self.fileCache = fileCache
         itemPresented = fileCache.todoItems[0]
-        
+        colorPickerController = ColorPickerController()
         super.init(nibName: nil, bundle: nil)
         
         view.backgroundColor = .white
-    }
-    
-    init(fileCache: FileCache) {
-        DDLogInfo("Init Details view controller")
-        self.fileCache = fileCache
-        itemPresented = fileCache.todoItems[0]
-        super.init()
     }
     
     required init?(coder: NSCoder) {
@@ -140,6 +189,7 @@ class TodoItemDetailViewController: UINavigationController {
     func loadItem(item: TodoItem) {
         itemPresented = item
         todoItemColor = item.color
+        colorLabel.layer.borderColor = item.color?.cgColor
 //        self.view.backgroundColor = item.color
         textView.text = item.text
         datePickerSwitch.setOn(item.deadLine != nil, animated: true)
@@ -152,9 +202,15 @@ class TodoItemDetailViewController: UINavigationController {
         view.addSubview(textView)
         view.addSubview(deleteButton)
         view.addSubview(saveButton)
+        
         view.addSubview(datePickerSwitch)
         view.addSubview(dateLabel)
         view.addSubview(datePicker)
+        
+        view.addSubview(colorLabel)
+        view.addSubview(colorScrollView)
+        colorScrollView.addSubview(colorStackView)
+        
         
         setupViews()
     }
@@ -191,6 +247,11 @@ class TodoItemDetailViewController: UINavigationController {
             datePicker.topAnchor.constraint(equalTo: dateLabel.topAnchor),
             datePicker.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: CGFloat(10)),
             datePicker.heightAnchor.constraint(equalTo: dateLabel.heightAnchor),
+            
+            
+            colorLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: CGFloat(10)),
+            colorLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            colorLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
         ])
         
         NSLayoutConstraint.activate(constraints)
@@ -203,8 +264,37 @@ class TodoItemDetailViewController: UINavigationController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addTapped))
         
         
-        saveButton.layer.cornerRadius = 0.5 * saveButton.bounds.size.width
-        saveButton.clipsToBounds = true
+        colorPickerController.colorPicker.delegate = self
+        
+        let safeG = view.safeAreaLayoutGuide
+        NSLayoutConstraint.activate([
+            
+//            // constrain label
+//            //  50-pts from top
+//            //  80% of the width
+//            //  centered horizontally
+//            label.topAnchor.constraint(equalTo: safeG.topAnchor, constant: 50.0),
+//            label.widthAnchor.constraint(equalTo: safeG.widthAnchor, multiplier: 0.8),
+//            label.centerXAnchor.constraint(equalTo: safeG.centerXAnchor),
+//
+            // constrain scrollView
+            //  50-pts from bottom of label
+            //  Leading and Trailing to safe-area with 8-pts "padding"
+            //  Bottom to safe-area with 8-pts "padding"
+            colorScrollView.topAnchor.constraint(equalTo: colorLabel.bottomAnchor, constant: 50.0),
+            colorScrollView.leadingAnchor.constraint(equalTo: safeG.leadingAnchor, constant: 8.0),
+            colorScrollView.trailingAnchor.constraint(equalTo: safeG.trailingAnchor, constant: -8.0),
+            colorScrollView.bottomAnchor.constraint(equalTo: safeG.bottomAnchor, constant: -8.0),
+            
+            // constrain vertical stack view to scrollView Content Layout Guide
+            //  8-pts all around (so we have a little "padding")
+            colorStackView.topAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.topAnchor, constant: 8.0),
+            colorStackView.leadingAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.leadingAnchor, constant: 8.0),
+            colorStackView.trailingAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.trailingAnchor, constant: -8.0),
+            colorStackView.bottomAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.bottomAnchor, constant: -8.0),
+            
+        ])
+
     }
     
     @objc func addTapped() {

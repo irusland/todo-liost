@@ -69,7 +69,7 @@ class MainViewController: UIViewController {
         }
         
         squaresViewController = SmallViewController(with: fileCache)
-
+        
         super.init(coder: coder)
     }
     
@@ -287,7 +287,6 @@ class SmallViewController : SquaresViewController {
         useLayoutToLayoutNavigationTransitions = false
 
 //        view.translatesAutoresizingMaskIntoConstraints = false
-
         setupSubviews()
     }
     

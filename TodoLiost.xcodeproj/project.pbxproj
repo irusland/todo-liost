@@ -23,6 +23,7 @@
 		981A3857271C831D007739C6 /* TodoListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3856271C831D007739C6 /* TodoListTests.swift */; };
 		981A385B271CB9DD007739C6 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A385A271CB9DD007739C6 /* TableViewController.swift */; };
 		982B9CD7272D214B005CB6B9 /* TodoItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982B9CD6272D214B005CB6B9 /* TodoItemDetailView.swift */; };
+		9836360A272EAFD7007B141A /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98363609272EAFD7007B141A /* ColorPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		981A3856271C831D007739C6 /* TodoListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListTests.swift; sourceTree = "<group>"; };
 		981A385A271CB9DD007739C6 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		982B9CD6272D214B005CB6B9 /* TodoItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemDetailView.swift; sourceTree = "<group>"; };
+		98363609272EAFD7007B141A /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
 		A3E1F884A04BC8465659FF85 /* Pods-TodoLiostTests.testflight.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiostTests.testflight.xcconfig"; path = "Target Support Files/Pods-TodoLiostTests/Pods-TodoLiostTests.testflight.xcconfig"; sourceTree = "<group>"; };
 		BBA76BAE79B1C4E70FF1A50A /* Pods-TodoLiost-TodoLiostUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiost-TodoLiostUITests.debug.xcconfig"; path = "Target Support Files/Pods-TodoLiost-TodoLiostUITests/Pods-TodoLiost-TodoLiostUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		CE6A5A4A2F32949A50A29B16 /* libPods-TodoLiost.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TodoLiost.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,6 +131,7 @@
 		981A3821271C7E89007739C6 /* TodoLiost */ = {
 			isa = PBXGroup;
 			children = (
+				98363609272EAFD7007B141A /* ColorPicker.swift */,
 				981A3822271C7E89007739C6 /* AppDelegate.swift */,
 				981A3824271C7E89007739C6 /* SceneDelegate.swift */,
 				981A3826271C7E89007739C6 /* MainViewController.swift */,
@@ -392,6 +395,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				981A3827271C7E89007739C6 /* MainViewController.swift in Sources */,
+				9836360A272EAFD7007B141A /* ColorPicker.swift in Sources */,
 				981A385B271CB9DD007739C6 /* TableViewController.swift in Sources */,
 				981A3823271C7E89007739C6 /* AppDelegate.swift in Sources */,
 				981A3853271C82B9007739C6 /* TodoItem.swift in Sources */,
