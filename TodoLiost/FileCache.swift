@@ -33,6 +33,15 @@ class FileCache {
         self.todoItems.append(todoItem)
     }
     
+    public func update(at id: UUID, todoItem: TodoItem) -> Bool {
+        guard let itemIndex = getIndex(by: id) else {
+            return false
+        }
+        self.todoItems.remove(at: itemIndex)
+        self.todoItems.insert(todoItem, at: itemIndex)
+        return true
+    }
+    
     private func getIndex(by id: UUID) -> Int? {
         return self.todoItems.firstIndex(where: { $0.id == id })
     }

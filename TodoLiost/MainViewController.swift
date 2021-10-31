@@ -13,7 +13,13 @@ import CocoaLumberjack
 class TodoItemCell: UICollectionViewCell {
     static let reuseIdentifier = "ItemCell"
     
-    public let todoItemText = UITextView(frame: .zero)
+    public let todoItemText: UILabel = {
+        let textView = UILabel()
+//        textView.isEditable = false
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        return textView
+    }()
+    
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,20 +32,21 @@ class TodoItemCell: UICollectionViewCell {
     }
 
     private func setupViews() {
-        todoItemText.translatesAutoresizingMaskIntoConstraints = false
-//        todoItemText.numberOfLines = 0
         contentView.addSubview(todoItemText)
+        todoItemText.frame = bounds
 
         var constraints = [NSLayoutConstraint]()
         
         constraints.append(contentsOf: [
             
-            todoItemText.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            todoItemText.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(10)),
-            todoItemText.trailingAnchor.constraint(equalTo: self.centerXAnchor),
+//            todoItemText.centerXAnchor.constraint(equalTo: centerXAnchor),
         ])
         
         NSLayoutConstraint.activate(constraints)
+        
+        backgroundColor = .white
+
+        layer.borderWidth = 2
     }
 }
 
@@ -84,7 +91,7 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         
         
-        squaresViewController.modalPresentationStyle = .automatic
+        squaresViewController.modalPresentationStyle = .fullScreen
         squaresViewController.collectionView.register(TodoItemCell.self, forCellWithReuseIdentifier: TodoItemCell.reuseIdentifier)
         
         
@@ -190,8 +197,6 @@ class CustomFlowLayout : UICollectionViewFlowLayout {
             attributes?.alpha = 0.0
             attributes?.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
             attributes?.transform = CGAffineTransform(translationX: 0, y: 500.0)
-            
-            print(attributes)
         }
         
         return attributes
@@ -252,8 +257,8 @@ class SquaresViewController: UICollectionViewController {
         }
         
         let item = fileCache.todoItems[indexPath.item]
-//        todoCell.backgroundColor = item.color
-        todoCell.backgroundColor = item.color
+
+        todoCell.layer.borderColor = item.color?.cgColor
         todoCell.todoItemText.text = item.text
         return todoCell
     }
@@ -271,16 +276,28 @@ extension UIColor {
 }
 
 class SmallViewController : SquaresViewController {
-    let todoItemDetailViewController: TodoItemDetailViewController
+    var todoItemDetailViewController: TodoItemDetailViewController
 
     init(with fileCache: FileCache) {
         let layout = CustomFlowLayout()
-        layout.itemSize = CGSize(width: 50, height: 20)
+//        layout.itemSize = CGSize(width: 50, height: 20)
         todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), fileCache: fileCache)
         
         super.init(collectionViewLayout: layout, fileCache)
-        
+
         useLayoutToLayoutNavigationTransitions = false
+        
+        setupSubviews()
+    }
+    
+    func setupSubviews() {
+        var constraints = [NSLayoutConstraint]()
+        
+        constraints.append(contentsOf: [
+            
+        ])
+        
+        NSLayoutConstraint.activate(constraints)
     }
     
     required init?(coder: NSCoder) {
@@ -288,25 +305,14 @@ class SmallViewController : SquaresViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let cell = collectionView.dequeueReusableCell(
-//            withReuseIdentifier: TodoItemCell.reuseIdentifier,
-//            for: indexPath
-//        )
-//        guard let todoCell = cell as? TodoItemCell else {
-//            return
-//        }
-//
-//        let item = fileCache.todoItems[indexPath.item]
-//        //        todoCell.backgroundColor = item.color
-//        todoCell.backgroundColor = .red
-//        todoCell.todoItemText.text = item.text
-
         let itemToShow = fileCache.todoItems[indexPath.item]
         todoItemDetailViewController.loadItem(item: itemToShow)
         DDLogInfo("Presenting todo item details")
         present(todoItemDetailViewController, animated: true) {
             DDLogInfo("Details Completed")
         }
+        
+        show(todoItemDetailViewController, sender: self)
         
     }
     
