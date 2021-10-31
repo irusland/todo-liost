@@ -102,7 +102,8 @@ class MainViewController: UIViewController {
     private func addConstraints() {
         var constraints = [NSLayoutConstraint]()
         
-        constraints.append(contentsOf: [])
+        constraints.append(contentsOf: [
+        ])
         
         NSLayoutConstraint.activate(constraints)
     }
@@ -290,11 +291,38 @@ class SmallViewController : SquaresViewController {
         setupSubviews()
     }
     
+    @objc func addItem() {
+        let todoItem = TodoItem(text: "")
+        DDLogInfo("Generatin new item \(todoItem)")
+        fileCache.add(todoItem)
+        collectionView.reloadData()
+        todoItemDetailViewController.loadItem(item: todoItem)
+        show(todoItemDetailViewController, sender: self)
+    }
+    
+    let addButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("+", for: .normal)
+        button.setTitleColor(.red, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(addItem), for: .touchUpInside)
+        return button
+    }()
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubview(addButton)
+    }
+    
     func setupSubviews() {
         var constraints = [NSLayoutConstraint]()
         
         constraints.append(contentsOf: [
-            
+            addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: CGFloat(10)),
+            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            addButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+
         ])
         
         NSLayoutConstraint.activate(constraints)
@@ -308,9 +336,6 @@ class SmallViewController : SquaresViewController {
         let itemToShow = fileCache.todoItems[indexPath.item]
         todoItemDetailViewController.loadItem(item: itemToShow)
         DDLogInfo("Presenting todo item details")
-        present(todoItemDetailViewController, animated: true) {
-            DDLogInfo("Details Completed")
-        }
         
         show(todoItemDetailViewController, sender: self)
         
