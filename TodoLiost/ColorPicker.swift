@@ -17,11 +17,31 @@ internal protocol ColorPickerIntermediateDelegate : NSObjectProtocol {
     func ColorColorPickerTouchBegin(sender:ColorPicker, color:UIColor, point:CGPoint, state:UIGestureRecognizer.State)
 }
 
+
 class ColorPickerController: UIViewController, ColorPickerIntermediateDelegate {
+    func hexStringFromColor(color: UIColor) -> String {
+        let components = color.cgColor.components
+        let r: CGFloat = components?[0] ?? 0.0
+        let g: CGFloat = components?[1] ?? 0.0
+        let b: CGFloat = components?[2] ?? 0.0
+        
+        let hexString = String.init(format: "#%02lX%02lX%02lX", lroundf(Float(r * 255)), lroundf(Float(g * 255)), lroundf(Float(b * 255)))
+        
+        return hexString
+    }
+    
     func ColorColorPickerTouchBegin(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State) {
         DDLogInfo("Color picker Controller touch beigan")
         chosenColorView.backgroundColor = color
+        hexLabel.text = hexStringFromColor(color: color)
     }
+    
+    var hexLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center;
+        return label
+    }()
     
     var chosenColorView: UIView = {
         let view = UIView()
@@ -38,6 +58,7 @@ class ColorPickerController: UIViewController, ColorPickerIntermediateDelegate {
     override func viewDidLoad() {
         view.addSubview(colorPicker)
         view.addSubview(chosenColorView)
+        view.addSubview(hexLabel)
         
         setupSubviews()
     }
@@ -54,6 +75,13 @@ class ColorPickerController: UIViewController, ColorPickerIntermediateDelegate {
             colorPicker.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             colorPicker.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             colorPicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            
+            hexLabel.leadingAnchor.constraint(equalTo: chosenColorView.trailingAnchor),
+            hexLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+//            hexLabel.centerYAnchor.constraint(equalTo: chosenColorView.centerYAnchor),
+            hexLabel.topAnchor.constraint(equalTo: chosenColorView.topAnchor),
+            hexLabel.bottomAnchor.constraint(equalTo: chosenColorView.bottomAnchor),
+            
         ])
         
         view.backgroundColor = UIColor(hue: CGFloat(0), saturation: CGFloat(0), brightness: CGFloat(1), alpha: CGFloat(0.1))
