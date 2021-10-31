@@ -15,7 +15,6 @@ class TodoItemCell: UICollectionViewCell {
     
     public let todoItemText: UILabel = {
         let textView = UILabel()
-//        textView.isEditable = false
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
@@ -133,7 +132,6 @@ class TodoItemUIView: UIView {
             todoItemText.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             todoItemText.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             todoItemText.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(10)),
-            //            todoItemText.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: CGFloat(10)),
             todoItemText.heightAnchor.constraint(lessThanOrEqualToConstant: CGFloat(100)),
             
             priotiry.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -287,7 +285,9 @@ class SmallViewController : SquaresViewController {
         super.init(collectionViewLayout: layout, fileCache)
 
         useLayoutToLayoutNavigationTransitions = false
-        
+
+//        view.translatesAutoresizingMaskIntoConstraints = false
+
         setupSubviews()
     }
     
@@ -302,10 +302,18 @@ class SmallViewController : SquaresViewController {
     
     let addButton : UIButton = {
         let button = UIButton()
+        
         button.setTitle("+", for: .normal)
-        button.setTitleColor(.red, for: .normal)
+        button.setTitleColor(.green, for: .normal)
+        button.setTitleShadowColor(.black, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(addItem), for: .touchUpInside)
+        button.backgroundColor = .white
+        button.layer.borderWidth = 2
+        
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
+        
         return button
     }()
     
@@ -319,10 +327,14 @@ class SmallViewController : SquaresViewController {
         var constraints = [NSLayoutConstraint]()
         
         constraints.append(contentsOf: [
-            addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: CGFloat(10)),
+            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: CGFloat(10)),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            addButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-
+//            addButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
+//            view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+//            view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+//            view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+//            view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
         
         NSLayoutConstraint.activate(constraints)

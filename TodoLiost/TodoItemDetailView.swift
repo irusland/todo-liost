@@ -32,11 +32,16 @@ class TodoItemDetailViewController: UINavigationController {
     @objc func saveItem() {
         DDLogInfo("Saving item")
         
+        var deadline: Date? = nil
+        if datePickerSwitch.isOn {
+            deadline = datePicker.date
+        }
+        
         let newItem = TodoItem(
             id: itemPresented.id,
             text: textView.text,
 //            priority: ,
-//            deadLine: T##Date?,
+            deadLine: deadline,
             color: todoItemColor
         )
         
@@ -50,6 +55,28 @@ class TodoItemDetailViewController: UINavigationController {
             }
         }
     }
+    
+    let dateLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Deadline"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    func refreshDatePickerState() {
+        datePicker.isHidden = !datePickerSwitch.isOn
+    }
+    
+    @objc func dateSwitchChanged() {
+        refreshDatePickerState()
+    }
+    
+    let datePickerSwitch: UISwitch = {
+        let dateSwitch = UISwitch()
+        dateSwitch.translatesAutoresizingMaskIntoConstraints = false
+        dateSwitch.addTarget(self, action: #selector(dateSwitchChanged), for: .valueChanged)
+        return dateSwitch
+    }()
     
     let deleteButton: UIButton = {
         var button = UIButton()
@@ -82,6 +109,12 @@ class TodoItemDetailViewController: UINavigationController {
         
         return textView
     }()
+    
+    let datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        return datePicker
+    }()
 
     init(rootViewController: UIViewController, fileCache: FileCache) {
         DDLogInfo("ROOT Init Details view controller")
@@ -90,9 +123,7 @@ class TodoItemDetailViewController: UINavigationController {
         
         super.init(nibName: nil, bundle: nil)
         
-//        self.viewControllers = [rootViewController]
-//
-//        delegate = self
+        view.backgroundColor = .white
     }
     
     init(fileCache: FileCache) {
@@ -109,8 +140,10 @@ class TodoItemDetailViewController: UINavigationController {
     func loadItem(item: TodoItem) {
         itemPresented = item
         todoItemColor = item.color
-        self.view.backgroundColor = item.color
+//        self.view.backgroundColor = item.color
         textView.text = item.text
+        datePickerSwitch.setOn(item.deadLine != nil, animated: true)
+        refreshDatePickerState()
         DDLogInfo("Detail Item updated to \(item)")
     }
     
@@ -119,6 +152,9 @@ class TodoItemDetailViewController: UINavigationController {
         view.addSubview(textView)
         view.addSubview(deleteButton)
         view.addSubview(saveButton)
+        view.addSubview(datePickerSwitch)
+        view.addSubview(dateLabel)
+        view.addSubview(datePicker)
         
         setupViews()
     }
@@ -133,15 +169,28 @@ class TodoItemDetailViewController: UINavigationController {
         constraints.append(contentsOf: [
             textView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             textView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CGFloat(50)),
-            textView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: CGFloat(-20)),
-//            textView.heightAnchor.constraint(lessThanOrEqualTo: view.heightAnchor, multiplier: CGFloat(1/5))
+            textView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            textView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+//            textView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: CGFloat(-20)),
+//            textView.heightAnchor.constraint(greaterThanOrEqualToConstant: CGFloat(100)),
 //            textView.heightAnchor.constraint(equalToConstant: CGFloat(200)),
             
             deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             deleteButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             saveButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
-            saveButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+            saveButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            
+            dateLabel.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: CGFloat(10)),
+            dateLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+//            dateLabel.widthAnchor.constraint(equalTo: view.widthAnchor, constant: CGFloat(-20)),
+        
+            datePickerSwitch.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: CGFloat(10)),
+            datePickerSwitch.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            
+            datePicker.topAnchor.constraint(equalTo: dateLabel.topAnchor),
+            datePicker.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: CGFloat(10)),
+            datePicker.heightAnchor.constraint(equalTo: dateLabel.heightAnchor),
         ])
         
         NSLayoutConstraint.activate(constraints)
