@@ -14,7 +14,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         DDLogInfo("Custom color = \(color)")
         
         todoItemColor = color
-        colorLabel.layer.borderColor = color.cgColor
+        colorLabel.backgroundColor = color
         if let fvc = self.presentingViewController as? UICollectionViewController {
             self.dismiss(animated: true)
         }
@@ -71,7 +71,6 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         let label = UILabel()
         label.text = "Color"
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.layer.borderWidth = 2
         return label
     }()
     
@@ -80,26 +79,39 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         if btnsendtag.tag == 0 {
             DDLogInfo("Custom color button pressed, opening color picker")
             present(colorPickerController, animated: true)
+        } else {
+            DDLogInfo("Random color button pressed")
+            let color = btnsendtag.backgroundColor
+            todoItemColor = color
+            colorLabel.backgroundColor = color
         }
     }
     
     let colorStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        for idx in 0...10 {
+        for idx in 0...50 {
             let button = UIButton()
-            button.backgroundColor = .gray
+            button.backgroundColor = UIColor.random()
+            if idx == 0 {
+                let boldConfig = UIImage.SymbolConfiguration(weight: .bold)
+                let boldSearch = UIImage(systemName: "pencil.circle", withConfiguration: boldConfig)
+                button.setImage(boldSearch, for: .normal)
+                button.backgroundColor = .white
+                NSLayoutConstraint.activate([
+                    button.widthAnchor.constraint(equalToConstant: 70.0),
+                ])
+            }
             button.setTitle("\(idx)", for: .normal)
             button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
             button.tag = idx
-            // add button to row stack view
+
             stackView.addArrangedSubview(button)
             
-            // buttons should be 50x50
-            NSLayoutConstraint.activate([
-                button.widthAnchor.constraint(equalToConstant: 50.0),
-                button.heightAnchor.constraint(equalToConstant: 50.0),
-            ])
+//            NSLayoutConstraint.activate([
+//                button.widthAnchor.constraint(equalToConstant: 50.0),
+//                button.heightAnchor.constraint(equalToConstant: 50.0),
+//            ])
         }
         
        return stackView
@@ -189,7 +201,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
     func loadItem(item: TodoItem) {
         itemPresented = item
         todoItemColor = item.color
-        colorLabel.layer.borderColor = item.color?.cgColor
+        colorLabel.backgroundColor = item.color
 //        self.view.backgroundColor = item.color
         textView.text = item.text
         datePickerSwitch.setOn(item.deadLine != nil, animated: true)
@@ -227,10 +239,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             textView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CGFloat(50)),
             textView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             textView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-//            textView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: CGFloat(-20)),
-//            textView.heightAnchor.constraint(greaterThanOrEqualToConstant: CGFloat(100)),
-//            textView.heightAnchor.constraint(equalToConstant: CGFloat(200)),
-            
+
             deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             deleteButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
@@ -251,7 +260,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             
             colorLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: CGFloat(10)),
             colorLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-            colorLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            colorLabel.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
         ])
         
         NSLayoutConstraint.activate(constraints)
@@ -268,31 +277,15 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         
         let safeG = view.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
-            
-//            // constrain label
-//            //  50-pts from top
-//            //  80% of the width
-//            //  centered horizontally
-//            label.topAnchor.constraint(equalTo: safeG.topAnchor, constant: 50.0),
-//            label.widthAnchor.constraint(equalTo: safeG.widthAnchor, multiplier: 0.8),
-//            label.centerXAnchor.constraint(equalTo: safeG.centerXAnchor),
-//
-            // constrain scrollView
-            //  50-pts from bottom of label
-            //  Leading and Trailing to safe-area with 8-pts "padding"
-            //  Bottom to safe-area with 8-pts "padding"
-            colorScrollView.topAnchor.constraint(equalTo: colorLabel.bottomAnchor, constant: 50.0),
-            colorScrollView.leadingAnchor.constraint(equalTo: safeG.leadingAnchor, constant: 8.0),
+            colorScrollView.topAnchor.constraint(equalTo: colorLabel.topAnchor),
+            colorScrollView.leadingAnchor.constraint(equalTo: colorLabel.trailingAnchor, constant: 8.0),
             colorScrollView.trailingAnchor.constraint(equalTo: safeG.trailingAnchor, constant: -8.0),
-            colorScrollView.bottomAnchor.constraint(equalTo: safeG.bottomAnchor, constant: -8.0),
+            colorScrollView.heightAnchor.constraint(equalTo: colorLabel.heightAnchor, multiplier: CGFloat(1)),
             
-            // constrain vertical stack view to scrollView Content Layout Guide
-            //  8-pts all around (so we have a little "padding")
-            colorStackView.topAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.topAnchor, constant: 8.0),
-            colorStackView.leadingAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.leadingAnchor, constant: 8.0),
-            colorStackView.trailingAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.trailingAnchor, constant: -8.0),
-            colorStackView.bottomAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.bottomAnchor, constant: -8.0),
-            
+            colorStackView.topAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.topAnchor),
+            colorStackView.leadingAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.leadingAnchor),
+            colorStackView.trailingAnchor.constraint(equalTo: colorScrollView.contentLayoutGuide.trailingAnchor),
+            colorStackView.heightAnchor.constraint(equalTo: colorScrollView.heightAnchor),
         ])
 
     }
