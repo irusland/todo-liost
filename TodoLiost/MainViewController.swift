@@ -56,6 +56,7 @@ class MainViewController: UIViewController {
     
     private var fileCache: FileCache
     private let squaresViewController: SquaresViewController
+    private let todoItemDetailViewController: TodoItemDetailViewController
     
     required init?(coder: NSCoder) {
         
@@ -67,8 +68,9 @@ class MainViewController: UIViewController {
         for item in [todoItem1, todoItem2, todoItem3]{
             self.fileCache.add(item)
         }
+        todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), fileCache: fileCache)
         
-        squaresViewController = SmallViewController(with: fileCache)
+        squaresViewController = SmallViewController(with: fileCache, todoItemDetailViewController)
         
         super.init(coder: coder)
     }
@@ -155,17 +157,13 @@ class TodoItemUIView: UIView {
     
     let todoItemText: UITextField = {
         let todoItemText = UITextField()
-        todoItemText.backgroundColor = .gray
+        todoItemText.backgroundColor = .white
         todoItemText.translatesAutoresizingMaskIntoConstraints = false
         return todoItemText
     }()
     
     
 }
-
-//_____________________
-
-
 
 class CustomFlowLayout : UICollectionViewFlowLayout {
     var insertingIndexPaths = [IndexPath]()
@@ -204,9 +202,11 @@ class CustomFlowLayout : UICollectionViewFlowLayout {
 
 class SquaresViewController: UICollectionViewController {
     var fileCache: FileCache
+    var todoItemDetailViewController: TodoItemDetailViewController
     
-    init(collectionViewLayout layout: UICollectionViewLayout, _ fileCache: FileCache) {
+    init(collectionViewLayout layout: UICollectionViewLayout, _ fileCache: FileCache, _ todoItemDetailViewController: TodoItemDetailViewController) {
         self.fileCache = fileCache
+        self.todoItemDetailViewController = todoItemDetailViewController
         super.init(collectionViewLayout: layout)
     }
     
@@ -229,6 +229,36 @@ class SquaresViewController: UICollectionViewController {
         
         return layout
     }()
+    
+    func showItemDetails(_ indexPath: IndexPath) {
+        let itemToShow = fileCache.todoItems[indexPath.item]
+        todoItemDetailViewController.loadItem(item: itemToShow)
+        DDLogInfo("Presenting todo item details")
+        
+        show(todoItemDetailViewController, sender: self)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        configureContextMenu(indexPath: indexPath)
+    }
+    
+    func configureContextMenu(indexPath: IndexPath) -> UIContextMenuConfiguration {
+        let context = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (action) -> UIMenu? in
+            
+            let edit = UIAction(title: "Edit", image: UIImage(systemName: "square.and.pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { (_) in
+                self.showItemDetails(indexPath)
+            }
+            let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil, attributes: .destructive, state: .off) { (_) in
+                let itemSelected = self.fileCache.todoItems[indexPath.item]
+                let _ = self.fileCache.remove(by: itemSelected.id)
+                self.collectionView.reloadData()
+            }
+            
+            return UIMenu(title: "Options", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [edit, delete])
+            
+        }
+        return context
+    }
     
     override func collectionView(
         _ collectionView: UICollectionView,
@@ -275,14 +305,11 @@ extension UIColor {
 }
 
 class SmallViewController : SquaresViewController {
-    var todoItemDetailViewController: TodoItemDetailViewController
-
-    init(with fileCache: FileCache) {
+    init(with fileCache: FileCache, _ todoItemDetailViewController: TodoItemDetailViewController) {
         let layout = CustomFlowLayout()
 //        layout.itemSize = CGSize(width: 50, height: 20)
-        todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), fileCache: fileCache)
         
-        super.init(collectionViewLayout: layout, fileCache)
+        super.init(collectionViewLayout: layout, fileCache, todoItemDetailViewController)
 
         useLayoutToLayoutNavigationTransitions = false
 
@@ -344,14 +371,8 @@ class SmallViewController : SquaresViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let itemToShow = fileCache.todoItems[indexPath.item]
-        todoItemDetailViewController.loadItem(item: itemToShow)
-        DDLogInfo("Presenting todo item details")
-        
-        show(todoItemDetailViewController, sender: self)
-        
+        showItemDetails(indexPath)
     }
-    
     
     override func viewDidAppear(_ animated: Bool) {
         DDLogInfo("Collection Appear")

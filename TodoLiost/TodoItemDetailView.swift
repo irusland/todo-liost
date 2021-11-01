@@ -172,9 +172,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
     var textView: UITextView = {
         var textView = UITextView(frame: .zero)
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.backgroundColor = .gray
-
-        
+        textView.backgroundColor = .lightGray
         return textView
     }()
     
