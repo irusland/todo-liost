@@ -12,6 +12,30 @@ public enum TodoItemPriority: String {
     case no
     case normal
     case important
+    
+    func toInt() -> Int {
+        switch self {
+        case .no:
+            return 0
+        case .normal:
+            return 1
+        case .important:
+            return 2
+        }
+    }
+    
+    static func fromInt(_ i: Int) -> TodoItemPriority {
+        switch i {
+        case 0:
+            return .no
+        case 1:
+            return .normal
+        case 2:
+            return .important
+        default:
+            return .no
+        }
+    }
 }
 
 public struct TodoItem : Equatable {

@@ -9,7 +9,51 @@ import Foundation
 import UIKit
 import CocoaLumberjack
 
+class UIDeselectableSegmentedControl: UISegmentedControl {
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let previousSelectedSegmentIndex = self.selectedSegmentIndex
+        
+        super.touchesEnded(touches, with: event)
+        
+        if previousSelectedSegmentIndex == self.selectedSegmentIndex {
+            
+            self.selectedSegmentIndex = UISegmentedControl.noSegment
+            let touch = touches.first!
+            let touchLocation = touch.location(in: self)
+            if bounds.contains(touchLocation) {
+                self.sendActions(for: .valueChanged)
+            }
+        }
+    }
+}
+
 class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate {
+    @objc func importancySelectorTouched(sender: UISegmentedControl) {
+//        sender.
+        
+        let index = sender.selectedSegmentIndex
+        DDLogInfo("Importancy selected [\(index)] \(sender)")
+//        todoItemColor = color
+//        colorLabel.backgroundColor = color
+//        if let fvc = self.presentingViewController as? UICollectionViewController {
+//            self.dismiss(animated: true)
+//        }
+    }
+    
+    let importancySelector: UISegmentedControl = {
+        let items = [
+            UIImage(systemName: "bookmark.slash"),
+            UIImage(systemName: "exclamationmark"),
+            UIImage(systemName: "flame.fill"),
+        ]
+        var control = UISegmentedControl(items: items)
+        control.translatesAutoresizingMaskIntoConstraints = false
+        control.addTarget(self, action: #selector(importancySelectorTouched), for: .valueChanged)
+        control.backgroundColor = .lightGray
+        return control
+    }()
+    
     func ColorColorPickerTouched(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State) {
         DDLogInfo("Custom color = \(color)")
         
@@ -51,7 +95,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         let newItem = TodoItem(
             id: itemPresented.id,
             text: textView.text,
-//            priority: ,
+            priority: .fromInt(importancySelector.selectedSegmentIndex),
             deadLine: deadline,
             color: todoItemColor
         )
@@ -203,6 +247,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
 //        self.view.backgroundColor = item.color
         textView.text = item.text
         datePickerSwitch.setOn(item.deadLine != nil, animated: true)
+        importancySelector.selectedSegmentIndex = item.priority.toInt()
         refreshDatePickerState()
         DDLogInfo("Detail Item updated to \(item)")
     }
@@ -220,6 +265,8 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         view.addSubview(colorLabel)
         view.addSubview(colorScrollView)
         colorScrollView.addSubview(colorStackView)
+        
+        view.addSubview(importancySelector)
         
         
         setupViews()
@@ -259,6 +306,13 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             colorLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: CGFloat(10)),
             colorLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             colorLabel.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
+            
+            importancySelector.topAnchor.constraint(equalTo: colorLabel.bottomAnchor, constant: CGFloat(10)),
+            importancySelector.heightAnchor.constraint(equalTo: colorLabel.heightAnchor),
+            importancySelector.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            importancySelector.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            
+            
         ])
         
         NSLayoutConstraint.activate(constraints)

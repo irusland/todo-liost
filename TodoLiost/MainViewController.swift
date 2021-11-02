@@ -323,26 +323,9 @@ class SmallViewController : SquaresViewController {
     @objc func sizeSliderChange(sender: UISlider) {
         let step: Float = 1
         let currentValue = Int(round((sender.value - sender.minimumValue) / step))
-//        DDLogError("Slider value = \(sender.value) rounded to \(currentValue)")
-        layoutTag = LayoutSize(rawValue: currentValue) ?? .small
-//        var newLayout = small
-//        switch currentValue {
-//            case 0:
-//                DDLogInfo("Small size")
-//                newLayout = small
-//            case 1:
-//                DDLogInfo("Mid size")
-//                newLayout = mid
-//            case 2:
-//                DDLogInfo("Big size")
-//                newLayout = big
-//            default:
-//                DDLogError("Slider value \(currentValue) not in [0, 1, 2]")
-//        }
-//
-//        collectionView.setCollectionViewLayout(newLayout, animated: true)
 
-//        collectionViewLayout.invalidateLayout()
+        layoutTag = LayoutSize(rawValue: currentValue) ?? .small
+
         collectionView.reloadData()
     }
     
@@ -406,12 +389,7 @@ class SmallViewController : SquaresViewController {
         constraints.append(contentsOf: [
             addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            addButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
-//            view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-//            view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-//            view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-//            view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+
             sizeSlider.trailingAnchor.constraint(equalTo: addButton.leadingAnchor, constant: CGFloat(-10)),
             sizeSlider.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             sizeSlider.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
