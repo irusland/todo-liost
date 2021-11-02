@@ -29,16 +29,19 @@ class UIDeselectableSegmentedControl: UISegmentedControl {
 }
 
 class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate {
+    func refreshImportancySelector() {
+        let index = importancySelector.selectedSegmentIndex
+        DDLogInfo("Importancy refresh [\(index)]")
+        let colorMap: [Int:UIColor] = [
+            0: .white,
+            1: .orange,
+            2: .red,
+        ]
+        importancySelector.selectedSegmentTintColor = colorMap[index]
+    }
+    
     @objc func importancySelectorTouched(sender: UISegmentedControl) {
-//        sender.
-        
-        let index = sender.selectedSegmentIndex
-        DDLogInfo("Importancy selected [\(index)] \(sender)")
-//        todoItemColor = color
-//        colorLabel.backgroundColor = color
-//        if let fvc = self.presentingViewController as? UICollectionViewController {
-//            self.dismiss(animated: true)
-//        }
+        refreshImportancySelector()
     }
     
     let importancySelector: UISegmentedControl = {
@@ -111,10 +114,15 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         }
     }
     
+    @objc func showColorPicker() {
+        present(colorPickerController, animated: true)
+    }
+    
     let colorLabel: UILabel = {
         let label = UILabel()
         label.text = "Color"
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.isUserInteractionEnabled = true
         return label
     }()
     
@@ -122,7 +130,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         let btnsendtag: UIButton = sender
         if btnsendtag.tag == 0 {
             DDLogInfo("Custom color button pressed, opening color picker")
-            present(colorPickerController, animated: true)
+            showColorPicker()
         } else {
             DDLogInfo("Random color button pressed")
             let color = btnsendtag.backgroundColor
@@ -243,12 +251,12 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
     func loadItem(item: TodoItem) {
         itemPresented = item
         todoItemColor = item.color
-        colorLabel.backgroundColor = item.color
-//        self.view.backgroundColor = item.color
+        colorLabel.backgroundColor = item.color ?? .clear
         textView.text = item.text
         datePickerSwitch.setOn(item.deadLine != nil, animated: true)
-        importancySelector.selectedSegmentIndex = item.priority.toInt()
         refreshDatePickerState()
+        importancySelector.selectedSegmentIndex = item.priority.toInt()
+        refreshImportancySelector()
         DDLogInfo("Detail Item updated to \(item)")
     }
     
@@ -340,6 +348,8 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             colorStackView.heightAnchor.constraint(equalTo: colorScrollView.heightAnchor),
         ])
 
+        let tap = UITapGestureRecognizer(target: self, action: #selector(showColorPicker))
+        colorLabel.addGestureRecognizer(tap)
     }
     
     @objc func addTapped() {
