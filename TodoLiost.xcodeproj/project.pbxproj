@@ -21,7 +21,6 @@
 		981A3853271C82B9007739C6 /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3852271C82B9007739C6 /* TodoItem.swift */; };
 		981A3855271C82DD007739C6 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3854271C82DD007739C6 /* FileCache.swift */; };
 		981A3857271C831D007739C6 /* TodoListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3856271C831D007739C6 /* TodoListTests.swift */; };
-		981A385B271CB9DD007739C6 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A385A271CB9DD007739C6 /* TableViewController.swift */; };
 		982B9CD7272D214B005CB6B9 /* TodoItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982B9CD6272D214B005CB6B9 /* TodoItemDetailView.swift */; };
 		9836360A272EAFD7007B141A /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98363609272EAFD7007B141A /* ColorPicker.swift */; };
 /* End PBXBuildFile section */
@@ -66,7 +65,6 @@
 		981A3852271C82B9007739C6 /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
 		981A3854271C82DD007739C6 /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
 		981A3856271C831D007739C6 /* TodoListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListTests.swift; sourceTree = "<group>"; };
-		981A385A271CB9DD007739C6 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		982B9CD6272D214B005CB6B9 /* TodoItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemDetailView.swift; sourceTree = "<group>"; };
 		98363609272EAFD7007B141A /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
 		A3E1F884A04BC8465659FF85 /* Pods-TodoLiostTests.testflight.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiostTests.testflight.xcconfig"; path = "Target Support Files/Pods-TodoLiostTests/Pods-TodoLiostTests.testflight.xcconfig"; sourceTree = "<group>"; };
@@ -141,7 +139,6 @@
 				981A3830271C7E8C007739C6 /* Info.plist */,
 				981A3852271C82B9007739C6 /* TodoItem.swift */,
 				981A3854271C82DD007739C6 /* FileCache.swift */,
-				981A385A271CB9DD007739C6 /* TableViewController.swift */,
 				982B9CD6272D214B005CB6B9 /* TodoItemDetailView.swift */,
 			);
 			path = TodoLiost;
@@ -396,7 +393,6 @@
 			files = (
 				981A3827271C7E89007739C6 /* MainViewController.swift in Sources */,
 				9836360A272EAFD7007B141A /* ColorPicker.swift in Sources */,
-				981A385B271CB9DD007739C6 /* TableViewController.swift in Sources */,
 				981A3823271C7E89007739C6 /* AppDelegate.swift in Sources */,
 				981A3853271C82B9007739C6 /* TodoItem.swift in Sources */,
 				981A3855271C82DD007739C6 /* FileCache.swift in Sources */,

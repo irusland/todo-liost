@@ -16,6 +16,7 @@ class TodoItemCell: UICollectionViewCell {
     public let todoItemText: UILabel = {
         let textView = UILabel()
         textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.numberOfLines = 0
         return textView
     }()
     
@@ -32,13 +33,17 @@ class TodoItemCell: UICollectionViewCell {
 
     private func setupViews() {
         contentView.addSubview(todoItemText)
-        todoItemText.frame = bounds
+//        todoItemText.frame = bounds
 
         var constraints = [NSLayoutConstraint]()
         
         constraints.append(contentsOf: [
+
+            todoItemText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: CGFloat(10)),
+            todoItemText.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: CGFloat(-10)),
+            todoItemText.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(10)),
+            todoItemText.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: CGFloat(-10)),
             
-//            todoItemText.centerXAnchor.constraint(equalTo: centerXAnchor),
         ])
         
         NSLayoutConstraint.activate(constraints)
@@ -204,6 +209,8 @@ class SquaresViewController: UICollectionViewController {
     var fileCache: FileCache
     var todoItemDetailViewController: TodoItemDetailViewController
     
+    var layoutTag: LayoutSize = .small
+    
     init(collectionViewLayout layout: UICollectionViewLayout, _ fileCache: FileCache, _ todoItemDetailViewController: TodoItemDetailViewController) {
         self.fileCache = fileCache
         self.todoItemDetailViewController = todoItemDetailViewController
@@ -222,7 +229,7 @@ class SquaresViewController: UICollectionViewController {
         return layout
     }()
     
-    var big: UICollectionViewFlowLayout = {
+    var mid: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         
         layout.itemSize = CGSize(width: 150, height: 150)
@@ -230,10 +237,18 @@ class SquaresViewController: UICollectionViewController {
         return layout
     }()
     
+    var big: UICollectionViewFlowLayout = {
+        let layout = UICollectionViewFlowLayout()
+        
+        layout.itemSize = CGSize(width: 300, height: 150)
+        
+        return layout
+    }()
+    
     func showItemDetails(_ indexPath: IndexPath) {
         let itemToShow = fileCache.todoItems[indexPath.item]
         todoItemDetailViewController.loadItem(item: itemToShow)
-        DDLogInfo("Presenting todo item details")
+        DDLogInfo("Presenting todo item details for \(indexPath)")
         
         show(todoItemDetailViewController, sender: self)
     }
@@ -305,6 +320,40 @@ extension UIColor {
 }
 
 class SmallViewController : SquaresViewController {
+    @objc func sizeSliderChange(sender: UISlider) {
+        let step: Float = 1
+        let currentValue = Int(round((sender.value - sender.minimumValue) / step))
+//        DDLogError("Slider value = \(sender.value) rounded to \(currentValue)")
+        layoutTag = LayoutSize(rawValue: currentValue) ?? .small
+//        var newLayout = small
+//        switch currentValue {
+//            case 0:
+//                DDLogInfo("Small size")
+//                newLayout = small
+//            case 1:
+//                DDLogInfo("Mid size")
+//                newLayout = mid
+//            case 2:
+//                DDLogInfo("Big size")
+//                newLayout = big
+//            default:
+//                DDLogError("Slider value \(currentValue) not in [0, 1, 2]")
+//        }
+//
+//        collectionView.setCollectionViewLayout(newLayout, animated: true)
+
+//        collectionViewLayout.invalidateLayout()
+        collectionView.reloadData()
+    }
+    
+    var sizeSlider: UISlider = {
+        let slider = UISlider()
+        slider.minimumValue = 0
+        slider.maximumValue = 2
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        return slider
+    }()
+
     init(with fileCache: FileCache, _ todoItemDetailViewController: TodoItemDetailViewController) {
         let layout = CustomFlowLayout()
 //        layout.itemSize = CGSize(width: 50, height: 20)
@@ -314,7 +363,6 @@ class SmallViewController : SquaresViewController {
         useLayoutToLayoutNavigationTransitions = false
 
 //        view.translatesAutoresizingMaskIntoConstraints = false
-        setupSubviews()
     }
     
     @objc func addItem() {
@@ -347,13 +395,16 @@ class SmallViewController : SquaresViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(addButton)
+        view.addSubview(sizeSlider)
+        
+        setupSubviews()
     }
     
     func setupSubviews() {
         var constraints = [NSLayoutConstraint]()
         
         constraints.append(contentsOf: [
-            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: CGFloat(10)),
+            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 //            addButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
@@ -361,9 +412,14 @@ class SmallViewController : SquaresViewController {
 //            view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
 //            view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 //            view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            sizeSlider.trailingAnchor.constraint(equalTo: addButton.leadingAnchor, constant: CGFloat(-10)),
+            sizeSlider.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            sizeSlider.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
         
         NSLayoutConstraint.activate(constraints)
+        
+        sizeSlider.addTarget(self, action: #selector(sizeSliderChange), for: .valueChanged)
     }
     
     required init?(coder: NSCoder) {
@@ -380,7 +436,6 @@ class SmallViewController : SquaresViewController {
     }
 }
 
-
 extension SquaresViewController : UINavigationControllerDelegate {
     func navigationController(
         _ navigationController: UINavigationController,
@@ -391,5 +446,59 @@ extension SquaresViewController : UINavigationControllerDelegate {
         
         squaresVC.collectionView?.delegate = squaresVC
         squaresVC.collectionView?.dataSource = squaresVC
+    }
+}
+
+enum LayoutSize: Int {
+    case small = 0
+    case mid = 1
+    case big = 2
+}
+
+extension SquaresViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let cellAtIndex = self.collectionView(collectionView, cellForItemAt: indexPath) as? TodoItemCell
+        var width = CGFloat(75)
+        var height = CGFloat(75)
+        if let cell = cellAtIndex {
+            height = cell.todoItemText.text?.height(withConstrainedWidth: width, font: cell.todoItemText.font) ?? height
+            height += 20
+            DDLogInfo(">>> GOT cell \(indexPath) \(cell)")
+        } else {
+            DDLogInfo(">>> NO cell at \(indexPath) \(cellAtIndex)")
+        }
+        
+        switch layoutTag {
+        case .small:
+            width = ((collectionView.frame.width - 20)/3)
+            DDLogInfo("Small cell width:\(width) height:\(height)")
+        case .mid:
+            width = ((collectionView.frame.width - 20)/2)
+            DDLogInfo("Mid cell width:\(width) height:\(height)")
+        case .big:
+            width = ((collectionView.frame.width - 20))
+            DDLogInfo("Big cell width:\(width) height:\(height)")
+        default:
+            DDLogInfo("DEFAULT CELL WIDTH")
+            width = CGFloat(75)
+            height = CGFloat(75)
+        }
+        return CGSize(width: width, height: height)
+    }
+}
+
+extension String {
+    func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+        
+        return ceil(boundingBox.height)
+    }
+    
+    func width(withConstrainedHeight height: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+        
+        return ceil(boundingBox.width)
     }
 }
