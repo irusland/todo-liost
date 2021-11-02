@@ -62,9 +62,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         
         todoItemColor = color
         colorLabel.backgroundColor = color
-        if let fvc = self.presentingViewController as? UICollectionViewController {
-            self.dismiss(animated: true)
-        }
+        self.dismiss(animated: true)
     }
     
     let fileCache: FileCache

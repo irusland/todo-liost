@@ -13,6 +13,14 @@ import CocoaLumberjack
 class TodoItemCell: UICollectionViewCell {
     static let reuseIdentifier = "ItemCell"
     
+    let dateLabel: UILabel = {
+        let textView = UILabel()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+//        textView.numberOfLines = 0
+
+        return textView
+    }()
+    
     public let todoItemText: UILabel = {
         let textView = UILabel()
         textView.translatesAutoresizingMaskIntoConstraints = false
@@ -20,6 +28,12 @@ class TodoItemCell: UICollectionViewCell {
         return textView
     }()
     
+    let priorityIcon: UIImageView = {
+        let icon = UIImage(named: "flame.fill")
+        let image = UIImageView(image: icon)
+        image.translatesAutoresizingMaskIntoConstraints = false
+        return image
+    }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,7 +47,17 @@ class TodoItemCell: UICollectionViewCell {
 
     private func setupViews() {
         contentView.addSubview(todoItemText)
-//        todoItemText.frame = bounds
+        contentView.addSubview(priorityIcon)
+        contentView.addSubview(dateLabel)
+        
+        
+      
+        let items = [
+            UIImage(systemName: "bookmark.slash"),
+            UIImage(systemName: "exclamationmark"),
+            UIImage(systemName: "flame.fill"),
+        ]
+        
 
         var constraints = [NSLayoutConstraint]()
         
@@ -42,7 +66,19 @@ class TodoItemCell: UICollectionViewCell {
             todoItemText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: CGFloat(10)),
             todoItemText.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: CGFloat(-10)),
             todoItemText.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(10)),
-            todoItemText.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: CGFloat(-10)),
+//            todoItemText.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: CGFloat(-10)),
+            
+            priorityIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: CGFloat(10)),
+            priorityIcon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: CGFloat(-10)),
+            priorityIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(10)),
+//            priorityIcon.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: CGFloat(-10)),
+            
+            
+            dateLabel.leadingAnchor.constraint(equalTo: todoItemText.leadingAnchor),
+            dateLabel.trailingAnchor.constraint(equalTo: todoItemText.trailingAnchor),
+            dateLabel.topAnchor.constraint(equalTo: todoItemText.bottomAnchor, constant: CGFloat(10)),
+            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: CGFloat(-10)),
+            
             
         ])
         
@@ -288,6 +324,15 @@ class SquaresViewController: UICollectionViewController {
 //        collectionView.setCollectionViewLayout(newLayout, animated: true)
     }
 
+    func getStringDate(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        
+        dateFormatter.dateStyle = DateFormatter.Style.short
+        dateFormatter.timeStyle = DateFormatter.Style.short
+        
+        return dateFormatter.string(from: date)
+    }
+
     override func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
@@ -304,6 +349,10 @@ class SquaresViewController: UICollectionViewController {
 
         todoCell.layer.borderColor = item.color?.cgColor
         todoCell.todoItemText.text = item.text
+        todoCell.dateLabel.text = nil
+        if let deadLine = item.deadLine {
+            todoCell.dateLabel.text = self.getStringDate(date: deadLine)
+        }
         return todoCell
     }
 }
@@ -339,13 +388,10 @@ class SmallViewController : SquaresViewController {
 
     init(with fileCache: FileCache, _ todoItemDetailViewController: TodoItemDetailViewController) {
         let layout = CustomFlowLayout()
-//        layout.itemSize = CGSize(width: 50, height: 20)
         
         super.init(collectionViewLayout: layout, fileCache, todoItemDetailViewController)
 
         useLayoutToLayoutNavigationTransitions = false
-
-//        view.translatesAutoresizingMaskIntoConstraints = false
     }
     
     @objc func addItem() {
@@ -440,7 +486,8 @@ extension SquaresViewController: UICollectionViewDelegateFlowLayout {
         var height = CGFloat(75)
         if let cell = cellAtIndex {
             height = cell.todoItemText.text?.height(withConstrainedWidth: width, font: cell.todoItemText.font) ?? height
-            height += 20
+            height += 30
+            height += cell.dateLabel.text?.height(withConstrainedWidth: width, font: cell.dateLabel.font) ?? 0
             DDLogInfo(">>> GOT cell \(indexPath) \(cell)")
         } else {
             DDLogInfo(">>> NO cell at \(indexPath) \(cellAtIndex)")
