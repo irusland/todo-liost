@@ -50,7 +50,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             UIImage(systemName: "exclamationmark"),
             UIImage(systemName: "flame.fill"),
         ]
-        var control = UISegmentedControl(items: items)
+        var control = UISegmentedControl(items: items as [Any])
         control.translatesAutoresizingMaskIntoConstraints = false
         control.addTarget(self, action: #selector(importancySelectorTouched), for: .valueChanged)
         control.backgroundColor = .lightGray

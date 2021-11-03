@@ -16,8 +16,6 @@ class TodoItemCell: UICollectionViewCell {
     let dateLabel: UILabel = {
         let textView = UILabel()
         textView.translatesAutoresizingMaskIntoConstraints = false
-//        textView.numberOfLines = 0
-
         return textView
     }()
     
@@ -50,14 +48,6 @@ class TodoItemCell: UICollectionViewCell {
         contentView.addSubview(priorityIcon)
         contentView.addSubview(dateLabel)
         
-        
-      
-        let items = [
-            UIImage(systemName: "bookmark.slash"),
-            UIImage(systemName: "exclamationmark"),
-            UIImage(systemName: "flame.fill"),
-        ]
-        
 
         var constraints = [NSLayoutConstraint]()
         
@@ -66,13 +56,10 @@ class TodoItemCell: UICollectionViewCell {
             todoItemText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: CGFloat(10)),
             todoItemText.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: CGFloat(-10)),
             todoItemText.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(10)),
-//            todoItemText.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: CGFloat(-10)),
             
             priorityIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: CGFloat(10)),
             priorityIcon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: CGFloat(-10)),
             priorityIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(10)),
-//            priorityIcon.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: CGFloat(-10)),
-            
             
             dateLabel.leadingAnchor.constraint(equalTo: todoItemText.leadingAnchor),
             dateLabel.trailingAnchor.constraint(equalTo: todoItemText.trailingAnchor),
@@ -490,7 +477,7 @@ extension SquaresViewController: UICollectionViewDelegateFlowLayout {
             height += cell.dateLabel.text?.height(withConstrainedWidth: width, font: cell.dateLabel.font) ?? 0
             DDLogInfo(">>> GOT cell \(indexPath) \(cell)")
         } else {
-            DDLogInfo(">>> NO cell at \(indexPath) \(cellAtIndex)")
+            DDLogInfo(">>> NO cell at \(indexPath)")
         }
         
         switch layoutTag {
@@ -503,10 +490,6 @@ extension SquaresViewController: UICollectionViewDelegateFlowLayout {
         case .big:
             width = ((collectionView.frame.width - 20))
             DDLogInfo("Big cell width:\(width) height:\(height)")
-        default:
-            DDLogInfo("DEFAULT CELL WIDTH")
-            width = CGFloat(75)
-            height = CGFloat(75)
         }
         return CGSize(width: width, height: height)
     }
