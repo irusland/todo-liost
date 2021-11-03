@@ -299,7 +299,6 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             
             dateLabel.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: CGFloat(10)),
             dateLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-//            dateLabel.widthAnchor.constraint(equalTo: view.widthAnchor, constant: CGFloat(-20)),
         
             datePickerSwitch.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: CGFloat(10)),
             datePickerSwitch.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
@@ -355,11 +354,6 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
     }
     @objc func playTapped() {
         DDLogInfo("playTapped")
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-//        heightConstraint.constant = textView.contentSize.height
-        super.viewWillAppear(animated)
     }
 }
 

@@ -53,18 +53,18 @@ class TodoItemCell: UICollectionViewCell {
         
         constraints.append(contentsOf: [
 
-            todoItemText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: CGFloat(10)),
-            todoItemText.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: CGFloat(-10)),
-            todoItemText.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(10)),
+            todoItemText.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            todoItemText.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            todoItemText.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: CGFloat(10)),
             
-            priorityIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: CGFloat(10)),
-            priorityIcon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: CGFloat(-10)),
-            priorityIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: CGFloat(10)),
+            priorityIcon.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            priorityIcon.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            priorityIcon.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: CGFloat(10)),
             
             dateLabel.leadingAnchor.constraint(equalTo: todoItemText.leadingAnchor),
             dateLabel.trailingAnchor.constraint(equalTo: todoItemText.trailingAnchor),
             dateLabel.topAnchor.constraint(equalTo: todoItemText.bottomAnchor, constant: CGFloat(10)),
-            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: CGFloat(-10)),
+            dateLabel.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: CGFloat(-10)),
             
             
         ])
@@ -132,66 +132,13 @@ class MainViewController: UIViewController {
         var constraints = [NSLayoutConstraint]()
         
         constraints.append(contentsOf: [
+
         ])
         
         NSLayoutConstraint.activate(constraints)
     }
 }
 
-
-class TodoItemUIView: UIView {
-    override init(frame: CGRect) {
-        
-        super.init(frame: frame)
-        setUpViews()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-    func setUpViews() {
-        self.addSubview(todoItemText)
-        self.addSubview(priotiry)
-        
-        var constraints = [NSLayoutConstraint]()
-        
-        constraints.append(contentsOf: [
-            
-            todoItemText.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            todoItemText.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            todoItemText.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: CGFloat(10)),
-            todoItemText.heightAnchor.constraint(lessThanOrEqualToConstant: CGFloat(100)),
-            
-            priotiry.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            priotiry.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            priotiry.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            priotiry.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            
-        ])
-        
-        NSLayoutConstraint.activate(constraints)
-    }
-    
-    
-    let priotiry: UIImageView = {
-        let priotiry = UIImageView(image: UIImage(named: "UIBarButtonItem.SystemItem.action"))
-        let image = UIImage(named: "UIBarButtonItem.SystemItem.action")
-        priotiry.image = image
-        priotiry.translatesAutoresizingMaskIntoConstraints = false
-        return priotiry
-    }()
-    
-    let todoItemText: UITextField = {
-        let todoItemText = UITextField()
-        todoItemText.backgroundColor = .white
-        todoItemText.translatesAutoresizingMaskIntoConstraints = false
-        return todoItemText
-    }()
-    
-    
-}
 
 class CustomFlowLayout : UICollectionViewFlowLayout {
     var insertingIndexPaths = [IndexPath]()
