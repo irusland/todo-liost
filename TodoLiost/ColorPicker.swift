@@ -9,11 +9,11 @@ import Foundation
 import UIKit
 import CocoaLumberjack
 
-internal protocol ColorPickerDelegate : NSObjectProtocol {
+@objc internal protocol ColorPickerDelegate {
     func ColorColorPickerTouched(sender:ColorPicker, color:UIColor, point:CGPoint, state:UIGestureRecognizer.State)
 }
 
-internal protocol ColorPickerIntermediateDelegate : NSObjectProtocol {
+@objc internal protocol ColorPickerIntermediateDelegate {
     func ColorColorPickerTouchBegin(sender:ColorPicker, color:UIColor, point:CGPoint, state:UIGestureRecognizer.State)
 }
 
