@@ -40,20 +40,20 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         hexLabel.text = color.hexString
     }
     
-    var hexLabel: UILabel = {
+    let hexLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center;
         return label
     }()
     
-    var chosenColorView: UIView = {
+    let chosenColorView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    var colorPicker: ColorPicker = {
+    let colorPicker: ColorPicker = {
         let colorPicker = ColorPicker(frame: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(100), height: CGFloat(100)))
         colorPicker.translatesAutoresizingMaskIntoConstraints = false
         return colorPicker
