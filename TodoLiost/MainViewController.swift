@@ -105,8 +105,6 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        put(viewController: squaresViewController)
-        addConstraints()
     }
 
     func put(viewController vc: UIViewController) {
@@ -125,17 +123,6 @@ class MainViewController: UIViewController {
         
         
         show(squaresViewController, sender: self)
-        
-    }
-    
-    private func addConstraints() {
-        var constraints = [NSLayoutConstraint]()
-        
-        constraints.append(contentsOf: [
-
-        ])
-        
-        NSLayoutConstraint.activate(constraints)
     }
 }
 
