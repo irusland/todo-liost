@@ -253,7 +253,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         textView.text = item.text
         datePickerSwitch.setOn(item.deadLine != nil, animated: true)
         refreshDatePickerState()
-        importancySelector.selectedSegmentIndex = item.priority.toInt()
+        importancySelector.selectedSegmentIndex = item.priority.number
         refreshImportancySelector()
         DDLogInfo("Detail Item updated to \(item)")
     }

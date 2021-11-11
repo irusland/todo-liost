@@ -13,7 +13,7 @@ public enum TodoItemPriority: String {
     case normal
     case important
     
-    func toInt() -> Int {
+    var number: Int {
         switch self {
         case .no:
             return 0
