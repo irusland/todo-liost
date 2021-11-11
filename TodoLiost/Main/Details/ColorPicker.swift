@@ -143,12 +143,22 @@ class ColorPicker : UIView {
     func getColorAtPoint(point: CGPoint) -> UIColor {
         let roundedPoint = CGPoint(x: elementSize * CGFloat(Int(point.x / elementSize)),
                                    y: elementSize * CGFloat(Int(point.y / elementSize)))
-        var saturation = roundedPoint.y < self.bounds.height / 2.0 ? CGFloat(2 * roundedPoint.y) / self.bounds.height
+        return UIColor(hue: getHueAtPoint(roundedPoint), saturation: getSaturationAtPoint(roundedPoint), brightness: getBrightnessAtPoint(roundedPoint), alpha: 1.0)
+    }
+    
+    private func getSaturationAtPoint(_ roundedPoint: CGPoint) -> CGFloat {
+        let saturation = roundedPoint.y < self.bounds.height / 2.0
+            ? CGFloat(2 * roundedPoint.y) / self.bounds.height
             : 2.0 * CGFloat(self.bounds.height - roundedPoint.y) / self.bounds.height
-        saturation = CGFloat(powf(Float(saturation), roundedPoint.y < self.bounds.height / 2.0 ? saturationExponentTop : saturationExponentBottom))
-        let brightness = roundedPoint.y < self.bounds.height / 2.0 ? CGFloat(1.0) : 2.0 * CGFloat(self.bounds.height - roundedPoint.y) / self.bounds.height
-        let hue = roundedPoint.x / self.bounds.width
-        return UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1.0)
+        return CGFloat(powf(Float(saturation), roundedPoint.y < self.bounds.height / 2.0 ? saturationExponentTop : saturationExponentBottom))
+    }
+    
+    private func getBrightnessAtPoint(_ roundedPoint: CGPoint) -> CGFloat {
+        return roundedPoint.y < self.bounds.height / 2.0 ? CGFloat(1.0) : 2.0 * CGFloat(self.bounds.height - roundedPoint.y) / self.bounds.height
+    }
+    
+    private func getHueAtPoint(_ roundedPoint: CGPoint) -> CGFloat {
+        return roundedPoint.x / self.bounds.width
     }
     
     func getPointForColor(color: UIColor) -> CGPoint {
