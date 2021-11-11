@@ -209,14 +209,7 @@ class SquaresViewController: UICollectionViewController {
 //        collectionView.setCollectionViewLayout(newLayout, animated: true)
     }
 
-    func getStringDate(date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        
-        dateFormatter.dateStyle = DateFormatter.Style.short
-        dateFormatter.timeStyle = DateFormatter.Style.short
-        
-        return dateFormatter.string(from: date)
-    }
+    
 
     override func collectionView(
         _ collectionView: UICollectionView,
@@ -236,9 +229,20 @@ class SquaresViewController: UICollectionViewController {
         todoCell.todoItemText.text = item.text
         todoCell.dateLabel.text = nil
         if let deadLine = item.deadLine {
-            todoCell.dateLabel.text = self.getStringDate(date: deadLine)
+            todoCell.dateLabel.text = deadLine.string
         }
         return todoCell
+    }
+}
+
+extension Date {
+    var string: String {
+        let dateFormatter = DateFormatter()
+        
+        dateFormatter.dateStyle = DateFormatter.Style.short
+        dateFormatter.timeStyle = DateFormatter.Style.short
+        
+        return dateFormatter.string(from: self)
     }
 }
 
