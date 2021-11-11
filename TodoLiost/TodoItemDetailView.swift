@@ -57,7 +57,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         return control
     }()
     
-    func ColorColorPickerTouched(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State) {
+    func colorPickerTouched(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State) {
         DDLogInfo("Custom color = \(color)")
         
         todoItemColor = color

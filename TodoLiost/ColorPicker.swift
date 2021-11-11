@@ -10,11 +10,11 @@ import UIKit
 import CocoaLumberjack
 
 @objc internal protocol ColorPickerDelegate {
-    func ColorColorPickerTouched(sender:ColorPicker, color:UIColor, point:CGPoint, state:UIGestureRecognizer.State)
+    func colorPickerTouched(sender: ColorPicker, color: UIColor, point: CGPoint, state:UIGestureRecognizer.State)
 }
 
 @objc internal protocol ColorPickerIntermediateDelegate {
-    func ColorColorPickerTouchBegin(sender:ColorPicker, color:UIColor, point:CGPoint, state:UIGestureRecognizer.State)
+    func colorPickerTouchBegin(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State)
 }
 
 
@@ -30,7 +30,7 @@ class ColorPickerController: UIViewController, ColorPickerIntermediateDelegate {
         return hexString
     }
     
-    func ColorColorPickerTouchBegin(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State) {
+    func colorPickerTouchBegin(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State) {
         DDLogInfo("Color picker Controller touch beigan")
         chosenColorView.backgroundColor = color
         hexLabel.text = hexStringFromColor(color: color)
@@ -172,13 +172,13 @@ class ColorPicker : UIView {
             let point = gestureRecognizer.location(in: self)
             let color = getColorAtPoint(point: point)
             DDLogInfo("Color touched \(color) \(point)")
-            self.delegate?.ColorColorPickerTouched(sender: self, color: color, point: point, state:gestureRecognizer.state)
+            self.delegate?.colorPickerTouched(sender: self, color: color, point: point, state:gestureRecognizer.state)
         }
         if (gestureRecognizer.state == UIGestureRecognizer.State.changed) {
             let point = gestureRecognizer.location(in: self)
             let color = getColorAtPoint(point: point)
             DDLogInfo("Color touche begin \(color) \(point)")
-            self.intermediateDelegate?.ColorColorPickerTouchBegin(sender: self, color: color, point: point, state:gestureRecognizer.state)
+            self.intermediateDelegate?.colorPickerTouchBegin(sender: self, color: color, point: point, state:gestureRecognizer.state)
         }
     }
 }
