@@ -8,12 +8,17 @@
 import XCTest
 
 class TodoLiostUITests: XCTestCase {
-
+    var app: XCUIApplication!
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
         // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
+        
+        app = XCUIApplication()
+
+        app.launch()
 
         // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
     }
@@ -21,22 +26,65 @@ class TodoLiostUITests: XCTestCase {
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    
+    func testDetailsOpens() throws {
+        app.buttons["+"].tap()
+        XCTAssertTrue(app.isDisplayingDetailsView)
+        app/*@START_MENU_TOKEN@*/.staticTexts["Save"]/*[[".buttons[\"Save\"].staticTexts[\"Save\"]",".staticTexts[\"Save\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        XCTAssertFalse(app.isDisplayingDetailsView)
     }
-
+    
+    func testDelete() throws {
+        let collectionViewsQuery = app.collectionViews
+        let initialCount = collectionViewsQuery.cells.count
+        app.buttons["+"].tap()
+        XCTAssertTrue(app.isDisplayingDetailsView)
+        app/*@START_MENU_TOKEN@*/.staticTexts["Save"]/*[[".buttons[\"Save\"].staticTexts[\"Save\"]",".staticTexts[\"Save\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        XCTAssertFalse(app.isDisplayingDetailsView)
+        
+        XCTAssertEqual(collectionViewsQuery.cells.count, initialCount + 1)
+    
+        app.collectionViews.children(matching: .cell).element(boundBy: 3).children(matching: .other).element/*@START_MENU_TOKEN@*/.press(forDuration: 1.3);/*[[".tap()",".press(forDuration: 1.3);"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        app.collectionViews/*@START_MENU_TOKEN@*/.buttons["Delete"]/*[[".cells.buttons[\"Delete\"]",".buttons[\"Delete\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        XCTAssertEqual(collectionViewsQuery.cells.count, initialCount)
+    }
+    
+    
+    func testText() throws {
+        app.buttons["+"].tap()
+        
+        let tododetailsviewElement = app.otherElements["todoDetailsView"]
+        let textView = tododetailsviewElement.children(matching: .textView).element
+        let text = "Some written text"
+        XCTAssertTrue(textView.exists)
+        XCTAssertTrue(app.isDisplayingDetailsView)
+        
+        textView.tap()
+        textView.typeText(text)
+                
+        app/*@START_MENU_TOKEN@*/.staticTexts["Save"]/*[[".otherElements[\"todoDetailsView\"]",".buttons[\"Save\"].staticTexts[\"Save\"]",".staticTexts[\"Save\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
+        app.collectionViews.children(matching: .cell).otherElements.containing(.staticText, identifier:text).element/*@START_MENU_TOKEN@*/.press(forDuration: 1.3);/*[[".tap()",".press(forDuration: 1.3);"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        app.collectionViews.buttons["Edit"].tap()
+        XCTAssertTrue(app.isDisplayingDetailsView)
+        
+        XCTAssertEqual(textView.value as! String, text)
+        app/*@START_MENU_TOKEN@*/.staticTexts["Delete"]/*[[".otherElements[\"todoDetailsView\"]",".buttons[\"Delete\"].staticTexts[\"Delete\"]",".staticTexts[\"Delete\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.tap()
+    }
+    
+    
     func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+        if #available(iOS 13.0, *) {
             // This measures how long it takes to launch your application.
             measure(metrics: [XCTApplicationLaunchMetric()]) {
                 XCUIApplication().launch()
             }
         }
+    }
+}
+
+extension XCUIApplication {
+    var isDisplayingDetailsView: Bool {
+        return otherElements["todoDetailsView"].exists
     }
 }

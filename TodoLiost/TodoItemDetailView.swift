@@ -260,6 +260,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.accessibilityIdentifier = "todoDetailsView"
         view.addSubview(textView)
         view.addSubview(deleteButton)
         view.addSubview(saveButton)
