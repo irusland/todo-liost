@@ -18,9 +18,10 @@ import CocoaLumberjack
 }
 
 
-final class ColorPickerController: UIViewController, ColorPickerIntermediateDelegate {
-    func hexStringFromColor(color: UIColor) -> String {
-        let components = color.cgColor.components
+
+extension UIColor {
+    var hexString: String {
+        let components = self.cgColor.components
         let r: CGFloat = components?[0] ?? 0.0
         let g: CGFloat = components?[1] ?? 0.0
         let b: CGFloat = components?[2] ?? 0.0
@@ -29,11 +30,14 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         
         return hexString
     }
-    
+}
+
+
+final class ColorPickerController: UIViewController, ColorPickerIntermediateDelegate {
     func colorPickerTouchBegin(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State) {
         DDLogInfo("Color picker Controller touch beigan")
         chosenColorView.backgroundColor = color
-        hexLabel.text = hexStringFromColor(color: color)
+        hexLabel.text = color.hexString
     }
     
     var hexLabel: UILabel = {
