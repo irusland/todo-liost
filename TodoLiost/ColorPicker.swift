@@ -134,8 +134,8 @@ class ColorPicker : UIView {
             for x : CGFloat in stride(from: 0.0 ,to: rect.width, by: elementSize) {
                 let hue = x / rect.width
                 let color = UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1.0)
-                context!.setFillColor(color.cgColor)
-                context!.fill(CGRect(x:x, y:y, width:elementSize,height:elementSize))
+                context?.setFillColor(color.cgColor)
+                context?.fill(CGRect(x:x, y:y, width:elementSize,height:elementSize))
             }
         }
     }
