@@ -1,130 +1,13 @@
 //
-//  ViewController.swift
+//  SquaresViewController.swift
 //  TodoLiost
 //
-//  Created by Ruslan Sirazhetdinov on 17.10.2021.
+//  Created by Ruslan Sirazhetdinov on 12.11.2021.
 //
 
 import UIKit
 import CocoaLumberjack
 
-
-
-class TodoItemCell: UICollectionViewCell {
-    static let reuseIdentifier = "ItemCell"
-    
-    let dateLabel: UILabel = {
-        let textView = UILabel()
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        return textView
-    }()
-    
-    public let todoItemText: UILabel = {
-        let textView = UILabel()
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.numberOfLines = 0
-        return textView
-    }()
-    
-    let priorityIcon: UIImageView = {
-        let icon = UIImage(named: "flame.fill")
-        let image = UIImageView(image: icon)
-        image.translatesAutoresizingMaskIntoConstraints = false
-        return image
-    }()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupViews()
-    }
-
-    private func setupViews() {
-        contentView.addSubview(todoItemText)
-        contentView.addSubview(priorityIcon)
-        contentView.addSubview(dateLabel)
-        
-
-        var constraints = [NSLayoutConstraint]()
-        
-        constraints.append(contentsOf: [
-
-            todoItemText.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-            todoItemText.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
-            todoItemText.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: CGFloat(10)),
-            
-            priorityIcon.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-            priorityIcon.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
-            priorityIcon.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: CGFloat(10)),
-            
-            dateLabel.leadingAnchor.constraint(equalTo: todoItemText.leadingAnchor),
-            dateLabel.trailingAnchor.constraint(equalTo: todoItemText.trailingAnchor),
-            dateLabel.topAnchor.constraint(equalTo: todoItemText.bottomAnchor, constant: CGFloat(10)),
-            dateLabel.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: CGFloat(-10)),
-            
-            
-        ])
-        
-        NSLayoutConstraint.activate(constraints)
-        
-        backgroundColor = .white
-
-        layer.borderWidth = 2
-    }
-}
-
-
-
-class MainViewController: UIViewController {
-    static let storyboardId = "MainViewController"
-    
-    private var fileCache: FileCache
-    private let squaresViewController: SquaresViewController
-    private let todoItemDetailViewController: TodoItemDetailViewController
-    
-    required init?(coder: NSCoder) {
-        
-        fileCache = FileCache()
-        let todoItem1 = TodoItem(text: "sample", priority: .important, color: .red)
-        let todoItem2 = TodoItem(text: "sample", priority: .normal, color: .green)
-        let todoItem3 = TodoItem(text: "sample", priority: .no, color: .blue)
-        
-        for item in [todoItem1, todoItem2, todoItem3]{
-            self.fileCache.add(item)
-        }
-        todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), fileCache: fileCache)
-        
-        squaresViewController = SmallViewController(with: fileCache, todoItemDetailViewController)
-        
-        super.init(coder: coder)
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-
-    func put(viewController vc: UIViewController) {
-        vc.view.frame = view.bounds
-        addChild(vc)
-        view.addSubview(vc.view)
-        vc.didMove(toParent: self)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        
-        squaresViewController.modalPresentationStyle = .fullScreen
-        squaresViewController.collectionView.register(TodoItemCell.self, forCellWithReuseIdentifier: TodoItemCell.reuseIdentifier)
-        
-        
-        show(squaresViewController, sender: self)
-    }
-}
 
 class SquaresViewController: UICollectionViewController {
     var fileCache: FileCache
@@ -205,26 +88,26 @@ class SquaresViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let newLayout = (collectionView.collectionViewLayout == small ? big : small)
-//        collectionView.setCollectionViewLayout(newLayout, animated: true)
+        //        let newLayout = (collectionView.collectionViewLayout == small ? big : small)
+        //        collectionView.setCollectionViewLayout(newLayout, animated: true)
     }
-
     
-
+    
+    
     override func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: TodoItemCell.reuseIdentifier,
-                for: indexPath
-            )
+            withReuseIdentifier: TodoItemCell.reuseIdentifier,
+            for: indexPath
+        )
         guard let todoCell = cell as? TodoItemCell else {
             return cell
         }
         
         let item = fileCache.todoItems[indexPath.item]
-
+        
         todoCell.layer.borderColor = item.color?.cgColor
         todoCell.todoItemText.text = item.text
         todoCell.dateLabel.text = nil
@@ -235,35 +118,14 @@ class SquaresViewController: UICollectionViewController {
     }
 }
 
-extension Date {
-    var string: String {
-        let dateFormatter = DateFormatter()
-        
-        dateFormatter.dateStyle = DateFormatter.Style.short
-        dateFormatter.timeStyle = DateFormatter.Style.short
-        
-        return dateFormatter.string(from: self)
-    }
-}
-
-extension UIColor {
-    static func random() -> UIColor {
-        return UIColor(
-            red:   .random(in: 0...1),
-            green: .random(in: 0...1),
-            blue:  .random(in: 0...1),
-            alpha: 1.0
-        )
-    }
-}
 
 class SmallViewController : SquaresViewController {
     @objc func sizeSliderChange(sender: UISlider) {
         let step: Float = 1
         let currentValue = Int(round((sender.value - sender.minimumValue) / step))
-
+        
         layoutTag = LayoutSize(rawValue: currentValue) ?? .small
-
+        
         collectionView.reloadData()
     }
     
@@ -274,11 +136,11 @@ class SmallViewController : SquaresViewController {
         slider.translatesAutoresizingMaskIntoConstraints = false
         return slider
     }()
-
+    
     init(with fileCache: FileCache, _ todoItemDetailViewController: TodoItemDetailViewController) {
         let layout = UICollectionViewFlowLayout.init()
         super.init(collectionViewLayout: layout, fileCache, todoItemDetailViewController)
-
+        
         useLayoutToLayoutNavigationTransitions = false
     }
     
@@ -323,7 +185,7 @@ class SmallViewController : SquaresViewController {
         constraints.append(contentsOf: [
             addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-
+            
             sizeSlider.trailingAnchor.constraint(equalTo: addButton.leadingAnchor, constant: CGFloat(-10)),
             sizeSlider.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             sizeSlider.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -396,18 +258,3 @@ extension SquaresViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension String {
-    func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
-        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
-        
-        return ceil(boundingBox.height)
-    }
-    
-    func width(withConstrainedHeight height: CGFloat, font: UIFont) -> CGFloat {
-        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
-        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
-        
-        return ceil(boundingBox.width)
-    }
-}
