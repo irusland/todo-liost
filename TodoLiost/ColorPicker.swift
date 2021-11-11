@@ -18,7 +18,7 @@ import CocoaLumberjack
 }
 
 
-class ColorPickerController: UIViewController, ColorPickerIntermediateDelegate {
+final class ColorPickerController: UIViewController, ColorPickerIntermediateDelegate {
     func hexStringFromColor(color: UIColor) -> String {
         let components = color.cgColor.components
         let r: CGFloat = components?[0] ?? 0.0
