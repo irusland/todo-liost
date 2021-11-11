@@ -58,7 +58,7 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         colorPicker.translatesAutoresizingMaskIntoConstraints = false
         return colorPicker
     }()
-
+    
     override func viewDidLoad() {
         view.addSubview(colorPicker)
         view.addSubview(chosenColorView)
@@ -82,7 +82,6 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
             
             hexLabel.leadingAnchor.constraint(equalTo: chosenColorView.trailingAnchor),
             hexLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-//            hexLabel.centerYAnchor.constraint(equalTo: chosenColorView.centerYAnchor),
             hexLabel.topAnchor.constraint(equalTo: chosenColorView.topAnchor),
             hexLabel.bottomAnchor.constraint(equalTo: chosenColorView.bottomAnchor),
             
@@ -141,9 +140,9 @@ class ColorPicker : UIView {
         }
     }
     
-    func getColorAtPoint(point:CGPoint) -> UIColor {
-        let roundedPoint = CGPoint(x:elementSize * CGFloat(Int(point.x / elementSize)),
-                                   y:elementSize * CGFloat(Int(point.y / elementSize)))
+    func getColorAtPoint(point: CGPoint) -> UIColor {
+        let roundedPoint = CGPoint(x: elementSize * CGFloat(Int(point.x / elementSize)),
+                                   y: elementSize * CGFloat(Int(point.y / elementSize)))
         var saturation = roundedPoint.y < self.bounds.height / 2.0 ? CGFloat(2 * roundedPoint.y) / self.bounds.height
             : 2.0 * CGFloat(self.bounds.height - roundedPoint.y) / self.bounds.height
         saturation = CGFloat(powf(Float(saturation), roundedPoint.y < self.bounds.height / 2.0 ? saturationExponentTop : saturationExponentBottom))
@@ -152,19 +151,18 @@ class ColorPicker : UIView {
         return UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1.0)
     }
     
-    func getPointForColor(color:UIColor) -> CGPoint {
+    func getPointForColor(color: UIColor) -> CGPoint {
         var hue: CGFloat = 0.0
         var saturation: CGFloat = 0.0
         var brightness: CGFloat = 0.0
         color.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: nil);
         
-        var yPos:CGFloat = 0
+        var yPos: CGFloat = 0
         let halfHeight = (self.bounds.height / 2)
         if (brightness >= 0.99) {
             let percentageY = powf(Float(saturation), 1.0 / saturationExponentTop)
             yPos = CGFloat(percentageY) * halfHeight
         } else {
-            //use brightness to get Y
             yPos = halfHeight + halfHeight * (1.0 - brightness)
         }
         let xPos = hue * self.bounds.width
