@@ -189,7 +189,17 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
     }()
     
     func refreshDatePickerState() {
-        datePicker.isHidden = !datePickerSwitch.isOn
+        if !datePickerSwitch.isOn {
+            datePickerHeightConstraint?.constant = 0
+        } else {
+            datePickerHeightConstraint?.constant = 400
+        }
+        
+        UIView.animate(withDuration: 0.5) {
+            
+            self.view.layoutIfNeeded()
+        }
+//        self.datePicker.isHidden = !self.datePicker.isHidden
     }
     
     @objc func dateSwitchChanged() {
@@ -235,6 +245,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
     
     let datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
+        datePicker.preferredDatePickerStyle = .inline
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         return datePicker
     }()
@@ -286,10 +297,14 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         setupViews()
     }
     
+    var datePickerHeightConstraint: NSLayoutConstraint?
+    
     func setupViews() {
         textView.delegate = self
         heightConstraint = textView.heightAnchor.constraint(equalToConstant: 30.0)
         heightConstraint.isActive = true
+        
+        let lineHeight = CGFloat(30)
         
         var constraints = [NSLayoutConstraint]()
         
@@ -305,12 +320,8 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             saveButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             saveButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             
-            colorLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: CGFloat(10)),
-            colorLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-            colorLabel.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
-            
             importancySelectorLabel.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: CGFloat(10)),
-            importancySelectorLabel.heightAnchor.constraint(equalTo: colorLabel.heightAnchor),
+            importancySelectorLabel.heightAnchor.constraint(equalToConstant: lineHeight),
             importancySelectorLabel.leadingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             importancySelectorLabel.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
             
@@ -321,15 +332,25 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             
             dateLabel.topAnchor.constraint(equalTo: importancySelectorLabel.bottomAnchor, constant: CGFloat(10)),
             dateLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            dateLabel.heightAnchor.constraint(equalToConstant: lineHeight),
             
             datePickerSwitch.topAnchor.constraint(equalTo: importancySelectorLabel.bottomAnchor, constant: CGFloat(10)),
             datePickerSwitch.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             
-            datePicker.topAnchor.constraint(equalTo: dateLabel.topAnchor),
-            datePicker.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: CGFloat(10)),
-            datePicker.heightAnchor.constraint(equalTo: dateLabel.heightAnchor),
+            datePicker.topAnchor.constraint(equalTo: dateLabel.bottomAnchor),
+            datePicker.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             
+            colorLabel.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: CGFloat(10)),
+            colorLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            colorLabel.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
         ])
+        
+        datePickerHeightConstraint = datePicker.heightAnchor.constraint(equalToConstant: 0)
+        
+        if let constraint = datePickerHeightConstraint {
+            constraints.append(constraint)
+        }
         
         NSLayoutConstraint.activate(constraints)
         
