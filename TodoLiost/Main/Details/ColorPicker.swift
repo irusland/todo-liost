@@ -114,7 +114,6 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
             opacityLabel.leadingAnchor.constraint(equalTo: chosenColorView.trailingAnchor, constant: CGFloat(10)),
             opacityLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             
-//            opacitySlider.topAnchor.constraint(equalTo: chosenColorView.topAnchor),
             opacitySlider.bottomAnchor.constraint(equalTo: chosenColorView.bottomAnchor),
             opacitySlider.leadingAnchor.constraint(equalTo: chosenColorView.trailingAnchor, constant: CGFloat(10)),
             opacitySlider.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),

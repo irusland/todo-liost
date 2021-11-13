@@ -44,6 +44,13 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         refreshImportancySelector()
     }
     
+    let importancySelectorLabel: UILabel = {
+        var label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Priority"
+        return label
+    }()
+    
     let importancySelector: UISegmentedControl = {
         let items = [
             UIImage(systemName: "bookmark.slash"),
@@ -273,8 +280,8 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         view.addSubview(colorScrollView)
         colorScrollView.addSubview(colorStackView)
         
+        view.addSubview(importancySelectorLabel)
         view.addSubview(importancySelector)
-        
         
         setupViews()
     }
@@ -289,8 +296,8 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         constraints.append(contentsOf: [
             textView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             textView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CGFloat(50)),
-            textView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            textView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            textView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            textView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
 
             deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             deleteButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -298,26 +305,29 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             saveButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             saveButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             
-            dateLabel.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: CGFloat(10)),
+            colorLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: CGFloat(10)),
+            colorLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            colorLabel.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
+            
+            importancySelectorLabel.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: CGFloat(10)),
+            importancySelectorLabel.heightAnchor.constraint(equalTo: colorLabel.heightAnchor),
+            importancySelectorLabel.leadingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            importancySelectorLabel.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
+            
+            importancySelector.topAnchor.constraint(equalTo: importancySelectorLabel.topAnchor),
+            importancySelector.heightAnchor.constraint(equalTo: importancySelectorLabel.heightAnchor),
+            importancySelector.leadingAnchor.constraint(equalTo: importancySelectorLabel.trailingAnchor),
+            importancySelector.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            
+            dateLabel.topAnchor.constraint(equalTo: importancySelectorLabel.bottomAnchor, constant: CGFloat(10)),
             dateLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-        
-            datePickerSwitch.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: CGFloat(10)),
+            
+            datePickerSwitch.topAnchor.constraint(equalTo: importancySelectorLabel.bottomAnchor, constant: CGFloat(10)),
             datePickerSwitch.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             
             datePicker.topAnchor.constraint(equalTo: dateLabel.topAnchor),
             datePicker.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: CGFloat(10)),
             datePicker.heightAnchor.constraint(equalTo: dateLabel.heightAnchor),
-            
-            
-            colorLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: CGFloat(10)),
-            colorLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-            colorLabel.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
-            
-            importancySelector.topAnchor.constraint(equalTo: colorLabel.bottomAnchor, constant: CGFloat(10)),
-            importancySelector.heightAnchor.constraint(equalTo: colorLabel.heightAnchor),
-            importancySelector.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-            importancySelector.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
-            
             
         ])
         
