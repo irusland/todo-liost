@@ -11,24 +11,20 @@ import CocoaLumberjack
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         DDLog.add(DDOSLogger.sharedInstance) // Uses os_log
-        
+
         let fileLogger: DDFileLogger = DDFileLogger() // File Logger
         fileLogger.rollingFrequency = 60 * 60 * 24 // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
         DDLog.add(fileLogger)
-        
+
         DDLogVerbose("Verbose")
         DDLogDebug("Debug")
         DDLogInfo("Info")
         DDLogWarn("Warn")
         DDLogError("Error")
-        
-        
 
         return true
     }
@@ -47,6 +43,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-
 }
-
