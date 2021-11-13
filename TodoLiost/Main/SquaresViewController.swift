@@ -238,9 +238,9 @@ extension SquaresViewController: UICollectionViewDelegateFlowLayout {
             height = cell.todoItemText.text?.height(withConstrainedWidth: width, font: cell.todoItemText.font) ?? height
             height += 30
             height += cell.dateLabel.text?.height(withConstrainedWidth: width, font: cell.dateLabel.font) ?? 0
-            DDLogInfo(">>> GOT cell \(indexPath) \(cell)")
+
         } else {
-            DDLogInfo(">>> NO cell at \(indexPath)")
+            
         }
         
         switch layoutTag {

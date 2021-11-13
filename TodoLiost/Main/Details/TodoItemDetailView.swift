@@ -196,10 +196,8 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         }
         
         UIView.animate(withDuration: 0.5) {
-            
             self.view.layoutIfNeeded()
         }
-//        self.datePicker.isHidden = !self.datePicker.isHidden
     }
     
     @objc func dateSwitchChanged() {
@@ -256,7 +254,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         itemPresented = fileCache.todoItems[0]
         colorPickerController = ColorPickerController()
         super.init(nibName: nil, bundle: nil)
-        
+
         view.backgroundColor = .white
     }
     
@@ -276,23 +274,33 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         DDLogInfo("Detail Item updated to \(item)")
     }
     
+    let scrollViewContainer: UIScrollView = {
+        var view = UIScrollView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = "todoDetailsView"
-        view.addSubview(textView)
-        view.addSubview(deleteButton)
-        view.addSubview(saveButton)
         
-        view.addSubview(datePickerSwitch)
-        view.addSubview(dateLabel)
-        view.addSubview(datePicker)
+        view.addSubview(scrollViewContainer)
+//        scrollViewContainer.contentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
         
-        view.addSubview(colorLabel)
-        view.addSubview(colorScrollView)
+        scrollViewContainer.addSubview(textView)
+        scrollViewContainer.addSubview(deleteButton)
+        scrollViewContainer.addSubview(saveButton)
+        
+        scrollViewContainer.addSubview(datePickerSwitch)
+        scrollViewContainer.addSubview(dateLabel)
+        scrollViewContainer.addSubview(datePicker)
+        
+        scrollViewContainer.addSubview(colorLabel)
+        scrollViewContainer.addSubview(colorScrollView)
         colorScrollView.addSubview(colorStackView)
         
-        view.addSubview(importancySelectorLabel)
-        view.addSubview(importancySelector)
+        scrollViewContainer.addSubview(importancySelectorLabel)
+        scrollViewContainer.addSubview(importancySelector)
         
         setupViews()
     }
@@ -307,43 +315,48 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         let lineHeight = CGFloat(30)
         
         var constraints = [NSLayoutConstraint]()
-        
-        constraints.append(contentsOf: [
-            textView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            textView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CGFloat(50)),
-            textView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-            textView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
 
-            deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            deleteButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        constraints.append(contentsOf: [
+            scrollViewContainer.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            saveButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
-            saveButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            textView.centerXAnchor.constraint(equalTo: scrollViewContainer.centerXAnchor),
+            textView.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor, constant: CGFloat(50)),
+            textView.leadingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            textView.trailingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+
+            deleteButton.centerXAnchor.constraint(equalTo: scrollViewContainer.centerXAnchor),
+            deleteButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            saveButton.trailingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            saveButton.topAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.topAnchor),
             
             importancySelectorLabel.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: CGFloat(10)),
             importancySelectorLabel.heightAnchor.constraint(equalToConstant: lineHeight),
-            importancySelectorLabel.leadingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-            importancySelectorLabel.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
+            importancySelectorLabel.leadingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            importancySelectorLabel.widthAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
             
             importancySelector.topAnchor.constraint(equalTo: importancySelectorLabel.topAnchor),
             importancySelector.heightAnchor.constraint(equalTo: importancySelectorLabel.heightAnchor),
             importancySelector.leadingAnchor.constraint(equalTo: importancySelectorLabel.trailingAnchor),
-            importancySelector.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            importancySelector.trailingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             
             dateLabel.topAnchor.constraint(equalTo: importancySelectorLabel.bottomAnchor, constant: CGFloat(10)),
-            dateLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            dateLabel.leadingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             dateLabel.heightAnchor.constraint(equalToConstant: lineHeight),
             
             datePickerSwitch.topAnchor.constraint(equalTo: importancySelectorLabel.bottomAnchor, constant: CGFloat(10)),
-            datePickerSwitch.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            datePickerSwitch.trailingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             
             datePicker.topAnchor.constraint(equalTo: dateLabel.bottomAnchor),
-            datePicker.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-            datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            datePicker.leadingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            datePicker.trailingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             
             colorLabel.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: CGFloat(10)),
-            colorLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
-            colorLabel.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
+            colorLabel.leadingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
+            colorLabel.widthAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
         ])
         
         datePickerHeightConstraint = datePicker.heightAnchor.constraint(equalToConstant: 0)
@@ -388,23 +401,37 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
-    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-    @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+        DispatchQueue.main.async {
+            var contentRect = CGRect.zero
             
-            view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - keyboardSize.height)
+            for view in self.scrollViewContainer.subviews {
+                contentRect = contentRect.union(view.frame)
+            }
+            
+            self.scrollViewContainer.contentSize = contentRect.size
         }
     }
     
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            DDLogInfo(">>> \(scrollViewContainer.contentSize), \(view.frame), \(scrollViewContainer.frame)")
+            view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - keyboardSize.height)
+        }
+    }
+
     @objc func keyboardWillHide(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height + keyboardSize.height)
         }
     }
-    
+
     @objc func addTapped() {
         DDLogInfo("addTapped")
     }
