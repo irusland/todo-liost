@@ -280,17 +280,27 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         return view
     }()
     
+    let bottomLine: UIView = {
+        var view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: CGFloat(1)).isActive = true
+        view.backgroundColor = .black
+        return view
+    }()
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = "todoDetailsView"
+
+        view.addSubview(deleteButton)
+        view.addSubview(saveButton)
         
         view.addSubview(scrollViewContainer)
-//        scrollViewContainer.contentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
         
         scrollViewContainer.addSubview(textView)
-        scrollViewContainer.addSubview(deleteButton)
-        scrollViewContainer.addSubview(saveButton)
-        
+
         scrollViewContainer.addSubview(datePickerSwitch)
         scrollViewContainer.addSubview(dateLabel)
         scrollViewContainer.addSubview(datePicker)
@@ -301,6 +311,8 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         
         scrollViewContainer.addSubview(importancySelectorLabel)
         scrollViewContainer.addSubview(importancySelector)
+        
+        scrollViewContainer.addSubview(bottomLine)
         
         setupViews()
     }
@@ -317,21 +329,21 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         var constraints = [NSLayoutConstraint]()
 
         constraints.append(contentsOf: [
-            scrollViewContainer.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            deleteButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            saveButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
+            saveButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            
+            scrollViewContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollViewContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
+            scrollViewContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollViewContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             
             textView.centerXAnchor.constraint(equalTo: scrollViewContainer.centerXAnchor),
             textView.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor, constant: CGFloat(50)),
             textView.leadingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             textView.trailingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
-
-            deleteButton.centerXAnchor.constraint(equalTo: scrollViewContainer.centerXAnchor),
-            deleteButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            saveButton.trailingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
-            saveButton.topAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.topAnchor),
             
             importancySelectorLabel.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: CGFloat(10)),
             importancySelectorLabel.heightAnchor.constraint(equalToConstant: lineHeight),
@@ -357,6 +369,11 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             colorLabel.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: CGFloat(10)),
             colorLabel.leadingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             colorLabel.widthAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.widthAnchor, multiplier: CGFloat(0.5)),
+            
+            bottomLine.topAnchor.constraint(equalTo: colorLabel.bottomAnchor, constant: CGFloat(10)),
+            bottomLine.leadingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            bottomLine.trailingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            
         ])
         
         datePickerHeightConstraint = datePicker.heightAnchor.constraint(equalToConstant: 0)
@@ -404,15 +421,10 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        DispatchQueue.main.async {
-            var contentRect = CGRect.zero
-            
-            for view in self.scrollViewContainer.subviews {
-                contentRect = contentRect.union(view.frame)
-            }
-            
-            self.scrollViewContainer.contentSize = contentRect.size
-        }
+        let height = bottomLine.frame.size.height
+        let pos = bottomLine.frame.origin.y
+        let sizeOfContent = height + pos + 10
+        self.scrollViewContainer.contentSize.height = sizeOfContent
     }
     
     @objc func dismissKeyboard() {
