@@ -431,16 +431,23 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         view.endEditing(true)
     }
     
+    var isFrameReducedByKeyboard: Bool = false
+    
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            DDLogInfo(">>> \(scrollViewContainer.contentSize), \(view.frame), \(scrollViewContainer.frame)")
-            view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - keyboardSize.height)
+            if !isFrameReducedByKeyboard {
+                isFrameReducedByKeyboard = true
+                view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - keyboardSize.height)
+            }
         }
     }
 
     @objc func keyboardWillHide(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height + keyboardSize.height)
+            if isFrameReducedByKeyboard {
+                isFrameReducedByKeyboard = false
+                view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height + keyboardSize.height)
+            }
         }
     }
 
