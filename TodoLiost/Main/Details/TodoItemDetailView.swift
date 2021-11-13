@@ -164,13 +164,13 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
 
             stackView.addArrangedSubview(button)
 
-//            NSLayoutConstraint.activate([
-//                button.widthAnchor.constraint(equalToConstant: 50.0),
-//                button.heightAnchor.constraint(equalToConstant: 50.0),
-//            ])
+            //            NSLayoutConstraint.activate([
+            //                button.widthAnchor.constraint(equalToConstant: 50.0),
+            //                button.heightAnchor.constraint(equalToConstant: 50.0),
+            //            ])
         }
 
-       return stackView
+        return stackView
     }()
 
     let colorScrollView: UIScrollView = {

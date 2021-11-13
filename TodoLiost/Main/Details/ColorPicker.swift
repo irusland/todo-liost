@@ -73,7 +73,7 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
     let opacitySlider: UISlider = {
         let slider = UISlider()
         slider.translatesAutoresizingMaskIntoConstraints = false
-//        slider.textAlignment = .center;
+        //        slider.textAlignment = .center;
         slider.value = 1
         return slider
     }()
