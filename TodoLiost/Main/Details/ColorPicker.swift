@@ -40,6 +40,12 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         hexLabel.text = color.hexString
     }
     
+    @objc func opacitySliderChange(sender: UISlider) {
+        colorPicker.opacity = sender.value
+        DDLogInfo("Opacity set to \(colorPicker.opacity)")
+        colorPicker.draw(colorPicker.frame)
+    }
+    
     let hexLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -59,10 +65,28 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         return colorPicker
     }()
     
+    let opacityLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center;
+        label.text = "Opacity"
+        return label
+    }()
+    
+    let opacitySlider: UISlider = {
+        let slider = UISlider()
+        slider.translatesAutoresizingMaskIntoConstraints = false
+//        slider.textAlignment = .center;
+        slider.value = 1
+        return slider
+    }()
+    
     override func viewDidLoad() {
         view.addSubview(colorPicker)
         view.addSubview(chosenColorView)
         view.addSubview(hexLabel)
+        view.addSubview(opacityLabel)
+        view.addSubview(opacitySlider)
         
         setupSubviews()
     }
@@ -71,25 +95,38 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         
         NSLayoutConstraint.activate([
             chosenColorView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CGFloat(10)),
-            chosenColorView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.5),
+            chosenColorView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.5, constant: CGFloat(-10)),
             chosenColorView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             chosenColorView.heightAnchor.constraint(equalToConstant: CGFloat(100)),
             
-            colorPicker.topAnchor.constraint(equalTo: chosenColorView.bottomAnchor, constant: CGFloat(10)),
+            hexLabel.topAnchor.constraint(equalTo: chosenColorView.bottomAnchor),
+            hexLabel.widthAnchor.constraint(equalToConstant: CGFloat(20)),
+            hexLabel.leadingAnchor.constraint(equalTo: chosenColorView.leadingAnchor),
+            hexLabel.trailingAnchor.constraint(equalTo: chosenColorView.trailingAnchor),
+            
+            colorPicker.topAnchor.constraint(equalTo: chosenColorView.bottomAnchor, constant: CGFloat(30)),
             colorPicker.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             colorPicker.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             colorPicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             
-            hexLabel.leadingAnchor.constraint(equalTo: chosenColorView.trailingAnchor),
-            hexLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            hexLabel.topAnchor.constraint(equalTo: chosenColorView.topAnchor),
-            hexLabel.bottomAnchor.constraint(equalTo: chosenColorView.bottomAnchor),
+            opacityLabel.topAnchor.constraint(equalTo: chosenColorView.topAnchor),
+            opacityLabel.bottomAnchor.constraint(equalTo: chosenColorView.bottomAnchor),
+            opacityLabel.leadingAnchor.constraint(equalTo: chosenColorView.trailingAnchor, constant: CGFloat(10)),
+            opacityLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             
+//            opacitySlider.topAnchor.constraint(equalTo: chosenColorView.topAnchor),
+            opacitySlider.bottomAnchor.constraint(equalTo: chosenColorView.bottomAnchor),
+            opacitySlider.leadingAnchor.constraint(equalTo: chosenColorView.trailingAnchor, constant: CGFloat(10)),
+            opacitySlider.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
         ])
         
         view.backgroundColor = UIColor(hue: CGFloat(0), saturation: CGFloat(0), brightness: CGFloat(1), alpha: CGFloat(0.1))
         
         colorPicker.intermediateDelegate = self
+        
+        view.backgroundColor = .white
+        
+        opacitySlider.addTarget(self, action: #selector(opacitySliderChange), for: .valueChanged)
     }
 }
 
@@ -98,8 +135,13 @@ class ColorPicker : UIView {
     
     weak internal var delegate: ColorPickerDelegate?
     weak internal var intermediateDelegate: ColorPickerIntermediateDelegate?
-    let saturationExponentTop:Float = 2.0
-    let saturationExponentBottom:Float = 1.3
+    var saturationExponentTop: Float = 2.0
+    let saturationExponentBottom: Float = 1.3
+    var opacity: Float = 1.0 {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
     
     @IBInspectable var elementSize: CGFloat = 5.0 {
         didSet {
@@ -126,16 +168,21 @@ class ColorPicker : UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        let context = UIGraphicsGetCurrentContext()
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return
+        }
+        context.setFillColor(backgroundColor?.cgColor ?? UIColor.white.cgColor)
+        context.fill(rect)
+
         for y : CGFloat in stride(from: 0.0 ,to: rect.height, by: elementSize) {
             var saturation = y < rect.height / 2.0 ? CGFloat(2 * y) / rect.height : 2.0 * CGFloat(rect.height - y) / rect.height
             saturation = CGFloat(powf(Float(saturation), y < rect.height / 2.0 ? saturationExponentTop : saturationExponentBottom))
             let brightness = y < rect.height / 2.0 ? CGFloat(1.0) : 2.0 * CGFloat(rect.height - y) / rect.height
             for x : CGFloat in stride(from: 0.0 ,to: rect.width, by: elementSize) {
                 let hue = x / rect.width
-                let color = UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1.0)
-                context?.setFillColor(color.cgColor)
-                context?.fill(CGRect(x:x, y:y, width:elementSize,height:elementSize))
+                let color = UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: CGFloat(opacity))
+                context.setFillColor(color.cgColor)
+                context.fill(CGRect(x: x, y: y, width: elementSize, height: elementSize))
             }
         }
     }
@@ -143,7 +190,7 @@ class ColorPicker : UIView {
     func getColorAtPoint(point: CGPoint) -> UIColor {
         let roundedPoint = CGPoint(x: elementSize * CGFloat(Int(point.x / elementSize)),
                                    y: elementSize * CGFloat(Int(point.y / elementSize)))
-        return UIColor(hue: getHueAtPoint(roundedPoint), saturation: getSaturationAtPoint(roundedPoint), brightness: getBrightnessAtPoint(roundedPoint), alpha: 1.0)
+        return UIColor(hue: getHueAtPoint(roundedPoint), saturation: getSaturationAtPoint(roundedPoint), brightness: getBrightnessAtPoint(roundedPoint), alpha: CGFloat(opacity))
     }
     
     private func getSaturationAtPoint(_ roundedPoint: CGPoint) -> CGFloat {
@@ -184,13 +231,13 @@ class ColorPicker : UIView {
             let point = gestureRecognizer.location(in: self)
             let color = getColorAtPoint(point: point)
             DDLogInfo("Color touched \(color) \(point)")
-            self.delegate?.colorPickerTouched(sender: self, color: color, point: point, state:gestureRecognizer.state)
+            self.delegate?.colorPickerTouched(sender: self, color: color, point: point, state: gestureRecognizer.state)
         }
         if (gestureRecognizer.state == UIGestureRecognizer.State.changed) {
             let point = gestureRecognizer.location(in: self)
             let color = getColorAtPoint(point: point)
             DDLogInfo("Color touche begin \(color) \(point)")
-            self.intermediateDelegate?.colorPickerTouchBegin(sender: self, color: color, point: point, state:gestureRecognizer.state)
+            self.intermediateDelegate?.colorPickerTouchBegin(sender: self, color: color, point: point, state: gestureRecognizer.state)
         }
     }
 }
