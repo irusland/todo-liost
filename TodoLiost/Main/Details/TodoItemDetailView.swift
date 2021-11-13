@@ -331,13 +331,13 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             saveButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
             saveButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 
-            scrollViewContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollViewContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             scrollViewContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
             scrollViewContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollViewContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
 
             textView.centerXAnchor.constraint(equalTo: scrollViewContainer.centerXAnchor),
-            textView.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor, constant: CGFloat(50)),
+            textView.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor),
             textView.leadingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(10)),
             textView.trailingAnchor.constraint(equalTo: scrollViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-10)),
 
