@@ -217,28 +217,28 @@ class ColorPicker: UIView {
         }
     }
 
-    func getColorAtPoint(point: CGPoint) -> UIColor {
+    func colorAtPoint(point: CGPoint) -> UIColor {
         let roundedPoint = CGPoint(x: elementSize * CGFloat(Int(point.x / elementSize)),
                                    y: elementSize * CGFloat(Int(point.y / elementSize)))
-        return UIColor(hue: getHueAtPoint(roundedPoint), saturation: getSaturationAtPoint(roundedPoint), brightness: getBrightnessAtPoint(roundedPoint), alpha: CGFloat(opacity))
+        return UIColor(hue: hueAtPoint(roundedPoint), saturation: saturationAtPoint(roundedPoint), brightness: brightnessAtPoint(roundedPoint), alpha: CGFloat(opacity))
     }
 
-    private func getSaturationAtPoint(_ roundedPoint: CGPoint) -> CGFloat {
+    private func saturationAtPoint(_ roundedPoint: CGPoint) -> CGFloat {
         let saturation = roundedPoint.y < self.bounds.height / 2.0
             ? CGFloat(2 * roundedPoint.y) / self.bounds.height
             : 2.0 * CGFloat(self.bounds.height - roundedPoint.y) / self.bounds.height
         return CGFloat(powf(Float(saturation), roundedPoint.y < self.bounds.height / 2.0 ? saturationExponentTop : saturationExponentBottom))
     }
 
-    private func getBrightnessAtPoint(_ roundedPoint: CGPoint) -> CGFloat {
+    private func brightnessAtPoint(_ roundedPoint: CGPoint) -> CGFloat {
         return roundedPoint.y < self.bounds.height / 2.0 ? CGFloat(1.0) : 2.0 * CGFloat(self.bounds.height - roundedPoint.y) / self.bounds.height
     }
 
-    private func getHueAtPoint(_ roundedPoint: CGPoint) -> CGFloat {
+    private func hueAtPoint(_ roundedPoint: CGPoint) -> CGFloat {
         return roundedPoint.x / self.bounds.width
     }
 
-    func getPointForColor(color: UIColor) -> CGPoint {
+    func pointForColor(color: UIColor) -> CGPoint {
         var hue: CGFloat = 0.0
         var saturation: CGFloat = 0.0
         var brightness: CGFloat = 0.0
@@ -259,13 +259,13 @@ class ColorPicker: UIView {
     @objc func touchedColor(gestureRecognizer: UILongPressGestureRecognizer) {
         if gestureRecognizer.state == UIGestureRecognizer.State.ended {
             let point = gestureRecognizer.location(in: self)
-            let color = getColorAtPoint(point: point)
+            let color = colorAtPoint(point: point)
             DDLogInfo("Color touched \(color) \(point)")
             self.delegate?.colorPickerTouched(self, color: color, point: point, state: gestureRecognizer.state)
         }
         if gestureRecognizer.state == UIGestureRecognizer.State.changed {
             let point = gestureRecognizer.location(in: self)
-            let color = getColorAtPoint(point: point)
+            let color = colorAtPoint(point: point)
             DDLogInfo("Color touche begin \(color) \(point)")
             self.intermediateDelegate?.colorPickerTouchBegin(sender: self, color: color, point: point, state: gestureRecognizer.state)
         }
