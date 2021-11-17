@@ -10,7 +10,7 @@ import UIKit
 import CocoaLumberjack
 
 @objc internal protocol ColorPickerDelegate {
-    func colorPickerTouched(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State)
+    func colorPickerTouched(_ sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State)
 }
 
 @objc internal protocol ColorPickerIntermediateDelegate {
@@ -261,7 +261,7 @@ class ColorPicker: UIView {
             let point = gestureRecognizer.location(in: self)
             let color = getColorAtPoint(point: point)
             DDLogInfo("Color touched \(color) \(point)")
-            self.delegate?.colorPickerTouched(sender: self, color: color, point: point, state: gestureRecognizer.state)
+            self.delegate?.colorPickerTouched(self, color: color, point: point, state: gestureRecognizer.state)
         }
         if gestureRecognizer.state == UIGestureRecognizer.State.changed {
             let point = gestureRecognizer.location(in: self)
