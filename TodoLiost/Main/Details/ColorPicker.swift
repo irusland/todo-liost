@@ -32,9 +32,15 @@ extension UIColor {
 
 final class ColorPickerController: UIViewController, ColorPickerIntermediateDelegate {
     func colorPickerTouchBegin(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State) {
-        DDLogInfo("Color picker Controller touch beigan")
+        DDLogInfo("Color picker Controller touch began")
         chosenColorView.backgroundColor = color
         hexLabel.text = color.hexString
+        
+        updateColorCursorPosition(at: colorPicker.absolutePoint(from: point))
+    }
+    
+    private func updateColorCursorPosition(at point: CGPoint) {
+        colorCursor.frame = CGRect(x: point.x - colorCursor.frame.width/2, y: point.y - colorCursor.frame.height/2, width: colorCursor.frame.width, height: colorCursor.frame.height)
     }
 
     @objc func opacitySliderChange(sender: UISlider) {
@@ -77,6 +83,11 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         slider.value = 1
         return slider
     }()
+    
+    let colorCursor: PassThroughView = {
+        var cursor = PassThroughView()
+        return cursor
+    }()
 
     override func viewDidLoad() {
         view.addSubview(colorPicker)
@@ -84,6 +95,7 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         view.addSubview(hexLabel)
         view.addSubview(opacityLabel)
         view.addSubview(opacitySlider)
+        view.addSubview(colorCursor)
 
         setupSubviews()
     }
@@ -123,6 +135,28 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         view.backgroundColor = .white
 
         opacitySlider.addTarget(self, action: #selector(opacitySliderChange), for: .valueChanged)
+        
+
+        let colorCursorSize = CGFloat(30)
+        colorCursor.frame = CGRect(x: view.center.x, y: view.center.y, width: colorCursorSize, height: colorCursorSize)
+        let circlePath = UIBezierPath(arcCenter: CGPoint(x: colorCursorSize/2, y: colorCursorSize/2), radius: colorCursorSize/2, startAngle: CGFloat(0), endAngle: CGFloat(Double.pi * 2), clockwise: true)
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.path = circlePath.cgPath
+        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.strokeColor = UIColor.black.cgColor
+        shapeLayer.lineWidth = 3.0
+        colorCursor.layer.addSublayer(shapeLayer)
+    }
+}
+
+class PassThroughView: UIView {
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        for subview in subviews {
+            if !subview.isHidden && subview.isUserInteractionEnabled && subview.point(inside: convert(point, to: subview), with: event) {
+                return true
+            }
+        }
+        return false
     }
 }
 
@@ -235,5 +269,9 @@ class ColorPicker: UIView {
             DDLogInfo("Color touche begin \(color) \(point)")
             self.intermediateDelegate?.colorPickerTouchBegin(sender: self, color: color, point: point, state: gestureRecognizer.state)
         }
+    }
+    
+    func absolutePoint(from point: CGPoint) -> CGPoint {
+        return CGPoint(x: self.frame.minX + point.x, y: self.frame.minY + point.y)
     }
 }
