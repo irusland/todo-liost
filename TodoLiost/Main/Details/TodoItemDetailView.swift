@@ -406,6 +406,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         colorLabel.addGestureRecognizer(tap)
 
         let hideKeyBoardTap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        hideKeyBoardTap.cancelsTouchesInView = false
 
         view.addGestureRecognizer(hideKeyBoardTap)
 
