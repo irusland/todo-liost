@@ -35,10 +35,10 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         DDLogInfo("Color picker Controller touch began")
         chosenColorView.backgroundColor = color
         hexLabel.text = color.hexString
-        
+
         updateColorCursorPosition(at: colorPicker.absolutePoint(from: point))
     }
-    
+
     private func updateColorCursorPosition(at point: CGPoint) {
         colorCursor.frame = CGRect(x: point.x - colorCursor.frame.width/2, y: point.y - colorCursor.frame.height/2, width: colorCursor.frame.width, height: colorCursor.frame.height)
     }
@@ -83,7 +83,7 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         slider.value = 1
         return slider
     }()
-    
+
     let colorCursor: PassThroughView = {
         var cursor = PassThroughView()
         return cursor
@@ -135,7 +135,6 @@ final class ColorPickerController: UIViewController, ColorPickerIntermediateDele
         view.backgroundColor = .white
 
         opacitySlider.addTarget(self, action: #selector(opacitySliderChange), for: .valueChanged)
-        
 
         let colorCursorSize = CGFloat(30)
         colorCursor.frame = CGRect(x: view.center.x, y: view.center.y, width: colorCursorSize, height: colorCursorSize)
@@ -270,7 +269,7 @@ class ColorPicker: UIView {
             self.intermediateDelegate?.colorPickerTouchBegin(sender: self, color: color, point: point, state: gestureRecognizer.state)
         }
     }
-    
+
     func absolutePoint(from point: CGPoint) -> CGPoint {
         return CGPoint(x: self.frame.minX + point.x, y: self.frame.minY + point.y)
     }
