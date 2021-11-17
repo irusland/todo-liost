@@ -19,7 +19,9 @@ class UIDeselectableSegmentedControl: UISegmentedControl {
         if previousSelectedSegmentIndex == self.selectedSegmentIndex {
 
             self.selectedSegmentIndex = UISegmentedControl.noSegment
-            let touch = touches.first!
+            guard let touch = touches.first else {
+                return
+            }
             let touchLocation = touch.location(in: self)
             if bounds.contains(touchLocation) {
                 self.sendActions(for: .valueChanged)
