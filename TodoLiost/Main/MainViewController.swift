@@ -11,23 +11,24 @@ import CocoaLumberjack
 class MainViewController: UIViewController {
     static let storyboardId = "MainViewController"
 
-    private var fileCache: FileCache
+    private var storage: PresistantStorage
     private let squaresViewController: SquaresViewController
     private let todoItemDetailViewController: TodoItemDetailViewController
 
     required init?(coder: NSCoder) {
+        var cloudStorage = CloudStorage()
+        storage = PresistantStorage(cloudStorage: cloudStorage)
 
-        fileCache = FileCache()
         let todoItem1 = TodoItem(text: "sample", priority: .important, color: .red)
         let todoItem2 = TodoItem(text: "sample", priority: .normal, color: .green)
         let todoItem3 = TodoItem(text: "sample", priority: .no, color: .blue)
 
         for item in [todoItem1, todoItem2, todoItem3] {
-            self.fileCache.add(item)
+            self.storage.add(item)
         }
-        todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), fileCache: fileCache)
+        todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), fileCache: storage)
 
-        squaresViewController = SmallViewController(with: fileCache, todoItemDetailViewController)
+        squaresViewController = SmallViewController(with: storage, todoItemDetailViewController)
 
         super.init(coder: coder)
     }

@@ -10,6 +10,9 @@
 		07857EA26DDCBA22D87500BB /* libPods-TodoLiost-TodoLiostUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBC184DBB9A6E0CD207BFA06 /* libPods-TodoLiost-TodoLiostUITests.a */; };
 		1F14B38D2951D76DC5634A56 /* libPods-TodoLiost.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6A5A4A2F32949A50A29B16 /* libPods-TodoLiost.a */; };
 		7A71B708FF784B1BB68FD4FA /* libPods-TodoLiostTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 514FF107E7F865316538D2B0 /* libPods-TodoLiostTests.a */; };
+		98136A33274A912500F216BB /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98136A32274A912500F216BB /* Storage.swift */; };
+		98136A35274A93FD00F216BB /* CloudStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98136A34274A93FD00F216BB /* CloudStorage.swift */; };
+		98136A37274AAE2C00F216BB /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98136A36274AAE2C00F216BB /* AsyncOperation.swift */; };
 		981A3823271C7E89007739C6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3822271C7E89007739C6 /* AppDelegate.swift */; };
 		981A3825271C7E89007739C6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3824271C7E89007739C6 /* SceneDelegate.swift */; };
 		981A3827271C7E89007739C6 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3826271C7E89007739C6 /* MainViewController.swift */; };
@@ -53,6 +56,9 @@
 		514FF107E7F865316538D2B0 /* libPods-TodoLiostTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TodoLiostTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DF46C765176316A44D4D402 /* Pods-TodoLiostTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiostTests.release.xcconfig"; path = "Target Support Files/Pods-TodoLiostTests/Pods-TodoLiostTests.release.xcconfig"; sourceTree = "<group>"; };
 		826C1B0385B5B240FA81FA77 /* Pods-TodoLiost-TodoLiostUITests.testflight.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiost-TodoLiostUITests.testflight.xcconfig"; path = "Target Support Files/Pods-TodoLiost-TodoLiostUITests/Pods-TodoLiost-TodoLiostUITests.testflight.xcconfig"; sourceTree = "<group>"; };
+		98136A32274A912500F216BB /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		98136A34274A93FD00F216BB /* CloudStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudStorage.swift; sourceTree = "<group>"; };
+		98136A36274AAE2C00F216BB /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		981A381F271C7E89007739C6 /* TodoLiost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoLiost.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		981A3822271C7E89007739C6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		981A3824271C7E89007739C6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -114,6 +120,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		98136A31274A90FC00F216BB /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				981A3852271C82B9007739C6 /* TodoItem.swift */,
+				981A3854271C82DD007739C6 /* FileCache.swift */,
+				98136A32274A912500F216BB /* Storage.swift */,
+				98136A34274A93FD00F216BB /* CloudStorage.swift */,
+				98136A36274AAE2C00F216BB /* AsyncOperation.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
 		981A3816271C7E89007739C6 = {
 			isa = PBXGroup;
 			children = (
@@ -146,8 +164,6 @@
 				981A382B271C7E8C007739C6 /* Assets.xcassets */,
 				981A382D271C7E8C007739C6 /* LaunchScreen.storyboard */,
 				981A3830271C7E8C007739C6 /* Info.plist */,
-				981A3852271C82B9007739C6 /* TodoItem.swift */,
-				981A3854271C82DD007739C6 /* FileCache.swift */,
 			);
 			path = TodoLiost;
 			sourceTree = "<group>";
@@ -174,6 +190,7 @@
 		98B38908273DA6C9001AD82D /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				98136A31274A90FC00F216BB /* Storage */,
 				98B3890E273DA86D001AD82D /* Extensions */,
 				98B38909273DA6EF001AD82D /* Details */,
 				981A3826271C7E89007739C6 /* MainViewController.swift */,
@@ -441,7 +458,10 @@
 				981A3853271C82B9007739C6 /* TodoItem.swift in Sources */,
 				981A3855271C82DD007739C6 /* FileCache.swift in Sources */,
 				981A3825271C7E89007739C6 /* SceneDelegate.swift in Sources */,
+				98136A35274A93FD00F216BB /* CloudStorage.swift in Sources */,
 				982B9CD7272D214B005CB6B9 /* TodoItemDetailView.swift in Sources */,
+				98136A37274AAE2C00F216BB /* AsyncOperation.swift in Sources */,
+				98136A33274A912500F216BB /* Storage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

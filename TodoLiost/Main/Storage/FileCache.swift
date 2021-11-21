@@ -13,8 +13,8 @@ private enum FileCacheErrors: Error {
     case dumpError(String)
 }
 
-class FileCache {
-    private(set) var todoItems: [TodoItem]
+class FileCache: ItemStorage {
+    public var todoItems: [TodoItem]
     private let itemKey: String = "items"
 
     public init(todoItems: [TodoItem] = []) {
