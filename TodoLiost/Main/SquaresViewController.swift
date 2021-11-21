@@ -114,12 +114,12 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         }
         return todoCell
     }
-    
+
     var refresher: UIRefreshControl!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.refresher = UIRefreshControl()
         self.collectionView.alwaysBounceVertical = true
         self.refresher.tintColor = UIColor.red
@@ -127,21 +127,21 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         self.collectionView.addSubview(refresher)
         self.collectionView.refreshControl = refresher
     }
-    
+
     func operationFinished() {
         DispatchQueue.main.async { [weak self] in
             self?.collectionView.reloadData()
             self?.stopRefresher()
         }
     }
-    
+
     @objc func loadData() {
         self.collectionView.refreshControl?.beginRefreshing()
         DDLogInfo("Refreshing Started")
-        
+
         storage.sync(notifierDelegate: self)
     }
-    
+
     func stopRefresher() {
         self.collectionView.refreshControl?.endRefreshing()
         DDLogInfo("Refreshing Ended")

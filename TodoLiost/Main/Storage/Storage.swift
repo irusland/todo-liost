@@ -23,11 +23,11 @@ protocol ISyncStorage {
 class WebRequestOperation: AsyncOperation {
     var result: [TodoItem]?
     var cloudStorage: CloudStorage
-    
+
     init(cloudStorage: CloudStorage) {
         self.cloudStorage = cloudStorage
     }
-    
+
     override func main() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self = self else { return }
@@ -40,11 +40,11 @@ class WebRequestOperation: AsyncOperation {
 class UpdateCacheOperation: AsyncOperation {
     var newItems: [TodoItem]?
     var cache: FileCache
-    
+
     init(cache: FileCache) {
         self.cache = cache
     }
-    
+
     override func main() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self = self else { return }
@@ -63,7 +63,7 @@ class UpdateCacheOperation: AsyncOperation {
 }
 
 class NotifyOperation: Operation {
-    var notifierDelegate: NotifierDelegate
+    weak var notifierDelegate: NotifierDelegate
     init(notifierDelegate: NotifierDelegate) {
         self.notifierDelegate = notifierDelegate
     }
@@ -85,10 +85,10 @@ class PresistantStorage: FileCache, ISyncStorage {
             updateOp.newItems = webOp.result
         }
         let notifyOp = NotifyOperation(notifierDelegate: notifierDelegate)
-        
+
         let opQueue = OperationQueue()
         opQueue.maxConcurrentOperationCount = 2
-        
+
         transferOp.addDependency(webOp)
         updateOp.addDependency(transferOp)
         notifyOp.addDependency(updateOp)
@@ -98,9 +98,9 @@ class PresistantStorage: FileCache, ISyncStorage {
         opQueue.addOperation(notifyOp)
         DDLogInfo("Syncing items started")
     }
-    
+
     private var cloudStorage: CloudStorage
-    
+
     init(cloudStorage: CloudStorage) {
         self.cloudStorage = cloudStorage
     }
