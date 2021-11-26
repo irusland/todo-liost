@@ -14,10 +14,13 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
     var todoItemDetailViewController: TodoItemDetailViewController
 
     var layoutTag: LayoutSize = .small
+    
+    private var authentificator: Auth
 
-    init(collectionViewLayout layout: UICollectionViewLayout, _ storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController) {
+    init(collectionViewLayout layout: UICollectionViewLayout, _ storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController, _ authentificator: Auth) {
         self.storage = storage
         self.todoItemDetailViewController = todoItemDetailViewController
+        self.authentificator = authentificator
         super.init(collectionViewLayout: layout)
     }
 
@@ -126,6 +129,8 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         self.refresher.addTarget(self, action: #selector(loadData), for: .valueChanged)
         self.collectionView.addSubview(refresher)
         self.collectionView.refreshControl = refresher
+        
+        authentificator.modalPresentationStyle = .popover
     }
 
     func operationFinished() {
@@ -134,12 +139,23 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
             self?.stopRefresher()
         }
     }
-
+    
+    private func authorize() {
+        DDLogInfo("Authentification Started")
+        show(authentificator, sender: self)
+        self.collectionView.refreshControl?.endRefreshing()
+        
+    }
+    
     @objc func loadData() {
-        self.collectionView.refreshControl?.beginRefreshing()
-        DDLogInfo("Refreshing Started")
-
-        storage.sync(notifierDelegate: self)
+        if !authentificator.isLoggedIn {
+            authorize()
+        } else {
+            self.collectionView.refreshControl?.beginRefreshing()
+            DDLogInfo("Refreshing Started")
+            
+            storage.sync(notifierDelegate: self)
+        }
     }
 
     func stopRefresher() {
@@ -166,10 +182,10 @@ class SmallViewController: SquaresViewController {
         return slider
     }()
 
-    init(with storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController) {
+    init(with storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController, authentificator: Auth) {
         let layout = UICollectionViewFlowLayout.init()
-        super.init(collectionViewLayout: layout, storage, todoItemDetailViewController)
-
+        super.init(collectionViewLayout: layout, storage, todoItemDetailViewController, authentificator)
+        
         useLayoutToLayoutNavigationTransitions = false
     }
 

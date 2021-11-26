@@ -63,13 +63,13 @@ class UpdateCacheOperation: AsyncOperation {
 }
 
 class NotifyOperation: Operation {
-    weak var notifierDelegate: NotifierDelegate
+    weak var notifierDelegate: NotifierDelegate?
     init(notifierDelegate: NotifierDelegate) {
         self.notifierDelegate = notifierDelegate
     }
     override func main() {
         DDLogInfo("Items synced")
-        notifierDelegate.operationFinished()
+        notifierDelegate?.operationFinished()
     }
 }
 
