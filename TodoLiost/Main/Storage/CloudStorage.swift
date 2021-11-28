@@ -8,9 +8,16 @@
 import Foundation
 
 class CloudStorage {
+    private var connector: BackendConnector
+    
+    init(connector: BackendConnector) {
+        self.connector = connector
+    }
+    
     let item: TodoItem = TodoItem(text: "WEB")
+    
     func fetch() -> [TodoItem] {
-        sleep(1)
+        connector.getList()
         return [item]
     }
 }

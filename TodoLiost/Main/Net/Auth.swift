@@ -15,9 +15,6 @@ protocol IAuthentificator {
 }
 
 class Auth: UIViewController, IAuthentificator, URLSessionDataDelegate {
-    
-//    https://oauth.yandex.ru/authorize?response_type=token&client_id=0d0970774e284fa8ba9ff70b6b06479a
-    
     var authCredentials: OAuthCredentials?
     
     lazy var session: URLSession = {

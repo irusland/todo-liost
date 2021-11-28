@@ -46,7 +46,7 @@ class UpdateCacheOperation: AsyncOperation {
     }
 
     override func main() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             guard let items = self.newItems else { return }
             for item in items {

@@ -12,15 +12,17 @@ import Foundation
 class SquaresViewController: UICollectionViewController, NotifierDelegate {
     var storage: PresistantStorage
     var todoItemDetailViewController: TodoItemDetailViewController
+    var connector: BackendConnector
 
     var layoutTag: LayoutSize = .small
     
     private var authentificator: Auth
 
-    init(collectionViewLayout layout: UICollectionViewLayout, _ storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController, _ authentificator: Auth) {
+    init(collectionViewLayout layout: UICollectionViewLayout, _ storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController, _ authentificator: Auth, _ connector: BackendConnector) {
         self.storage = storage
         self.todoItemDetailViewController = todoItemDetailViewController
         self.authentificator = authentificator
+        self.connector = connector
         super.init(collectionViewLayout: layout)
     }
 
@@ -147,11 +149,17 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.collectionView.refreshControl?.endRefreshing()
+        super.viewWillAppear(animated)
+    }
+    
     @objc func loadData() {
+        self.collectionView.refreshControl?.beginRefreshing()
         if !authentificator.isLoggedIn {
+            self.collectionView.refreshControl?.endRefreshing()
             authorize()
         } else {
-            self.collectionView.refreshControl?.beginRefreshing()
             DDLogInfo("Refreshing Started")
             
             storage.sync(notifierDelegate: self)
@@ -182,9 +190,9 @@ class SmallViewController: SquaresViewController {
         return slider
     }()
 
-    init(with storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController, authentificator: Auth) {
+    init(with storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController, authentificator: Auth, connector: BackendConnector) {
         let layout = UICollectionViewFlowLayout.init()
-        super.init(collectionViewLayout: layout, storage, todoItemDetailViewController, authentificator)
+        super.init(collectionViewLayout: layout, storage, todoItemDetailViewController, authentificator, connector)
         
         useLayoutToLayoutNavigationTransitions = false
     }

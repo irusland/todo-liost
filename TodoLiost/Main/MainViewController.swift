@@ -16,9 +16,12 @@ class MainViewController: UIViewController {
     private let todoItemDetailViewController: TodoItemDetailViewController
 
     required init?(coder: NSCoder) {
-        var cloudStorage = CloudStorage()
-        storage = PresistantStorage(cloudStorage: cloudStorage)
+        
         let auth = Auth()
+        let connector = BackendConnector(auth: auth)
+        var cloudStorage = CloudStorage(connector: connector)
+        storage = PresistantStorage(cloudStorage: cloudStorage)
+        
         let todoItem1 = TodoItem(text: "sample", priority: .important, color: .red)
         let todoItem2 = TodoItem(text: "sample", priority: .normal, color: .green)
         let todoItem3 = TodoItem(text: "sample", priority: .no, color: .blue)
@@ -28,7 +31,7 @@ class MainViewController: UIViewController {
         }
         todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), fileCache: storage)
 
-        squaresViewController = SmallViewController(with: storage, todoItemDetailViewController, authentificator: auth)
+        squaresViewController = SmallViewController(with: storage, todoItemDetailViewController, authentificator: auth, connector: connector)
 
         super.init(coder: coder)
     }
