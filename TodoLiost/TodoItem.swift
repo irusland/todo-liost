@@ -12,9 +12,33 @@ public enum TodoItemPriority: String {
     case no
     case normal
     case important
+
+    var number: Int {
+        switch self {
+        case .no:
+            return 0
+        case .normal:
+            return 1
+        case .important:
+            return 2
+        }
+    }
+
+    static func fromInt(_ i: Int) -> TodoItemPriority {
+        switch i {
+        case 0:
+            return .no
+        case 1:
+            return .normal
+        case 2:
+            return .important
+        default:
+            return .no
+        }
+    }
 }
 
-public struct TodoItem : Equatable {
+public struct TodoItem: Equatable {
     let id: UUID
     let text: String
     let priority: TodoItemPriority
@@ -35,7 +59,7 @@ private enum TodoItemParsingErrors: Error {
     case requiredFieldIsNotDefined(String)
 }
 
-public extension TodoItem{
+public extension TodoItem {
     init(_ json: [String: Any]) throws {
         if let id = json["id"] as? String, let uid = UUID(uuidString: id) {
             self.id = uid
@@ -52,7 +76,7 @@ public extension TodoItem{
         } else {
             self.priority = .normal
         }
-        
+
         let decoder = JSONDecoder()
         if let deadLine = json["deadLine"] as? String {
             let data = Data(deadLine.utf8)
@@ -61,14 +85,13 @@ public extension TodoItem{
             self.deadLine = nil
         }
 
-
         if let color = json["color"] as? String {
             self.color = UIColor(ciColor: CIColor(string: color))
         } else {
             self.color = nil
         }
     }
-    
+
     static func parse(json: [String: Any]) -> TodoItem? {
         do {
             return try TodoItem(json)
@@ -76,7 +99,7 @@ public extension TodoItem{
             return nil
         }
     }
-    
+
     var json: TodoItemJson {
         var json: TodoItemJson = TodoItemJson()
         // todo json[\TodoItem.id]=...  (use keyPath https://stackoverflow.com/questions/26005654/get-a-swift-variables-actual-name-as-string)
@@ -85,7 +108,7 @@ public extension TodoItem{
         if priority != .normal {
             json["priority"] = priority.rawValue
         }
-        
+
         let encoder = JSONEncoder()
         if deadLine != nil {
             do {
