@@ -20,19 +20,13 @@ class MainViewController: UIViewController {
         let auth = Auth()
         let connector = BackendConnector(auth: auth)
         var cloudStorage = CloudStorage(connector: connector)
-        storage = PresistantStorage(cloudStorage: cloudStorage)
+        let fileCache = FileCache()
+        storage = PresistantStorage(fileCache: fileCache, cloudStorage: cloudStorage)
         
-        let todoItem1 = TodoItem(text: "sample", priority: .important, color: .red)
-        let todoItem2 = TodoItem(text: "sample", priority: .normal, color: .green)
-        let todoItem3 = TodoItem(text: "sample", priority: .no, color: .blue)
-
-        for item in [todoItem1, todoItem2, todoItem3] {
-            self.storage.add(item)
-        }
-        todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), fileCache: storage)
+        todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), storage: storage)
 
         squaresViewController = SmallViewController(with: storage, todoItemDetailViewController, authentificator: auth, connector: connector)
-
+        storage.notifierDelegate = squaresViewController
         super.init(coder: coder)
     }
 

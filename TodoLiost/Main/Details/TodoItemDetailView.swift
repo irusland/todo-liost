@@ -74,7 +74,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         self.dismiss(animated: true)
     }
 
-    let fileCache: FileCache
+    let storage: ItemStorage
     var itemPresented: TodoItem
 
     var todoItemColor: UIColor?
@@ -84,8 +84,8 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
     @objc func deleteItem() {
         DDLogInfo("Deleted")
 
-        _ = fileCache.remove(by: itemPresented.id)
-        DDLogInfo("after delete: \(fileCache.todoItems)")
+        _ = storage.remove(by: itemPresented.id)
+        DDLogInfo("after delete: \(storage.todoItems)")
 
         if let fvc = self.presentingViewController as? UICollectionViewController {
             self.dismiss(animated: true) {
@@ -110,7 +110,7 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             color: todoItemColor
         )
 
-        _ = fileCache.update(at: itemPresented.id, todoItem: newItem)
+        _ = storage.update(at: itemPresented.id, todoItem: newItem)
         DDLogInfo("Updated: \(newItem)")
 
         if let fvc = self.presentingViewController as? UICollectionViewController {
@@ -248,10 +248,10 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
         return datePicker
     }()
 
-    init(rootViewController: UIViewController, fileCache: FileCache) {
+    init(rootViewController: UIViewController, storage: ItemStorage) {
         DDLogInfo("ROOT Init Details view controller")
-        self.fileCache = fileCache
-        itemPresented = fileCache.todoItems[0]
+        self.storage = storage
+        itemPresented = TodoItem(text: "")
         colorPickerController = ColorPickerController()
         super.init(nibName: nil, bundle: nil)
 

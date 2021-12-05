@@ -19,10 +19,15 @@ extension URLSession {
             request.setValue(value, forHTTPHeaderField: header)
         }
         
-        DDLogInfo("Starting request \(endpoint.url), \(endpoint.queryItems)")
+        
+        DDLogInfo("Starting request \(endpoint.method) \(endpoint.url) \nbody: \(String(decoding: endpoint.body ?? Data(), as: UTF8.self))  \nheaders: \(String(describing: endpoint.request.allHTTPHeaderFields))")
         
         func notify(data: Data?, response: URLResponse?, error: Error?) {
-            DDLogInfo("Finished request \(endpoint.url), \(endpoint.queryItems)")
+            var decodedBody = ""
+            if let body = data {
+                decodedBody = String(decoding: body, as: UTF8.self)
+            }
+            DDLogInfo("Finished request \(endpoint.method) \(endpoint.url) -> \ndata: \(decodedBody); \nresponse: \(String(describing: response)); \nerror: \(String(describing: error))")
             return handler(data, response, error)
         }
         

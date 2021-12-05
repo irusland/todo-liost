@@ -15,40 +15,212 @@ class BackendConnector {
         self.auth = auth
     }
     
-    func getList(using session: URLSession = .shared) {
+    func getList(using session: URLSession = .shared) throws -> ListModel? {
         let sem = DispatchSemaphore(value: 0)
-        let token = auth.authCredentials?.accessToken
-        let task = session.request(.list, with: ["Authorization": "1337 OAuth \(token)"]) { data, response, error in
-            DDLogInfo("\(data) \(response) \(error)")
-            
-            let json = """
-{
-   "status": "ok",
-   "list": [
-     {
-       "id": "af8d39a8-e388-4cb6-80de-bc222414e23e",
-       "text": "blablabla",
-       "importance": "low",
-       "deadline": 1638102322,
-       "done": true,
-       "color": "#FFFFFF",
-       "created_at": 1638102300,
-       "changed_at": 1638102310,
-       "last_updated_by": 1
-    }
-  ],
-  "revision": 1337
-}
-"""
-            
+        guard let token = auth.authCredentials?.accessToken else {
+            throw BackendErrors.tokenIsNone("Token is none")
+        }
+        var listResponse: ListModel?
+        var backendError: BackendErrors?
+        
+        _ = session.request(.list(token: token)) { data, response, error in
+            defer { sem.signal() }
+            backendError = self.checkStatus(response: response)
+            guard let body = data else {
+                DDLogError("Data is empty")
+                return
+            }
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let list: ListModel = try! decoder.decode(ListModel.self, from: Data(json.utf8))
-                
-            DDLogInfo("GET List \(list)")
-            sem.signal()
+            decoder.dateDecodingStrategy = .millisecondsSince1970
+            do {
+                listResponse = try decoder.decode(ListModel.self, from: body)
+                DDLogInfo("Got list \(String(describing: listResponse))")
+            } catch {
+                DDLogInfo("Cannot parse \(body) \(error)")
+            }
         }
-
         sem.wait()
+        if let error = backendError {
+            throw error
+        }
+        return listResponse
+    }
+    
+//    func merge(using session: URLSession = .shared) throws -> ListModel? {
+//
+//    }
+    
+    func add(todoItem: NewItemModel, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
+        let sem = DispatchSemaphore(value: 0)
+        guard let token = auth.authCredentials?.accessToken else {
+            throw BackendErrors.tokenIsNone("Token is none")
+        }
+        var result: NewItemResponse?
+        var endpoint: Endpoint?
+        do {
+            endpoint = try Endpoint.newItem(with: todoItem, last: lastKnownRevision, token: token)
+        } catch {
+            throw BackendErrors.cannotPrepareEndpoint
+        }
+        guard let endpoint = endpoint else {
+            throw BackendErrors.cannotPrepareEndpoint
+        }
+        
+        var backendError: BackendErrors?
+        _ = session.request(endpoint) { data, response, error in
+            defer { sem.signal() }
+            backendError = self.checkStatus(response: response)
+            guard let body = data else {
+                DDLogError("Data is empty")
+                return
+            }
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            decoder.dateDecodingStrategy = .millisecondsSince1970
+            do {
+                result = try decoder.decode(NewItemResponse.self, from: body)
+                DDLogInfo("Got \(String(describing: result))")
+            } catch {
+                DDLogInfo("Cannot parse \(body) \(error)")
+            }
+        }
+        sem.wait()
+        if let error = backendError {
+            throw error
+        }
+        return result
+    }
+    
+    func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse?  {
+        let sem = DispatchSemaphore(value: 0)
+        guard let token = auth.authCredentials?.accessToken else {
+            throw BackendErrors.tokenIsNone("Token is none")
+        }
+        var result: NewItemResponse?
+        var endpoint: Endpoint?
+        do {
+            endpoint = try Endpoint.updateItem(with: id, newItemModel: todoItem, last: lastKnownRevision, token: token)
+        } catch {
+            throw BackendErrors.cannotPrepareEndpoint
+        }
+        guard let endpoint = endpoint else {
+            throw BackendErrors.cannotPrepareEndpoint
+        }
+        
+        var backendError: BackendErrors?
+        _ = session.request(endpoint) { data, response, error in
+            defer { sem.signal() }
+            backendError = self.checkStatus(response: response)
+            guard let body = data else {
+                DDLogError("Data is empty")
+                return
+            }
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            decoder.dateDecodingStrategy = .millisecondsSince1970
+            do {
+                result = try decoder.decode(NewItemResponse.self, from: body)
+                DDLogInfo("Got \(String(describing: result))")
+            } catch {
+                DDLogInfo("Cannot parse \(body) \(error)")
+            }
+        }
+        sem.wait()
+        if let error = backendError {
+            throw error
+        }
+        return result
+    }
+    
+    func remove(by id: UUID, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse?  {
+        let sem = DispatchSemaphore(value: 0)
+        guard let token = auth.authCredentials?.accessToken else {
+            throw BackendErrors.tokenIsNone("Token is none")
+        }
+        var result: NewItemResponse?
+        var endpoint: Endpoint?
+        do {
+            endpoint = try Endpoint.deleteItem(with: id, last: lastKnownRevision, token: token)
+        } catch {
+            throw BackendErrors.cannotPrepareEndpoint
+        }
+        guard let endpoint = endpoint else {
+            throw BackendErrors.cannotPrepareEndpoint
+        }
+        
+        var backendError: BackendErrors?
+        _ = session.request(endpoint) { data, response, error in
+            defer { sem.signal() }
+            backendError = self.checkStatus(response: response)
+            guard let body = data else {
+                DDLogError("Data is empty")
+                return
+            }
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            decoder.dateDecodingStrategy = .millisecondsSince1970
+            do {
+                result = try decoder.decode(NewItemResponse.self, from: body)
+                DDLogInfo("Got \(String(describing: result))")
+            } catch {
+                DDLogInfo("Cannot parse \(body) \(error)")
+            }
+        }
+        sem.wait()
+        if let error = backendError {
+            throw error
+        }
+        return result
+    }
+    
+    func get(by id: UUID, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse?  {
+        let sem = DispatchSemaphore(value: 0)
+        guard let token = auth.authCredentials?.accessToken else {
+            throw BackendErrors.tokenIsNone("Token is none")
+        }
+        var result: NewItemResponse?
+        var backendError: BackendErrors?
+        _ = session.request(.item(with: id, last: lastKnownRevision, token: token)) { data, response, error in
+            defer { sem.signal() }
+            backendError = self.checkStatus(response: response)
+            guard let body = data else {
+                DDLogError("Data is empty")
+                return
+            }
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            decoder.dateDecodingStrategy = .millisecondsSince1970
+            do {
+                result = try decoder.decode(NewItemResponse.self, from: body)
+                DDLogInfo("Got \(String(describing: result))")
+            } catch {
+                DDLogInfo("Cannot parse \(body) \(error)")
+            }
+        }
+        sem.wait()
+        if let error = backendError {
+            throw error
+        }
+        return result
+    }
+    
+    private func checkStatus(response: URLResponse?) -> BackendErrors? {
+        guard let response = response as? HTTPURLResponse else {
+            DDLogError("Response is nil")
+            return nil
+        }
+        switch response.statusCode {
+        case 200:
+            return nil
+        case 400:
+            return BackendErrors.unsynchronizedRevision
+        case 404:
+            return BackendErrors.notFound
+        case 401:
+            return BackendErrors.unauthorized
+        default:
+            return nil
+        }
     }
 }

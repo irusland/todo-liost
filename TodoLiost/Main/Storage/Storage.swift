@@ -17,7 +17,7 @@ protocol ItemStorage {
 }
 
 protocol ISyncStorage {
-    func sync(notifierDelegate: NotifierDelegate)
+    func sync()
 }
 
 class WebRequestOperation: AsyncOperation {
@@ -31,7 +31,7 @@ class WebRequestOperation: AsyncOperation {
     override func main() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self = self else { return }
-            self.result = self.cloudStorage.fetch()
+            self.result = self.cloudStorage.todoItems
             self.finish()
         }
     }
@@ -39,10 +39,10 @@ class WebRequestOperation: AsyncOperation {
 
 class UpdateCacheOperation: AsyncOperation {
     var newItems: [TodoItem]?
-    var cache: FileCache
+    var storage: ItemStorage
 
-    init(cache: FileCache) {
-        self.cache = cache
+    init(storage: ItemStorage) {
+        self.storage = storage
     }
 
     override func main() {
@@ -50,10 +50,10 @@ class UpdateCacheOperation: AsyncOperation {
             guard let self = self else { return }
             guard let items = self.newItems else { return }
             for item in items {
-                if self.cache.update(at: item.id, todoItem: item) {
+                if self.storage.update(at: item.id, todoItem: item) {
                     DDLogInfo("Item \(item.id) updated")
                 } else {
-                    self.cache.add(item)
+                    self.storage.add(item)
                     DDLogInfo("Item \(item.id) added")
                 }
             }
@@ -77,14 +77,45 @@ class NotifyOperation: Operation {
     func operationFinished()
 }
 
-class PresistantStorage: FileCache, ISyncStorage {
-    func sync(notifierDelegate: NotifierDelegate) {
+class PresistantStorage: ItemStorage, ISyncStorage {
+    var todoItems: [TodoItem] {
+        get {
+//            sync()
+            return self.fileCache.todoItems
+        }
+    }
+    
+    func add(_ todoItem: TodoItem) {
+        cloudStorage.add(todoItem)
+        fileCache.add(todoItem)
+    }
+    
+    func update(at id: UUID, todoItem: TodoItem) -> Bool {
+        _ = cloudStorage.update(at: id, todoItem: todoItem)
+        return fileCache.update(at: id, todoItem: todoItem)
+    }
+    
+    func remove(by id: UUID) -> Bool {
+        _ = cloudStorage.remove(by: id)
+        return fileCache.remove(by: id)
+    }
+    
+    func get(by id: UUID) -> TodoItem? {
+        _ = cloudStorage.get(by: id)
+        return fileCache.get(by: id)
+    }
+    
+    func sync() {
         let webOp = WebRequestOperation(cloudStorage: cloudStorage)
-        let updateOp = UpdateCacheOperation(cache: self)
+        let updateOp = UpdateCacheOperation(storage: self.fileCache)
         let transferOp = BlockOperation { [webOp, updateOp] in
             updateOp.newItems = webOp.result
         }
-        let notifyOp = NotifyOperation(notifierDelegate: notifierDelegate)
+        guard let notifier = notifierDelegate else {
+            DDLogError("Notifier delegate was not set!")
+            return
+        }
+        let notifyOp = NotifyOperation(notifierDelegate: notifier)
 
         let opQueue = OperationQueue()
         opQueue.maxConcurrentOperationCount = 2
@@ -100,8 +131,11 @@ class PresistantStorage: FileCache, ISyncStorage {
     }
 
     private var cloudStorage: CloudStorage
+    private var fileCache: FileCache
+    public var notifierDelegate: NotifierDelegate?
 
-    init(cloudStorage: CloudStorage) {
+    init(fileCache: FileCache, cloudStorage: CloudStorage) {
+        self.fileCache = fileCache
         self.cloudStorage = cloudStorage
     }
 }

@@ -133,6 +133,10 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         self.collectionView.refreshControl = refresher
         
         authentificator.modalPresentationStyle = .popover
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.authorize()
+        }
     }
 
     func operationFinished() {
@@ -143,10 +147,13 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
     }
     
     private func authorize() {
-        DDLogInfo("Authentification Started")
-        show(authentificator, sender: self)
-        self.collectionView.refreshControl?.endRefreshing()
-        
+        if !authentificator.isLoggedIn {
+            DDLogInfo("Authentification Started")
+            show(authentificator, sender: self)
+            self.collectionView.refreshControl?.endRefreshing()
+        } else {
+            DDLogInfo("Already authorized")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -162,7 +169,7 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         } else {
             DDLogInfo("Refreshing Started")
             
-            storage.sync(notifierDelegate: self)
+            storage.sync()
         }
     }
 
