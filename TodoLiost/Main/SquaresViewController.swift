@@ -137,6 +137,9 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.authorize()
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.sync()
+        }
     }
 
     func operationFinished() {
@@ -163,6 +166,16 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         }
     }
     
+    private func sync() {
+        self.collectionView.refreshControl?.beginRefreshing()
+        if !authentificator.isLoggedIn {
+            self.collectionView.refreshControl?.endRefreshing()
+            authorize()
+        } else {
+            storage.sync()
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         self.collectionView.refreshControl?.endRefreshing()
         super.viewWillAppear(animated)
@@ -175,8 +188,7 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
             authorize()
         } else {
             DDLogInfo("Refreshing Started")
-            
-            storage.sync()
+            sync()
         }
     }
 

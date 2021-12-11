@@ -72,17 +72,19 @@ class AlertOperation: Operation {
     var alert: UIAlertController
     weak var notifierDelegate: NotifierDelegate?
 
-    init(notifierDelegate: NotifierDelegate, actions: [String: (UIAlertAction) -> ()]) {
+    init(notifierDelegate: NotifierDelegate, message: String, actions: [(String, (UIAlertAction) -> ())]) {
         self.notifierDelegate = notifierDelegate
-        self.alert = UIAlertController(title: "Error", message: "", preferredStyle: UIAlertController.Style.alert)
+        self.alert = UIAlertController(title: "Error", message: message, preferredStyle: UIAlertController.Style.alert)
         for (title, action) in actions {
             alert.addAction(UIAlertAction(title: title, style: .default, handler: action))
         }
     }
     
     override func main() {
-        DDLogInfo("Sending error to UI")
-        self.notifierDelegate?.errorOcurred(alertController: self.alert)
+        DispatchQueue.main.async {
+            DDLogInfo("Sending error to UI")
+            self.notifierDelegate?.errorOcurred(alertController: self.alert)
+        }
     }
 }
 
@@ -127,8 +129,11 @@ class ComparisonOperation<T: Equatable>: AsyncOperation {
 class PresistantStorage: ItemStorage, ISyncStorage {
     var todoItems: [TodoItem] {
         get {
-//            sync()
-            return self.fileCache.todoItems
+            withConsistancy {
+                return self.fileCache.todoItems
+            } fromNetwork: {
+                return self.cloudStorage.todoItems
+            }
         }
     }
     
@@ -143,24 +148,23 @@ class PresistantStorage: ItemStorage, ISyncStorage {
     }
     
     private func inconsistantError() {
-        let actions: [String: (UIAlertAction) -> ()] = [
-            "Sync": { (action: UIAlertAction!) in
-                self.sync()
-            },
-            "Cancel": { (action: UIAlertAction!) in
+        let actions: [(String, (UIAlertAction) -> ())] = [
+            ("Cancel", { (action: UIAlertAction!) in
                 DDLogWarn("User canceled sync")
-            }
+            }),
+            ("Sync", { (action: UIAlertAction!) in
+                self.sync()
+            }),
         ]
         displayError(message: "Server sync needed", actions: actions)
     }
     
-    private func displayError(message: String, actions: [String: (UIAlertAction) -> ()] = [:]) {
+    private func displayError(message: String, actions: [(String, (UIAlertAction) -> ())] = []) {
         guard let notifier = notifierDelegate else {
             DDLogError("Notifier delegate was not set!")
             return
         }
-        let alertOp = AlertOperation(notifierDelegate: notifier, actions: actions)
-        alertOp.alert.message = message
+        let alertOp = AlertOperation(notifierDelegate: notifier, message: message, actions: actions)
         
         opQueue.addOperation(alertOp)
     }
