@@ -15,7 +15,7 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
     var connector: BackendConnector
 
     var layoutTag: LayoutSize = .small
-    
+
     private var authentificator: Auth
 
     init(collectionViewLayout layout: UICollectionViewLayout, _ storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController, _ authentificator: Auth, _ connector: BackendConnector) {
@@ -131,9 +131,9 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         self.refresher.addTarget(self, action: #selector(loadData), for: .valueChanged)
         self.collectionView.addSubview(refresher)
         self.collectionView.refreshControl = refresher
-        
+
         authentificator.modalPresentationStyle = .popover
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.authorize()
         }
@@ -148,14 +148,14 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
             self?.stopRefresher()
         }
     }
-    
+
     func errorOcurred(alertController: UIAlertController) {
         DispatchQueue.main.async { [weak self] in
             DDLogInfo("UI Error presentation")
             self?.present(alertController, animated: true, completion: nil)
         }
     }
-    
+
     private func authorize() {
         if !authentificator.isLoggedIn {
             DDLogInfo("Authentification Started")
@@ -165,7 +165,7 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
             DDLogInfo("Already authorized")
         }
     }
-    
+
     private func sync() {
         self.collectionView.refreshControl?.beginRefreshing()
         if !authentificator.isLoggedIn {
@@ -175,12 +175,12 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
             storage.sync()
         }
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         self.collectionView.refreshControl?.endRefreshing()
         super.viewWillAppear(animated)
     }
-    
+
     @objc func loadData() {
         self.collectionView.refreshControl?.beginRefreshing()
         if !authentificator.isLoggedIn {
@@ -219,7 +219,7 @@ class SmallViewController: SquaresViewController {
     init(with storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController, authentificator: Auth, connector: BackendConnector) {
         let layout = UICollectionViewFlowLayout.init()
         super.init(collectionViewLayout: layout, storage, todoItemDetailViewController, authentificator, connector)
-        
+
         useLayoutToLayoutNavigationTransitions = false
     }
 

@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 typealias Headers = [String: String]
 typealias OAuth = String
 
@@ -29,21 +28,21 @@ extension Endpoint {
         if !queryItems.isEmpty {
             components.queryItems = queryItems
         }
-        
+
         guard let url = components.url else {
             preconditionFailure(
                 "Invalid URL components: \(components)"
             )
         }
-        
+
         return url
     }
-    
+
     var request: URLRequest {
         var request = URLRequest(url: self.url)
         request.httpMethod = self.method
         request.httpBody = self.body
-        
+
         if let oauth = self.token {
             request.setValue("OAuth \(oauth)", forHTTPHeaderField: "Authorization")
         }

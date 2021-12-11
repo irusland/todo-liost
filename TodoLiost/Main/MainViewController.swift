@@ -16,13 +16,13 @@ class MainViewController: UIViewController {
     private let todoItemDetailViewController: TodoItemDetailViewController
 
     required init?(coder: NSCoder) {
-        
+
         let auth = Auth()
         let connector = BackendConnector(auth: auth)
         var cloudStorage = CloudStorage(connector: connector)
         let fileCache = FileCache()
         storage = PresistantStorage(fileCache: fileCache, cloudStorage: cloudStorage)
-        
+
         todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), storage: storage)
 
         squaresViewController = SmallViewController(with: storage, todoItemDetailViewController, authentificator: auth, connector: connector)

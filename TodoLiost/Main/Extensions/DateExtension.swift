@@ -16,7 +16,7 @@ extension Date {
 
         return dateFormatter.string(from: self)
     }
-    
+
     var unixTimestamp: Int64 {
         return Int64(self.timeIntervalSince1970)
     }

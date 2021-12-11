@@ -10,11 +10,11 @@ import CocoaLumberjack
 
 class BackendConnector {
     private var auth: Auth
-    
+
     init(auth: Auth) {
         self.auth = auth
     }
-    
+
     func getList(using session: URLSession = .shared) throws -> ListModel? {
         let sem = DispatchSemaphore(value: 0)
         guard let token = auth.authCredentials?.accessToken else {
@@ -22,7 +22,7 @@ class BackendConnector {
         }
         var listResponse: ListModel?
         var backendError: BackendErrors?
-        
+
         _ = session.request(.list(token: token)) { data, response, error in
             defer { sem.signal() }
             backendError = self.checkStatus(response: response)
@@ -63,7 +63,7 @@ class BackendConnector {
         guard let endpoint = endpoint else {
             throw BackendErrors.cannotPrepareEndpoint
         }
-        
+
         _ = session.request(endpoint) { data, response, error in
             defer { sem.signal() }
             backendError = self.checkStatus(response: response)
@@ -87,7 +87,7 @@ class BackendConnector {
         }
         return listResponse
     }
-    
+
     func add(todoItem: NewItemModel, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
         let sem = DispatchSemaphore(value: 0)
         guard let token = auth.authCredentials?.accessToken else {
@@ -103,7 +103,7 @@ class BackendConnector {
         guard let endpoint = endpoint else {
             throw BackendErrors.cannotPrepareEndpoint
         }
-        
+
         var backendError: BackendErrors?
         _ = session.request(endpoint) { data, response, error in
             defer { sem.signal() }
@@ -128,8 +128,8 @@ class BackendConnector {
         }
         return result
     }
-    
-    func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse?  {
+
+    func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
         let sem = DispatchSemaphore(value: 0)
         guard let token = auth.authCredentials?.accessToken else {
             throw BackendErrors.tokenIsNone("Token is none")
@@ -144,7 +144,7 @@ class BackendConnector {
         guard let endpoint = endpoint else {
             throw BackendErrors.cannotPrepareEndpoint
         }
-        
+
         var backendError: BackendErrors?
         _ = session.request(endpoint) { data, response, error in
             defer { sem.signal() }
@@ -169,8 +169,8 @@ class BackendConnector {
         }
         return result
     }
-    
-    func remove(by id: UUID, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse?  {
+
+    func remove(by id: UUID, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
         let sem = DispatchSemaphore(value: 0)
         guard let token = auth.authCredentials?.accessToken else {
             throw BackendErrors.tokenIsNone("Token is none")
@@ -185,7 +185,7 @@ class BackendConnector {
         guard let endpoint = endpoint else {
             throw BackendErrors.cannotPrepareEndpoint
         }
-        
+
         var backendError: BackendErrors?
         _ = session.request(endpoint) { data, response, error in
             defer { sem.signal() }
@@ -210,8 +210,8 @@ class BackendConnector {
         }
         return result
     }
-    
-    func get(by id: UUID, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse?  {
+
+    func get(by id: UUID, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
         let sem = DispatchSemaphore(value: 0)
         guard let token = auth.authCredentials?.accessToken else {
             throw BackendErrors.tokenIsNone("Token is none")
@@ -241,7 +241,7 @@ class BackendConnector {
         }
         return result
     }
-    
+
     private func checkStatus(response: URLResponse?) -> BackendErrors? {
         guard let response = response as? HTTPURLResponse else {
             DDLogError("Response is nil")
