@@ -19,7 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         fileLogger.rollingFrequency = 60 * 60 * 24 // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
         DDLog.add(fileLogger)
-
+        
+        let formatter = LogFormatter()
+        DDLog.sharedInstance.allLoggers[0].logFormatter = formatter
+        
         DDLogVerbose("Verbose")
         DDLogDebug("Debug")
         DDLogInfo("Info")

@@ -146,6 +146,13 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         }
     }
     
+    func errorOcurred(alertController: UIAlertController) {
+        DispatchQueue.main.async { [weak self] in
+            DDLogInfo("UI Error presentation")
+            self?.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
     private func authorize() {
         if !authentificator.isLoggedIn {
             DDLogInfo("Authentification Started")
