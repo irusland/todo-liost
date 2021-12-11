@@ -184,7 +184,7 @@ class PresistantStorage: ItemStorage, ISyncStorage {
                 DDLogError("Validation of consistency did not set isEquals")
                 return
             }
-            DDLogInfo("Local expected: \(localResult)\nNet actual: \(String(describing: asyncOp.result))")
+            DDLogInfo("\nLocal expected: \(localResult)\nNet actual: \(String(describing: asyncOp.result))")
             if isEqual {
                 DDLogInfo("Validation of consistency succeded")
             } else {

@@ -46,10 +46,47 @@ class BackendConnector {
         }
         return listResponse
     }
-    
-//    func merge(using session: URLSession = .shared) throws -> ListModel? {
-//
-//    }
+
+    func merge(with model: MergeModel, using session: URLSession = .shared) throws -> ListModel? {
+        let sem = DispatchSemaphore(value: 0)
+        guard let token = auth.authCredentials?.accessToken else {
+            throw BackendErrors.tokenIsNone("Token is none")
+        }
+        var listResponse: ListModel?
+        var backendError: BackendErrors?
+        var endpoint: Endpoint?
+        do {
+            endpoint = try Endpoint.merge(with: model, token: token)
+        } catch {
+            throw BackendErrors.cannotPrepareEndpoint
+        }
+        guard let endpoint = endpoint else {
+            throw BackendErrors.cannotPrepareEndpoint
+        }
+        
+        _ = session.request(endpoint) { data, response, error in
+            defer { sem.signal() }
+            backendError = self.checkStatus(response: response)
+            guard let body = data else {
+                DDLogError("Data is empty")
+                return
+            }
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            decoder.dateDecodingStrategy = .millisecondsSince1970
+            do {
+                listResponse = try decoder.decode(ListModel.self, from: body)
+                DDLogInfo("Got list \(String(describing: listResponse))")
+            } catch {
+                DDLogInfo("Cannot parse \(body) \(error)")
+            }
+        }
+        sem.wait()
+        if let error = backendError {
+            throw error
+        }
+        return listResponse
+    }
     
     func add(todoItem: NewItemModel, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
         let sem = DispatchSemaphore(value: 0)

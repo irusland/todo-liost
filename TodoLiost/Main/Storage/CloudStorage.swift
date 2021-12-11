@@ -24,6 +24,24 @@ class CloudStorage: ItemStorage {
         }
         return items
     }
+
+    func merge(with items: [TodoItem]) -> [TodoItem] {
+        let itemModels = todoItems.map { item in
+            TodoItemModel(from: item)
+        }
+        let model = MergeModel(list: itemModels)
+        do {
+            let listModel = try connector.merge(with: model)
+            guard let model = listModel else {
+                throw BackendErrors.dataIsEmpty("")
+            }
+            lastKnownRevision = model.revision
+            return convert(listModel: model)
+        } catch let error {
+            DDLogError("Cloud storage got an error \(error)")
+            return []
+        }
+    }
     
     var todoItems: [TodoItem] {
         get {
