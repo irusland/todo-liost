@@ -122,7 +122,7 @@ class ComparisonOperation<T: Equatable>: AsyncOperation {
     }
 }
 
-class PresistantStorage: ItemStorage, ISyncStorage {
+class PersistentStorage: ItemStorage, ISyncStorage {
     var todoItems: [TodoItem] {
         get {
             withConsistancy {

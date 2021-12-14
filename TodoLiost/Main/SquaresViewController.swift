@@ -10,7 +10,7 @@ import CocoaLumberjack
 import Foundation
 
 class SquaresViewController: UICollectionViewController, NotifierDelegate {
-    var storage: PresistantStorage
+    var storage: PersistentStorage
     var todoItemDetailViewController: TodoItemDetailViewController
     var connector: BackendConnector
 
@@ -18,7 +18,7 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
 
     private var authentificator: Auth
 
-    init(collectionViewLayout layout: UICollectionViewLayout, _ storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController, _ authentificator: Auth, _ connector: BackendConnector) {
+    init(collectionViewLayout layout: UICollectionViewLayout, _ storage: PersistentStorage, _ todoItemDetailViewController: TodoItemDetailViewController, _ authentificator: Auth, _ connector: BackendConnector) {
         self.storage = storage
         self.todoItemDetailViewController = todoItemDetailViewController
         self.authentificator = authentificator
@@ -216,7 +216,7 @@ class SmallViewController: SquaresViewController {
         return slider
     }()
 
-    init(with storage: PresistantStorage, _ todoItemDetailViewController: TodoItemDetailViewController, authentificator: Auth, connector: BackendConnector) {
+    init(with storage: PersistentStorage, _ todoItemDetailViewController: TodoItemDetailViewController, authentificator: Auth, connector: BackendConnector) {
         let layout = UICollectionViewFlowLayout.init()
         super.init(collectionViewLayout: layout, storage, todoItemDetailViewController, authentificator, connector)
 

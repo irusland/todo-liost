@@ -11,7 +11,7 @@ import CocoaLumberjack
 class MainViewController: UIViewController {
     static let storyboardId = "MainViewController"
 
-    private var storage: PresistantStorage
+    private var storage: PersistentStorage
     private let squaresViewController: SquaresViewController
     private let todoItemDetailViewController: TodoItemDetailViewController
 
@@ -21,7 +21,7 @@ class MainViewController: UIViewController {
         let connector = BackendConnector(auth: auth)
         var cloudStorage = CloudStorage(connector: connector)
         let fileCache = FileCache()
-        storage = PresistantStorage(fileCache: fileCache, cloudStorage: cloudStorage)
+        storage = PersistentStorage(fileCache: fileCache, cloudStorage: cloudStorage)
 
         todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), storage: storage)
 
