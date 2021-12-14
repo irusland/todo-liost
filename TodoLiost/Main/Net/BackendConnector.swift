@@ -9,15 +9,15 @@ import Foundation
 import CocoaLumberjack
 
 class BackendConnector {
-    private var auth: Auth
+    private var authViewController: AuthViewController
 
-    init(auth: Auth) {
-        self.auth = auth
+    init(authViewController: AuthViewController) {
+        self.authViewController = authViewController
     }
 
     func getList(using session: URLSession = .shared) throws -> ListModel? {
         let sem = DispatchSemaphore(value: 0)
-        guard let token = auth.authCredentials?.accessToken else {
+        guard let token = authViewController.authCredentials?.accessToken else {
             throw BackendErrors.tokenIsNone("Token is none")
         }
         var listResponse: ListModel?
@@ -49,7 +49,7 @@ class BackendConnector {
 
     func merge(with model: MergeModel, using session: URLSession = .shared) throws -> ListModel? {
         let sem = DispatchSemaphore(value: 0)
-        guard let token = auth.authCredentials?.accessToken else {
+        guard let token = authViewController.authCredentials?.accessToken else {
             throw BackendErrors.tokenIsNone("Token is none")
         }
         var listResponse: ListModel?
@@ -90,7 +90,7 @@ class BackendConnector {
 
     func add(todoItem: NewItemModel, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
         let sem = DispatchSemaphore(value: 0)
-        guard let token = auth.authCredentials?.accessToken else {
+        guard let token = authViewController.authCredentials?.accessToken else {
             throw BackendErrors.tokenIsNone("Token is none")
         }
         var result: NewItemResponse?
@@ -131,7 +131,7 @@ class BackendConnector {
 
     func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
         let sem = DispatchSemaphore(value: 0)
-        guard let token = auth.authCredentials?.accessToken else {
+        guard let token = authViewController.authCredentials?.accessToken else {
             throw BackendErrors.tokenIsNone("Token is none")
         }
         var result: NewItemResponse?
@@ -172,7 +172,7 @@ class BackendConnector {
 
     func remove(by id: UUID, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
         let sem = DispatchSemaphore(value: 0)
-        guard let token = auth.authCredentials?.accessToken else {
+        guard let token = authViewController.authCredentials?.accessToken else {
             throw BackendErrors.tokenIsNone("Token is none")
         }
         var result: NewItemResponse?
@@ -213,7 +213,7 @@ class BackendConnector {
 
     func get(by id: UUID, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
         let sem = DispatchSemaphore(value: 0)
-        guard let token = auth.authCredentials?.accessToken else {
+        guard let token = authViewController.authCredentials?.accessToken else {
             throw BackendErrors.tokenIsNone("Token is none")
         }
         var result: NewItemResponse?

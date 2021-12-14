@@ -14,7 +14,7 @@ protocol IAuthentificator {
     var isLoggedIn: Bool { get }
 }
 
-class Auth: UIViewController, IAuthentificator, URLSessionDataDelegate {
+class AuthViewController: UIViewController, IAuthentificator, URLSessionDataDelegate {
     var authCredentials: OAuthCredentials?
 
     lazy var session: URLSession = {
@@ -59,9 +59,8 @@ class Auth: UIViewController, IAuthentificator, URLSessionDataDelegate {
     }
 }
 
-extension Auth: WKNavigationDelegate {
+extension AuthViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
-//        https://oauth.yandex.ru/verification_code#access_token=AQAAAAAOOQE4AARC0Zz59Tj5Q08Gi0f1HS1RRfA&token_type=bearer&expires_in=31534485
         if let url = navigationAction.request.url {
             if url.path == "/verification_code" {
                 if let fragmentParams = url.fragmentParams, let accessToken = fragmentParams["access_token"], let tokenType = fragmentParams["token_type"], let expiresIn = fragmentParams["expires_in"], let expiresTime = TimeInterval(expiresIn) {

@@ -34,7 +34,7 @@
 		98B38910273DA885001AD82D /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B3890F273DA885001AD82D /* DateExtension.swift */; };
 		98B38912273DA8B4001AD82D /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B38911273DA8B4001AD82D /* ColorExtensions.swift */; };
 		98B38914273DA8F4001AD82D /* SquaresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B38913273DA8F4001AD82D /* SquaresViewController.swift */; };
-		98D6AF7F275165E100F37B58 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF7E275165E100F37B58 /* Auth.swift */; };
+		98D6AF7F275165E100F37B58 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF7E275165E100F37B58 /* AuthViewController.swift */; };
 		98D6AF812753716500F37B58 /* BackendConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF802753716500F37B58 /* BackendConnector.swift */; };
 		98D6AF83275383C300F37B58 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF82275383C300F37B58 /* Endpoint.swift */; };
 		98D6AF852753842B00F37B58 /* EndpointSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF842753842B00F37B58 /* EndpointSession.swift */; };
@@ -95,7 +95,7 @@
 		98B3890F273DA885001AD82D /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		98B38911273DA8B4001AD82D /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		98B38913273DA8F4001AD82D /* SquaresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquaresViewController.swift; sourceTree = "<group>"; };
-		98D6AF7E275165E100F37B58 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
+		98D6AF7E275165E100F37B58 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		98D6AF802753716500F37B58 /* BackendConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendConnector.swift; sourceTree = "<group>"; };
 		98D6AF82275383C300F37B58 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		98D6AF842753842B00F37B58 /* EndpointSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndpointSession.swift; sourceTree = "<group>"; };
@@ -243,7 +243,7 @@
 		98D6AF7D275165C300F37B58 /* Net */ = {
 			isa = PBXGroup;
 			children = (
-				98D6AF7E275165E100F37B58 /* Auth.swift */,
+				98D6AF7E275165E100F37B58 /* AuthViewController.swift */,
 				98D6AF802753716500F37B58 /* BackendConnector.swift */,
 				98D6AF82275383C300F37B58 /* Endpoint.swift */,
 				98D6AF842753842B00F37B58 /* EndpointSession.swift */,
@@ -491,7 +491,7 @@
 				98B38914273DA8F4001AD82D /* SquaresViewController.swift in Sources */,
 				98D6AF812753716500F37B58 /* BackendConnector.swift in Sources */,
 				98B3890D273DA837001AD82D /* StringExtensions.swift in Sources */,
-				98D6AF7F275165E100F37B58 /* Auth.swift in Sources */,
+				98D6AF7F275165E100F37B58 /* AuthViewController.swift in Sources */,
 				981A3823271C7E89007739C6 /* AppDelegate.swift in Sources */,
 				98D6AF83275383C300F37B58 /* Endpoint.swift in Sources */,
 				981A3853271C82B9007739C6 /* TodoItem.swift in Sources */,

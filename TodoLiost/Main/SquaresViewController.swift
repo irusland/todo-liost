@@ -16,9 +16,9 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
 
     var layoutTag: LayoutSize = .small
 
-    private var authentificator: Auth
+    private var authentificator: AuthViewController
 
-    init(collectionViewLayout layout: UICollectionViewLayout, _ storage: PersistentStorage, _ todoItemDetailViewController: TodoItemDetailViewController, _ authentificator: Auth, _ connector: BackendConnector) {
+    init(collectionViewLayout layout: UICollectionViewLayout, _ storage: PersistentStorage, _ todoItemDetailViewController: TodoItemDetailViewController, _ authentificator: AuthViewController, _ connector: BackendConnector) {
         self.storage = storage
         self.todoItemDetailViewController = todoItemDetailViewController
         self.authentificator = authentificator
@@ -216,7 +216,7 @@ class SmallViewController: SquaresViewController {
         return slider
     }()
 
-    init(with storage: PersistentStorage, _ todoItemDetailViewController: TodoItemDetailViewController, authentificator: Auth, connector: BackendConnector) {
+    init(with storage: PersistentStorage, _ todoItemDetailViewController: TodoItemDetailViewController, authentificator: AuthViewController, connector: BackendConnector) {
         let layout = UICollectionViewFlowLayout.init()
         super.init(collectionViewLayout: layout, storage, todoItemDetailViewController, authentificator, connector)
 
