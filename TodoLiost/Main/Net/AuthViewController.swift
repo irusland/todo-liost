@@ -15,7 +15,7 @@ protocol IAuthentificator {
 }
 
 class AuthViewController: UIViewController, IAuthentificator, URLSessionDataDelegate {
-    var authCredentials: OAuthCredentials?
+    private(set) var authCredentials: OAuthCredentials?
 
     lazy var session: URLSession = {
         return URLSession(configuration: .default, delegate: self, delegateQueue: .main)
