@@ -53,7 +53,7 @@ struct TodoItemModel: Codable {
 }
 
 extension TodoItemModel {
-    init(from todoItem: TodoItem) {
+    init(from todoItem: TodoItem, by deviceId: UUID) {
 
         self.init(
             id: todoItem.id,
@@ -64,7 +64,7 @@ extension TodoItemModel {
             color: todoItem.color?.hexString,
             createdAt: todoItem.createdAt.unixTimestamp,
             changedAt: todoItem.changedAt.unixTimestamp,
-            lastUpdatedBy: UUID.init() // todo UUID(uuid: UIDevice.current.identifierForVendor!.uuid)
+            lastUpdatedBy: deviceId
         )
     }
 }

@@ -10,8 +10,13 @@ import CocoaLumberjack
 class CloudStorage: ItemStorage {
     private var connector: BackendConnector
     private var lastKnownRevision: Int32 = 0
+    private var deviceId: UUID
 
     init(connector: BackendConnector) {
+        if let vendor = UIDevice.current.identifierForVendor {
+            deviceId = UUID(uuid: vendor.uuid)
+        }
+        deviceId = UUID()
         self.connector = connector
     }
 
@@ -27,7 +32,7 @@ class CloudStorage: ItemStorage {
 
     func merge(with items: [TodoItem]) -> [TodoItem] {
         let itemModels = todoItems.map { item in
-            TodoItemModel(from: item)
+            TodoItemModel(from: item, by: deviceId)
         }
         let model = MergeModel(list: itemModels)
         do {
@@ -60,7 +65,7 @@ class CloudStorage: ItemStorage {
     }
 
     func add(_ todoItem: TodoItem) {
-        let model = NewItemModel(element: TodoItemModel(from: todoItem))
+        let model = NewItemModel(element: TodoItemModel(from: todoItem, by: deviceId))
         do {
             guard let result = try connector.add(todoItem: model, lastKnownRevision: lastKnownRevision) else {
                 DDLogInfo("Empty result")
@@ -75,7 +80,7 @@ class CloudStorage: ItemStorage {
     }
 
     func update(at id: UUID, todoItem: TodoItem) -> Bool {
-        let model = NewItemModel(element: TodoItemModel(from: todoItem))
+        let model = NewItemModel(element: TodoItemModel(from: todoItem, by: deviceId))
         do {
             guard let result = try connector.update(at: id, todoItem: model, lastKnownRevision: lastKnownRevision) else {
                 DDLogInfo("Empty result")
