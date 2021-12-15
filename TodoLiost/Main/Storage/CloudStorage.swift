@@ -64,19 +64,21 @@ class CloudStorage: AsyncItemStorage {
         })
     }
 
-    func add(_ todoItem: TodoItem) {
+    func add(_ todoItem: TodoItem, handler: @escaping () -> Void) {
         let model = NewItemModel(element: TodoItemModel(from: todoItem, by: deviceId))
-        do {
-            guard let result = try connector.add(todoItem: model, lastKnownRevision: lastKnownRevision) else {
-                DDLogInfo("Empty result")
+    
+        connector.add(todoItem: model, lastKnownRevision: lastKnownRevision, handler: { result, errors in
+            if let errors = errors {
+                DDLogError("Cloud storage got an error \(errors)")
+                handler()
+            }
+            guard let result = result else {
+                handler()
                 return
             }
-
-            lastKnownRevision = result.revision
-
-        } catch {
-            DDLogError(error)
-        }
+            self.lastKnownRevision = result.revision
+            handler()
+        })
     }
 
     func update(at id: UUID, todoItem: TodoItem) -> Bool {

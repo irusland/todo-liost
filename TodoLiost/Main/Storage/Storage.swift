@@ -19,7 +19,7 @@ protocol ItemStorage {
 
 protocol AsyncItemStorage {
     func todoItems(returnItems: @escaping ([TodoItem]) -> ())
-    func add(_ todoItem: TodoItem)
+    func add(_ todoItem: TodoItem, handler: @escaping () -> ())
     func update(at id: UUID, todoItem: TodoItem) -> Bool
     func remove(by id: UUID) -> Bool
     func get(by id: UUID) -> TodoItem?
@@ -233,7 +233,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
         return localResult
     }
     
-    private func withConsistancy<T: Equatable>(fromLocal: () -> T, fromNetwork: @escaping ( @escaping (T) -> Void) -> Void) -> T {
+    private func withConsistancy<T: Equatable>(fromLocal: () -> T, fromNetwork: @escaping (@escaping (T) -> Void) -> Void) -> T {
         let localResult = fromLocal()
         DDLogInfo("Consistant operation got from local")
         let asyncOp = AwaitingOperation(callable: fromNetwork)
@@ -270,11 +270,8 @@ class PersistentStorage: ItemStorage, ISyncStorage {
     }
 
     func add(_ todoItem: TodoItem) {
-        withConsistancy {
-            fileCache.add(todoItem)
-        } fromNetwork: {
-            self.cloudStorage.add(todoItem)
-        }
+        fileCache.add(todoItem)
+        self.cloudStorage.add(todoItem) {}
     }
 
     func update(at id: UUID, todoItem: TodoItem) -> Bool {
