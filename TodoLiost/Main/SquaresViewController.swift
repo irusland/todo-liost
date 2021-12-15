@@ -9,7 +9,7 @@ import UIKit
 import CocoaLumberjack
 import Foundation
 
-class SquaresViewController: UICollectionViewController, NotifierDelegate {
+class SquaresViewController: UICollectionViewController, NotifierDelegate, AuthentificationDelegate {
     var storage: PersistentStorage
     var todoItemDetailViewController: TodoItemDetailViewController
     var connector: BackendConnector
@@ -148,21 +148,26 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
             self?.present(alertController, animated: true, completion: nil)
         }
     }
+    
+    func authentificationFinished() {
+        DispatchQueue.main.async { [weak self] in
+            DDLogInfo("Authentification finished")
+            self?.sync()
+        }
+    }
 
     func authorize() {
         if !authentificator.isLoggedIn {
             DDLogInfo("Authentification Started")
+            endRefresh()
             show(authentificator, sender: self)
-            self.collectionView.refreshControl?.endRefreshing()
         } else {
             DDLogInfo("Already authorized")
         }
     }
 
     private func sync() {
-        self.collectionView.refreshControl?.beginRefreshing()
         if !authentificator.isLoggedIn {
-            self.collectionView.refreshControl?.endRefreshing()
             authorize()
         } else {
             storage.sync()
@@ -170,14 +175,24 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.collectionView.refreshControl?.endRefreshing()
         super.viewWillAppear(animated)
     }
 
+    private func endRefresh() {
+        if let refreshControl = self.collectionView.refreshControl {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                if refreshControl.isRefreshing {
+                    refreshControl.endRefreshing()
+                } else if !refreshControl.isHidden {
+                    refreshControl.beginRefreshing()
+                    refreshControl.endRefreshing()
+                }
+            }
+        }
+    }
+    
     @objc func loadData() {
-        self.collectionView.refreshControl?.beginRefreshing()
         if !authentificator.isLoggedIn {
-            self.collectionView.refreshControl?.endRefreshing()
             authorize()
         } else {
             DDLogInfo("Refreshing Started")
@@ -186,7 +201,7 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
     }
 
     func stopRefresher() {
-        self.collectionView.refreshControl?.endRefreshing()
+        endRefresh()
         DDLogInfo("Refreshing Ended")
     }
 }

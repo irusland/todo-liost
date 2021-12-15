@@ -27,6 +27,7 @@ class MainViewController: UIViewController {
 
         squaresViewController = SmallViewController(with: storage, todoItemDetailViewController, authentificator: authViewController, connector: connector)
         storage.notifierDelegate = squaresViewController
+        authViewController.authentificationDelegate = squaresViewController
         super.init(coder: coder)
     }
 

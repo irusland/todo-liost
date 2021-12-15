@@ -14,8 +14,15 @@ protocol IAuthentificator {
     var isLoggedIn: Bool { get }
 }
 
+@objc protocol AuthentificationDelegate {
+    func authentificationFinished()
+}
+
+
 class AuthViewController: UIViewController, IAuthentificator, URLSessionDataDelegate {
     private(set) var authCredentials: OAuthCredentials?
+    
+    var authentificationDelegate: AuthentificationDelegate?
 
     lazy var session: URLSession = {
         return URLSession(configuration: .default, delegate: self, delegateQueue: .main)
@@ -69,6 +76,7 @@ extension AuthViewController: WKNavigationDelegate {
                     isLoggedIn = true
                     DDLogInfo("Logged in \(String(describing: authCredentials))")
                     dismiss(animated: true)
+                    authentificationDelegate?.authentificationFinished()
                 }
 
             }
