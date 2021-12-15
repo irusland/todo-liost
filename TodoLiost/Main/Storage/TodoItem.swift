@@ -44,12 +44,17 @@ public struct TodoItem: Equatable {
     let priority: TodoItemPriority
     let deadLine: Date?
     let color: UIColor?
-    public init(id: UUID = UUID(), text: String, priority: TodoItemPriority = .normal, deadLine: Date? = nil, color: UIColor? = nil) {
+    let createdAt: Date
+    let changedAt: Date
+
+    public init(id: UUID = UUID(), text: String, priority: TodoItemPriority = .normal, deadLine: Date? = nil,  color: UIColor? = nil, createdAt: Date = Date.now, changedAt: Date = Date.now) {
         self.id = id
         self.text = text
         self.priority = priority
         self.deadLine = deadLine
         self.color = color
+        self.createdAt = createdAt
+        self.changedAt = changedAt
     }
 }
 
@@ -90,6 +95,8 @@ public extension TodoItem {
         } else {
             self.color = nil
         }
+        self.createdAt = Date.now
+        self.changedAt = Date.now
     }
 
     static func parse(json: [String: Any]) -> TodoItem? {

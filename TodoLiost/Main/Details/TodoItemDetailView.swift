@@ -107,7 +107,9 @@ class TodoItemDetailViewController: UINavigationController, ColorPickerDelegate 
             text: textView.text,
             priority: .fromInt(importancySelector.selectedSegmentIndex),
             deadLine: deadline,
-            color: todoItemColor
+            color: todoItemColor?.round,
+            createdAt: itemPresented.createdAt,
+            changedAt: Date.now
         )
 
         _ = storage.update(at: itemPresented.id, todoItem: newItem)

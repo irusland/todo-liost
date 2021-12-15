@@ -118,6 +118,42 @@ class ComparisonOperation<T: Equatable>: AsyncOperation {
     override func main() {
         guard let actual = self.actual else { return }
         self.isEqual = self.expected == actual
+//        -----------------------------------------
+        if let expected = self.expected as? Array<TodoItem>, let actual = actual as? Array<TodoItem> {
+            DDLogInfo(">>> \(expected)")
+            DDLogInfo(">>> \(actual)")
+            DDLogInfo(">>> \(expected == actual)")
+            if expected.count > 0 {
+                DDLogInfo(">>> \(expected[0] == actual[0])")
+                var expectedItem = expected[0]
+                var actualItem = actual[0]
+                
+                let expectedProperties = Mirror(reflecting: expectedItem).children
+                let actualProperties = Mirror(reflecting: actualItem).children
+                
+                for (expectedProperty, actualProperty) in zip(expectedProperties, actualProperties) {
+                    DDLogInfo(">>>E \(expectedProperty.label!) = \(expectedProperty.value)")
+                    DDLogInfo(">>>A \(actualProperty.label!) = \(actualProperty.value)")
+                }
+                DDLogInfo(">>> \(expectedItem.changedAt.timeIntervalSince1970) \(actualItem.changedAt.timeIntervalSince1970)")
+                DDLogInfo(">>> \(expectedItem.createdAt.timeIntervalSince1970) \(actualItem.createdAt.timeIntervalSince1970)")
+                DDLogInfo(">>> \(expectedItem.deadLine?.timeIntervalSince1970) \(actualItem.deadLine?.timeIntervalSince1970)")
+                
+                DDLogInfo(">>> \(expectedItem.color)")
+                DDLogInfo(">>> \(actualItem.color)")
+                
+                DDLogInfo(">>> \(expectedItem.changedAt == actualItem.changedAt)")
+                DDLogInfo(">>> \(expectedItem.createdAt == actualItem.createdAt)")
+                DDLogInfo(">>> \(expectedItem.id == actualItem.id)")
+                DDLogInfo(">>> \(expectedItem.color == actualItem.color)")
+                DDLogInfo(">>> \(expectedItem.deadLine == actualItem.deadLine)")
+                DDLogInfo(">>> \(expectedItem.text == actualItem.text)")
+                DDLogInfo(">>> \(expectedItem.priority == actualItem.priority)")
+                
+            
+            }
+        }
+//        -----------------------------------------
         self.finish()
     }
 }
@@ -164,6 +200,14 @@ class PersistentStorage: ItemStorage, ISyncStorage {
 
         opQueue.addOperation(alertOp)
     }
+    
+    private func logResults<T>(localResult: T, netResult: T?) {
+        if let result = netResult {
+            DDLogInfo("\nLocal expected:\n\(localResult)\nNet actual:\n\(result)")
+        } else {
+            DDLogInfo("\nLocal expected:\n\(localResult)\nNet actual:\nnil")
+        }
+    }
 
     private func withConsistancy<T: Equatable>(fromLocal: () -> T, fromNetwork: @escaping () -> T) -> T {
         let localResult = fromLocal()
@@ -180,7 +224,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
                 DDLogError("Validation of consistency did not set isEquals")
                 return
             }
-            DDLogInfo("\nLocal expected: \(localResult)\nNet actual: \(String(describing: asyncOp.result))")
+            self.logResults(localResult: localResult, netResult: asyncOp.result)
             if isEqual {
                 DDLogInfo("Validation of consistency succeded")
             } else {

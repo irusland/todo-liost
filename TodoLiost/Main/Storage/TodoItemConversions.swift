@@ -27,5 +27,7 @@ extension TodoItem {
         } else {
             self.color = nil
         }
+        self.createdAt = Date(timeIntervalSince1970: TimeInterval(integerLiteral: todoItemModel.createdAt))
+        self.changedAt = Date(timeIntervalSince1970: TimeInterval(integerLiteral: todoItemModel.changedAt))
     }
 }

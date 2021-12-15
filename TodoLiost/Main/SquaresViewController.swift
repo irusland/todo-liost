@@ -133,13 +133,6 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         self.collectionView.refreshControl = refresher
 
         authentificator.modalPresentationStyle = .popover
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.authorize()
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.sync()
-        }
     }
 
     func operationFinished() {
@@ -156,7 +149,7 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate {
         }
     }
 
-    private func authorize() {
+    func authorize() {
         if !authentificator.isLoggedIn {
             DDLogInfo("Authentification Started")
             show(authentificator, sender: self)
