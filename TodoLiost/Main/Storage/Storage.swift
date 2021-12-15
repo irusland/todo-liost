@@ -118,42 +118,6 @@ class ComparisonOperation<T: Equatable>: AsyncOperation {
     override func main() {
         guard let actual = self.actual else { return }
         self.isEqual = self.expected == actual
-//        -----------------------------------------
-        if let expected = self.expected as? Array<TodoItem>, let actual = actual as? Array<TodoItem> {
-            DDLogInfo(">>> \(expected)")
-            DDLogInfo(">>> \(actual)")
-            DDLogInfo(">>> \(expected == actual)")
-            if expected.count > 0 {
-                DDLogInfo(">>> \(expected[0] == actual[0])")
-                var expectedItem = expected[0]
-                var actualItem = actual[0]
-                
-                let expectedProperties = Mirror(reflecting: expectedItem).children
-                let actualProperties = Mirror(reflecting: actualItem).children
-                
-                for (expectedProperty, actualProperty) in zip(expectedProperties, actualProperties) {
-                    DDLogInfo(">>>E \(expectedProperty.label!) = \(expectedProperty.value)")
-                    DDLogInfo(">>>A \(actualProperty.label!) = \(actualProperty.value)")
-                }
-                DDLogInfo(">>> \(expectedItem.changedAt.timeIntervalSince1970) \(actualItem.changedAt.timeIntervalSince1970)")
-                DDLogInfo(">>> \(expectedItem.createdAt.timeIntervalSince1970) \(actualItem.createdAt.timeIntervalSince1970)")
-                DDLogInfo(">>> \(expectedItem.deadLine?.timeIntervalSince1970) \(actualItem.deadLine?.timeIntervalSince1970)")
-                
-                DDLogInfo(">>> \(expectedItem.color)")
-                DDLogInfo(">>> \(actualItem.color)")
-                
-                DDLogInfo(">>> \(expectedItem.changedAt == actualItem.changedAt)")
-                DDLogInfo(">>> \(expectedItem.createdAt == actualItem.createdAt)")
-                DDLogInfo(">>> \(expectedItem.id == actualItem.id)")
-                DDLogInfo(">>> \(expectedItem.color == actualItem.color)")
-                DDLogInfo(">>> \(expectedItem.deadLine == actualItem.deadLine)")
-                DDLogInfo(">>> \(expectedItem.text == actualItem.text)")
-                DDLogInfo(">>> \(expectedItem.priority == actualItem.priority)")
-                
-            
-            }
-        }
-//        -----------------------------------------
         self.finish()
     }
 }
