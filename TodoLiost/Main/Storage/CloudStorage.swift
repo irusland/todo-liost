@@ -30,22 +30,23 @@ class CloudStorage: AsyncItemStorage {
         return items
     }
 
-    func merge(with items: [TodoItem]) -> [TodoItem] {
-        let itemModels = [].map { item in
+    func merge(with items: [TodoItem], handler: @escaping ([TodoItem]) -> ()) {
+        let itemModels = items.map { item in
             TodoItemModel(from: item, by: deviceId)
         }
         let model = MergeModel(list: itemModels)
-        do {
-            let listModel = try connector.merge(with: model)
-            guard let model = listModel else {
-                throw BackendErrors.dataIsEmpty("")
+        connector.merge(with: model, handler: { model, errors in
+            if let errors = errors {
+                DDLogError("Cloud storage got an error \(errors)")
+                handler([])
             }
-            lastKnownRevision = model.revision
-            return convert(listModel: model)
-        } catch let error {
-            DDLogError("Cloud storage got an error \(error)")
-            return []
-        }
+            guard let model = model else {
+                handler([])
+                return
+            }
+            self.lastKnownRevision = model.revision
+            handler(self.convert(listModel: model))
+        })
     }
 
     func todoItems(returnItems: @escaping ([TodoItem]) -> ()) {
