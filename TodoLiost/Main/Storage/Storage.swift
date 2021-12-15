@@ -92,7 +92,7 @@ class AlertOperation: Operation {
     func errorOcurred(alertController: UIAlertController)
 }
 
-class AsyncExecutionOperation<T>: AsyncOperation {
+class ExecutionOperation<T>: BlockOperation {
     var callable: () -> T
     var result: T?
 
@@ -102,7 +102,6 @@ class AsyncExecutionOperation<T>: AsyncOperation {
 
     override func main() {
         self.result = self.callable()
-        self.finish()
     }
 }
 
@@ -176,7 +175,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
         let localResult = fromLocal()
         DDLogInfo("Consistant operation got from local")
 
-        let asyncOp = AsyncExecutionOperation(callable: fromNetwork)
+        let asyncOp = ExecutionOperation(callable: fromNetwork)
         let validateOp = ComparisonOperation(expected: localResult)
         let transferOp = BlockOperation { [asyncOp, validateOp] in
             validateOp.actual = asyncOp.result
