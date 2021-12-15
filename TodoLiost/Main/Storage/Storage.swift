@@ -106,7 +106,7 @@ class AsyncExecutionOperation<T>: AsyncOperation {
     }
 }
 
-class ComparisonOperation<T: Equatable>: AsyncOperation {
+class ComparisonOperation<T: Equatable>: Operation {
     var expected: T
     var actual: T?
     var isEqual: Bool?
@@ -118,7 +118,6 @@ class ComparisonOperation<T: Equatable>: AsyncOperation {
     override func main() {
         guard let actual = self.actual else { return }
         self.isEqual = self.expected == actual
-        self.finish()
     }
 }
 
