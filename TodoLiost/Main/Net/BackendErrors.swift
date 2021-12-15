@@ -15,4 +15,5 @@ public enum BackendErrors: Error {
     case unsynchronizedRevision
     case notFound
     case unauthorized
+    case parseError(Data, Error)
 }

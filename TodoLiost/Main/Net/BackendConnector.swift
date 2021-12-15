@@ -15,17 +15,16 @@ class BackendConnector {
         self.authViewController = authViewController
     }
 
-    func getList(using session: URLSession = .shared) throws -> ListModel? {
-        let sem = DispatchSemaphore(value: 0)
+    func getList(handler: @escaping (ListModel?, BackendErrors?) -> (), using session: URLSession = .shared) {
         guard let token = authViewController.authCredentials?.accessToken else {
-            throw BackendErrors.tokenIsNone("Token is none")
+            handler(nil, BackendErrors.tokenIsNone("Token is none"))
+            return
         }
-        var listResponse: ListModel?
-        var backendError: BackendErrors?
 
         _ = session.request(.list(token: token)) { data, response, error in
-            defer { sem.signal() }
-            backendError = self.checkStatus(response: response)
+            if let backendError = self.checkStatus(response: response) {
+                handler(nil, backendError)
+            }
             guard let body = data else {
                 DDLogError("Data is empty")
                 return
@@ -34,17 +33,14 @@ class BackendConnector {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             decoder.dateDecodingStrategy = .millisecondsSince1970
             do {
-                listResponse = try decoder.decode(ListModel.self, from: body)
+                let listResponse = try decoder.decode(ListModel.self, from: body)
                 DDLogInfo("Got list \(String(describing: listResponse))")
+                handler(listResponse, nil)
             } catch {
                 DDLogInfo("Cannot parse \(body) \(error)")
+                handler(nil, BackendErrors.parseError(body, error))
             }
         }
-        sem.wait()
-        if let error = backendError {
-            throw error
-        }
-        return listResponse
     }
 
     func merge(with model: MergeModel, using session: URLSession = .shared) throws -> ListModel? {

@@ -7,7 +7,7 @@
 
 import Foundation
 import CocoaLumberjack
-class CloudStorage: ItemStorage {
+class CloudStorage: AsyncItemStorage {
     private var connector: BackendConnector
     private var lastKnownRevision: Int32 = 0
     private var deviceId: UUID
@@ -31,7 +31,7 @@ class CloudStorage: ItemStorage {
     }
 
     func merge(with items: [TodoItem]) -> [TodoItem] {
-        let itemModels = todoItems.map { item in
+        let itemModels = [].map { item in
             TodoItemModel(from: item, by: deviceId)
         }
         let model = MergeModel(list: itemModels)
@@ -48,20 +48,19 @@ class CloudStorage: ItemStorage {
         }
     }
 
-    var todoItems: [TodoItem] {
-        get {
-            do {
-                let listModel = try connector.getList()
-                guard let model = listModel else {
-                    throw BackendErrors.dataIsEmpty("")
-                }
-                lastKnownRevision = model.revision
-                return convert(listModel: model)
-            } catch let error {
-                DDLogError("Cloud storage got an error \(error)")
-                return []
+    func todoItems(returnItems: @escaping ([TodoItem]) -> ()) {
+        connector.getList(handler: { model, errors in
+            if let errors = errors {
+                DDLogError("Cloud storage got an error \(errors)")
+                returnItems([])
             }
-        }
+            guard let model = model else {
+                returnItems([])
+                return
+            }
+            self.lastKnownRevision = model.revision
+            returnItems(self.convert(listModel: model))
+        })
     }
 
     func add(_ todoItem: TodoItem) {

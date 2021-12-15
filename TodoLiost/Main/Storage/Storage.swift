@@ -16,6 +16,15 @@ protocol ItemStorage {
     func get(by id: UUID) -> TodoItem?
 }
 
+
+protocol AsyncItemStorage {
+    func todoItems(returnItems: @escaping ([TodoItem]) -> ())
+    func add(_ todoItem: TodoItem)
+    func update(at id: UUID, todoItem: TodoItem) -> Bool
+    func remove(by id: UUID) -> Bool
+    func get(by id: UUID) -> TodoItem?
+}
+
 protocol ISyncStorage {
     func sync()
 }
@@ -23,14 +32,32 @@ protocol ISyncStorage {
 class WebRequestOperation: AsyncOperation {
     var result: [TodoItem]?
     var cloudStorage: CloudStorage
-
+    
     init(cloudStorage: CloudStorage) {
         self.cloudStorage = cloudStorage
     }
-
+    
     override func main() {
-        self.result = self.cloudStorage.todoItems
-        self.finish()
+        self.cloudStorage.todoItems { items in
+            self.result = items
+            self.finish()
+        }
+    }
+}
+
+class AwaitingOperation<T>: AsyncOperation {
+    var result: T?
+    var callable: (@escaping (T) -> Void) -> Void
+    
+    init(callable: @escaping (@escaping (T) -> Void) -> Void) {
+        self.callable = callable
+    }
+    
+    override func main() {
+        callable({ items in
+            self.result = items
+            self.finish()
+        })
     }
 }
 
@@ -123,11 +150,9 @@ class ComparisonOperation<T: Equatable>: Operation {
 class PersistentStorage: ItemStorage, ISyncStorage {
     var todoItems: [TodoItem] {
         get {
-            withConsistancy {
+            withConsistancy(fromLocal: {
                 return self.fileCache.todoItems
-            } fromNetwork: {
-                return self.cloudStorage.todoItems
-            }
+            }, fromNetwork: self.cloudStorage.todoItems)
         }
     }
 
@@ -176,6 +201,42 @@ class PersistentStorage: ItemStorage, ISyncStorage {
         DDLogInfo("Consistant operation got from local")
 
         let asyncOp = ExecutionOperation(callable: fromNetwork)
+        let validateOp = ComparisonOperation(expected: localResult)
+        let transferOp = BlockOperation { [asyncOp, validateOp] in
+            validateOp.actual = asyncOp.result
+        }
+        let needSyncOp = BlockOperation { [validateOp, asyncOp, weak self] in
+            guard let self = self else { return }
+            guard let isEqual = validateOp.isEqual else {
+                DDLogError("Validation of consistency did not set isEquals")
+                return
+            }
+            self.logResults(localResult: localResult, netResult: asyncOp.result)
+            if isEqual {
+                DDLogInfo("Validation of consistency succeded")
+            } else {
+                DDLogError("Validation of consistency failed, sync needed")
+                self.inconsistantError()
+            }
+        }
+
+        transferOp.addDependency(asyncOp)
+        validateOp.addDependency(transferOp)
+        needSyncOp.addDependency(validateOp)
+
+        opQueue.addOperation(asyncOp)
+        opQueue.addOperation(transferOp)
+        opQueue.addOperation(validateOp)
+        opQueue.addOperation(needSyncOp)
+
+        DDLogInfo("Consistant operation started")
+        return localResult
+    }
+    
+    private func withConsistancy<T: Equatable>(fromLocal: () -> T, fromNetwork: @escaping ( @escaping (T) -> Void) -> Void) -> T {
+        let localResult = fromLocal()
+        DDLogInfo("Consistant operation got from local")
+        let asyncOp = AwaitingOperation(callable: fromNetwork)
         let validateOp = ComparisonOperation(expected: localResult)
         let transferOp = BlockOperation { [asyncOp, validateOp] in
             validateOp.actual = asyncOp.result
