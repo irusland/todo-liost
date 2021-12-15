@@ -19,7 +19,7 @@ class MainViewController: UIViewController {
 
         let authViewController = AuthViewController()
         let connector = BackendConnector(authViewController: authViewController)
-        var cloudStorage = CloudStorage(connector: connector)
+        let cloudStorage = CloudStorage(connector: connector)
         let fileCache = FileCache()
         storage = PersistentStorage(fileCache: fileCache, cloudStorage: cloudStorage)
 
