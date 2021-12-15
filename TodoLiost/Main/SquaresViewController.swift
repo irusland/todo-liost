@@ -156,13 +156,15 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate, Authe
         }
     }
 
-    func authorize() {
+    func authorize() -> Bool {
         if !authentificator.isLoggedIn {
             DDLogInfo("Authentification Started")
             endRefresh()
             show(authentificator, sender: self)
+            return false
         } else {
             DDLogInfo("Already authorized")
+            return true
         }
     }
 
@@ -232,6 +234,10 @@ class SmallViewController: SquaresViewController {
     }
 
     @objc func addItem() {
+        guard authorize() else {
+            return
+        }
+        
         let todoItem = TodoItem(text: "")
         DDLogInfo("Generatin new item \(todoItem)")
         storage.add(todoItem)
