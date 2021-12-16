@@ -47,7 +47,7 @@ public struct TodoItem: Equatable {
     let createdAt: Date
     let changedAt: Date
 
-    public init(id: UUID = UUID(), text: String, priority: TodoItemPriority = .normal, deadLine: Date? = nil,  color: UIColor? = nil, createdAt: Date = Date.now, changedAt: Date = Date.now) {
+    public init(id: UUID = UUID(), text: String, priority: TodoItemPriority = .normal, deadLine: Date? = nil, color: UIColor? = nil, createdAt: Date = Date.now, changedAt: Date = Date.now) {
         self.id = id
         self.text = text
         self.priority = priority

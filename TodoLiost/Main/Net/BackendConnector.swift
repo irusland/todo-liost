@@ -15,7 +15,7 @@ class BackendConnector {
         self.authViewController = authViewController
     }
 
-    func getList(handler: @escaping (ListModel?, BackendErrors?) -> (), using session: URLSession = .shared) {
+    func getList(handler: @escaping (ListModel?, BackendErrors?) -> Void, using session: URLSession = .shared) {
         guard let token = authViewController.authCredentials?.accessToken else {
             handler(nil, BackendErrors.tokenIsNone("Token is none"))
             return
@@ -43,7 +43,7 @@ class BackendConnector {
         }
     }
 
-    func merge(with model: MergeModel, handler: @escaping (ListModel?, BackendErrors?) -> (), using session: URLSession = .shared) {
+    func merge(with model: MergeModel, handler: @escaping (ListModel?, BackendErrors?) -> Void, using session: URLSession = .shared) {
         guard let token = authViewController.authCredentials?.accessToken else {
             handler(nil, BackendErrors.tokenIsNone("Token is none"))
             return
@@ -82,7 +82,7 @@ class BackendConnector {
         }
     }
 
-    func add(todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> (), using session: URLSession = .shared) {
+    func add(todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> Void, using session: URLSession = .shared) {
         guard let token = authViewController.authCredentials?.accessToken else {
             handler(nil, BackendErrors.tokenIsNone("Token is none"))
             return
@@ -120,12 +120,12 @@ class BackendConnector {
 
     }
 
-    func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> (), using session: URLSession = .shared) {
+    func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> Void, using session: URLSession = .shared) {
         guard let token = authViewController.authCredentials?.accessToken else {
             handler(nil, BackendErrors.tokenIsNone("Token is none"))
             return
         }
-       
+
         var endpoint: Endpoint?
         do {
             endpoint = try Endpoint.updateItem(with: id, newItemModel: todoItem, last: lastKnownRevision, token: token)
@@ -157,15 +157,15 @@ class BackendConnector {
                 handler(nil, BackendErrors.parseError(body, error))
             }
         }
-        
+
     }
 
-    func remove(by id: UUID, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> (), using session: URLSession = .shared) {
+    func remove(by id: UUID, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> Void, using session: URLSession = .shared) {
         guard let token = authViewController.authCredentials?.accessToken else {
             handler(nil, BackendErrors.tokenIsNone("Token is none"))
             return
         }
-        
+
         var endpoint: Endpoint?
         do {
             endpoint = try Endpoint.deleteItem(with: id, last: lastKnownRevision, token: token)
@@ -176,7 +176,7 @@ class BackendConnector {
             handler(nil, BackendErrors.cannotPrepareEndpoint)
             return
         }
-        
+
         _ = session.request(endpoint) { data, response, error in
             if let backendError = self.checkStatus(response: response) {
                 handler(nil, backendError)
@@ -199,13 +199,13 @@ class BackendConnector {
         }
     }
 
-    func get(by id: UUID, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> (), using session: URLSession = .shared) {
-        
+    func get(by id: UUID, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> Void, using session: URLSession = .shared) {
+
         guard let token = authViewController.authCredentials?.accessToken else {
             handler(nil, BackendErrors.tokenIsNone("Token is none"))
             return
         }
-        
+
         _ = session.request(.item(with: id, last: lastKnownRevision, token: token)) { data, response, error in
             if let backendError = self.checkStatus(response: response) {
                 handler(nil, backendError)

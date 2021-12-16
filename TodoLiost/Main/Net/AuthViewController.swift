@@ -18,11 +18,10 @@ protocol IAuthentificator {
     func authentificationFinished()
 }
 
-
 class AuthViewController: UIViewController, IAuthentificator, URLSessionDataDelegate {
     private(set) var authCredentials: OAuthCredentials?
-    
-    var authentificationDelegate: AuthentificationDelegate?
+
+    weak var authentificationDelegate: AuthentificationDelegate?
 
     lazy var session: URLSession = {
         return URLSession(configuration: .default, delegate: self, delegateQueue: .main)

@@ -30,7 +30,7 @@ class CloudStorage: AsyncItemStorage {
         return items
     }
 
-    func merge(with items: [TodoItem], handler: @escaping ([TodoItem]) -> ()) {
+    func merge(with items: [TodoItem], handler: @escaping ([TodoItem]) -> Void) {
         let itemModels = items.map { item in
             TodoItemModel(from: item, by: deviceId)
         }
@@ -49,7 +49,7 @@ class CloudStorage: AsyncItemStorage {
         })
     }
 
-    func todoItems(returnItems: @escaping ([TodoItem]) -> ()) {
+    func todoItems(returnItems: @escaping ([TodoItem]) -> Void) {
         connector.getList(handler: { model, errors in
             if let errors = errors {
                 DDLogError("Cloud storage got an error \(errors)")
@@ -66,7 +66,7 @@ class CloudStorage: AsyncItemStorage {
 
     func add(_ todoItem: TodoItem, handler: @escaping () -> Void) {
         let model = NewItemModel(element: TodoItemModel(from: todoItem, by: deviceId))
-    
+
         connector.add(todoItem: model, lastKnownRevision: lastKnownRevision, handler: { result, errors in
             if let errors = errors {
                 DDLogError("Cloud storage got an error \(errors)")
@@ -81,9 +81,9 @@ class CloudStorage: AsyncItemStorage {
         })
     }
 
-    func update(at id: UUID, todoItem: TodoItem, handler: @escaping (Bool) -> ()) {
+    func update(at id: UUID, todoItem: TodoItem, handler: @escaping (Bool) -> Void) {
         let model = NewItemModel(element: TodoItemModel(from: todoItem, by: deviceId))
-        
+
         connector.update(at: id, todoItem: model, lastKnownRevision: lastKnownRevision, handler: { result, errors in
             if let errors = errors {
                 DDLogError("Cloud storage got an error \(errors)")
@@ -98,7 +98,7 @@ class CloudStorage: AsyncItemStorage {
         })
     }
 
-    func remove(by id: UUID, handler: @escaping (Bool) -> ()) {
+    func remove(by id: UUID, handler: @escaping (Bool) -> Void) {
         connector.remove(by: id, lastKnownRevision: lastKnownRevision, handler: { result, errors in
             if let errors = errors {
                 DDLogError("Cloud storage got an error \(errors)")
@@ -113,7 +113,7 @@ class CloudStorage: AsyncItemStorage {
         })
     }
 
-    func get(by id: UUID, handler: @escaping (TodoItem?) -> ()) {
+    func get(by id: UUID, handler: @escaping (TodoItem?) -> Void) {
         connector.get(by: id, lastKnownRevision: lastKnownRevision, handler: { result, errors in
             if let errors = errors {
                 DDLogError("Cloud storage got an error \(errors)")

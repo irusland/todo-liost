@@ -16,13 +16,12 @@ protocol ItemStorage {
     func get(by id: UUID) -> TodoItem?
 }
 
-
 protocol AsyncItemStorage {
-    func todoItems(returnItems: @escaping ([TodoItem]) -> ())
-    func add(_ todoItem: TodoItem, handler: @escaping () -> ())
-    func update(at id: UUID, todoItem: TodoItem, handler: @escaping (Bool) -> ())
-    func remove(by id: UUID, handler: @escaping (Bool) -> ())
-    func get(by id: UUID, handler: @escaping (TodoItem?) -> ())
+    func todoItems(returnItems: @escaping ([TodoItem]) -> Void)
+    func add(_ todoItem: TodoItem, handler: @escaping () -> Void)
+    func update(at id: UUID, todoItem: TodoItem, handler: @escaping (Bool) -> Void)
+    func remove(by id: UUID, handler: @escaping (Bool) -> Void)
+    func get(by id: UUID, handler: @escaping (TodoItem?) -> Void)
 }
 
 protocol ISyncStorage {
@@ -32,11 +31,11 @@ protocol ISyncStorage {
 class WebRequestOperation: AsyncOperation {
     var result: [TodoItem]?
     var cloudStorage: CloudStorage
-    
+
     init(cloudStorage: CloudStorage) {
         self.cloudStorage = cloudStorage
     }
-    
+
     override func main() {
         self.cloudStorage.todoItems { items in
             self.result = items
@@ -48,11 +47,11 @@ class WebRequestOperation: AsyncOperation {
 class AwaitingOperation<T>: AsyncOperation {
     var result: T?
     var callable: (@escaping (T) -> Void) -> Void
-    
+
     init(callable: @escaping (@escaping (T) -> Void) -> Void) {
         self.callable = callable
     }
-    
+
     override func main() {
         callable({ items in
             self.result = items
@@ -187,7 +186,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
 
         opQueue.addOperation(alertOp)
     }
-    
+
     private func logResults<T>(localResult: T, netResult: T?) {
         if let result = netResult {
             DDLogInfo("\nLocal expected:\n\(localResult)\nNet actual:\n\(result)")
@@ -232,7 +231,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
         DDLogInfo("Consistant operation started")
         return localResult
     }
-    
+
     private func withSyncronization<T: Equatable>(fromLocal: () -> T, fromNetwork: @escaping (@escaping (T) -> Void) -> Void) -> T {
         let localResult = fromLocal()
         DDLogInfo("Consistant operation got from local")

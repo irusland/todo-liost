@@ -148,7 +148,7 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate, Authe
             self?.present(alertController, animated: true, completion: nil)
         }
     }
-    
+
     func authentificationFinished() {
         DispatchQueue.main.async { [weak self] in
             DDLogInfo("Authentification finished")
@@ -192,7 +192,7 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate, Authe
             }
         }
     }
-    
+
     @objc func loadData() {
         if !authentificator.isLoggedIn {
             authorize()
@@ -237,7 +237,7 @@ class SmallViewController: SquaresViewController {
         guard authorize() else {
             return
         }
-        
+
         let todoItem = TodoItem(text: "")
         DDLogInfo("Generatin new item \(todoItem)")
         storage.add(todoItem)
