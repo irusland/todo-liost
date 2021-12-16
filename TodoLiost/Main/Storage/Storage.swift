@@ -150,14 +150,14 @@ class ComparisonOperation<T: Equatable>: Operation {
 class PersistentStorage: ItemStorage, ISyncStorage {
     var todoItems: [TodoItem] {
         get {
-            withConsistancy(fromLocal: {
+            withSyncronization(fromLocal: {
                 return self.fileCache.todoItems
             }, fromNetwork: self.cloudStorage.todoItems)
         }
     }
 
     private func withConsistancy(fromLocal: () -> Void, fromNetwork: @escaping () -> Void) {
-        withConsistancy { () -> Bool in
+        withSyncronization { () -> Bool in
             fromLocal()
             return true
         } fromNetwork: {
@@ -196,7 +196,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
         }
     }
 
-    private func withConsistancy<T: Equatable>(fromLocal: () -> T, fromNetwork: @escaping () -> T) -> T {
+    private func withSyncronization<T: Equatable>(fromLocal: () -> T, fromNetwork: @escaping () -> T) -> T {
         let localResult = fromLocal()
         DDLogInfo("Consistant operation got from local")
 
@@ -233,7 +233,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
         return localResult
     }
     
-    private func withConsistancy<T: Equatable>(fromLocal: () -> T, fromNetwork: @escaping (@escaping (T) -> Void) -> Void) -> T {
+    private func withSyncronization<T: Equatable>(fromLocal: () -> T, fromNetwork: @escaping (@escaping (T) -> Void) -> Void) -> T {
         let localResult = fromLocal()
         DDLogInfo("Consistant operation got from local")
         let asyncOp = AwaitingOperation(callable: fromNetwork)
@@ -275,7 +275,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
     }
 
     func update(at id: UUID, todoItem: TodoItem) -> Bool {
-        return withConsistancy {
+        return withSyncronization {
             return fileCache.update(at: id, todoItem: todoItem)
         } fromNetwork: { handler in
             return self.cloudStorage.update(at: id, todoItem: todoItem, handler: handler)
@@ -283,7 +283,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
     }
 
     func remove(by id: UUID) -> Bool {
-        return withConsistancy {
+        return withSyncronization {
             return fileCache.remove(by: id)
         } fromNetwork: { handler in
             return self.cloudStorage.remove(by: id, handler: handler)
@@ -292,7 +292,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
     }
 
     func get(by id: UUID) -> TodoItem? {
-        return withConsistancy {
+        return withSyncronization {
             return fileCache.get(by: id)
         } fromNetwork: { handler in
             return self.cloudStorage.get(by: id, handler: handler)
