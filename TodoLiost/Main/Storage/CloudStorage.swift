@@ -113,18 +113,18 @@ class CloudStorage: AsyncItemStorage {
         })
     }
 
-    func get(by id: UUID) -> TodoItem? {
-        do {
-            guard let result = try connector.get(by: id, lastKnownRevision: lastKnownRevision) else {
-                DDLogInfo("Empty result")
-                return nil
+    func get(by id: UUID, handler: @escaping (TodoItem?) -> ()) {
+        connector.get(by: id, lastKnownRevision: lastKnownRevision, handler: { result, errors in
+            if let errors = errors {
+                DDLogError("Cloud storage got an error \(errors)")
+                handler(nil)
             }
-
-            lastKnownRevision = result.revision
-            return TodoItem(result.element)
-        } catch {
-            DDLogError("Cloud storage got an error \(error)")
-        }
-        return nil
+            guard let result = result else {
+                handler(nil)
+                return
+            }
+            self.lastKnownRevision = result.revision
+            handler(TodoItem(result.element))
+        })
     }
 }
