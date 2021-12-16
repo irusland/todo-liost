@@ -120,26 +120,27 @@ class BackendConnector {
 
     }
 
-    func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {
-        let sem = DispatchSemaphore(value: 0)
+    func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> (), using session: URLSession = .shared) {
         guard let token = authViewController.authCredentials?.accessToken else {
-            throw BackendErrors.tokenIsNone("Token is none")
+            handler(nil, BackendErrors.tokenIsNone("Token is none"))
+            return
         }
-        var result: NewItemResponse?
+       
         var endpoint: Endpoint?
         do {
             endpoint = try Endpoint.updateItem(with: id, newItemModel: todoItem, last: lastKnownRevision, token: token)
         } catch {
-            throw BackendErrors.cannotPrepareEndpoint
+            handler(nil, BackendErrors.cannotPrepareEndpoint)
         }
         guard let endpoint = endpoint else {
-            throw BackendErrors.cannotPrepareEndpoint
+            handler(nil, BackendErrors.cannotPrepareEndpoint)
+            return
         }
 
-        var backendError: BackendErrors?
         _ = session.request(endpoint) { data, response, error in
-            defer { sem.signal() }
-            backendError = self.checkStatus(response: response)
+            if let backendError = self.checkStatus(response: response) {
+                handler(nil, backendError)
+            }
             guard let body = data else {
                 DDLogError("Data is empty")
                 return
@@ -148,17 +149,15 @@ class BackendConnector {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             decoder.dateDecodingStrategy = .millisecondsSince1970
             do {
-                result = try decoder.decode(NewItemResponse.self, from: body)
-                DDLogInfo("Got \(String(describing: result))")
+                let listResponse = try decoder.decode(NewItemResponse.self, from: body)
+                DDLogInfo("Got list \(String(describing: listResponse))")
+                handler(listResponse, nil)
             } catch {
                 DDLogInfo("Cannot parse \(body) \(error)")
+                handler(nil, BackendErrors.parseError(body, error))
             }
         }
-        sem.wait()
-        if let error = backendError {
-            throw error
-        }
-        return result
+        
     }
 
     func remove(by id: UUID, lastKnownRevision: Int32, using session: URLSession = .shared) throws -> NewItemResponse? {

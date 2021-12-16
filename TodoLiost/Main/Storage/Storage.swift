@@ -20,7 +20,7 @@ protocol ItemStorage {
 protocol AsyncItemStorage {
     func todoItems(returnItems: @escaping ([TodoItem]) -> ())
     func add(_ todoItem: TodoItem, handler: @escaping () -> ())
-    func update(at id: UUID, todoItem: TodoItem) -> Bool
+    func update(at id: UUID, todoItem: TodoItem, handler: @escaping (Bool) -> ())
     func remove(by id: UUID) -> Bool
     func get(by id: UUID) -> TodoItem?
 }
@@ -277,8 +277,8 @@ class PersistentStorage: ItemStorage, ISyncStorage {
     func update(at id: UUID, todoItem: TodoItem) -> Bool {
         return withConsistancy {
             return fileCache.update(at: id, todoItem: todoItem)
-        } fromNetwork: {
-            return self.cloudStorage.update(at: id, todoItem: todoItem)
+        } fromNetwork: { handler in
+            return self.cloudStorage.update(at: id, todoItem: todoItem, handler: handler)
         }
     }
 
