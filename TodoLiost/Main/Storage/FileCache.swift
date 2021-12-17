@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CocoaLumberjack
 
 typealias DataFile = [String: Any]
 
@@ -14,28 +15,54 @@ private enum FileCacheErrors: Error {
 }
 
 class FileCache: ItemStorage {
-    public var todoItems: [TodoItem]
     private let itemKey: String = "items"
-
-    public init(todoItems: [TodoItem] = []) {
-        self.todoItems = todoItems
+    private let coreDataStorage: CoreDataStorage
+    
+    init(coreDataStorage: CoreDataStorage) {
+        self.coreDataStorage = coreDataStorage
+        self._todoItems = []
+        coreDataStorage.getAll{ DBItems in
+            DDLogInfo("Current items in DB:\n\(DBItems)\nIn mem:\n\(self._todoItems)")
+            self._todoItems = DBItems
+        }
+    }
+    private var _todoItems: [TodoItem]
+    public var todoItems: [TodoItem]
+    {
+        get {
+            coreDataStorage.getAll { DBItems in
+                DDLogInfo("Current items in DB:\n\(DBItems)\nIn mem:\n\(self._todoItems)")
+                
+            }
+            return _todoItems
+        }
+    }
+    
+    func flush() {
+        _todoItems = []
     }
 
     public func add(_ todoItem: TodoItem) {
-        if self.todoItems.contains(where: { item in
+        coreDataStorage.add(todoItem) {
+            DDLogInfo("Item Added to DB")
+        }
+        if self._todoItems.contains(where: { item in
             item.id == todoItem.id
         }) {
             return
         }
-        self.todoItems.append(todoItem)
+        self._todoItems.append(todoItem)
     }
 
     public func update(at id: UUID, todoItem: TodoItem) -> Bool {
+        coreDataStorage.update(at: id, todoItem: todoItem) { wasSuccessful in
+            DDLogInfo("Update in DB finished with \(wasSuccessful ? "success" : "fail")")
+        }
         guard let itemIndex = getIndex(by: id) else {
             return false
         }
-        self.todoItems.remove(at: itemIndex)
-        self.todoItems.insert(todoItem, at: itemIndex)
+        self._todoItems.remove(at: itemIndex)
+        self._todoItems.insert(todoItem, at: itemIndex)
         return true
     }
 
@@ -44,14 +71,20 @@ class FileCache: ItemStorage {
     }
 
     public func remove(by id: UUID) -> Bool {
+        coreDataStorage.remove(by: id) { wasSuccessful in
+            DDLogInfo("Delete in DB finished with \(wasSuccessful ? "success" : "fail")")
+        }
         guard let itemIndex = getIndex(by: id) else {
             return false
         }
-        self.todoItems.remove(at: itemIndex)
+        self._todoItems.remove(at: itemIndex)
         return true
     }
 
     public func get(by id: UUID) -> TodoItem? {
+        coreDataStorage.get(by: id) { todoItem in
+            DDLogInfo("Item from DB: \(todoItem)")
+        }
         return self.todoItems.first(where: { $0.id == id })
     }
 
@@ -102,7 +135,7 @@ class FileCache: ItemStorage {
             }
             for rawTodoItem in rawTodoItems {
                 if let todoItem = TodoItem.parse(json: rawTodoItem) {
-                    self.todoItems.append(todoItem)
+                    self._todoItems.append(todoItem)
                 }
             }
 

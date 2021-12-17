@@ -168,7 +168,7 @@ class SquaresViewController: UICollectionViewController, NotifierDelegate, Authe
         }
     }
 
-    private func sync() {
+    func sync() {
         if !authentificator.isLoggedIn {
             authorize()
         } else {
