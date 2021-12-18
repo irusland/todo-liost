@@ -35,6 +35,7 @@ class FileCache: ItemStorage {
     }
     
     func flush() {
+        coreDataStorage.flush()
         _todoItems = []
     }
 

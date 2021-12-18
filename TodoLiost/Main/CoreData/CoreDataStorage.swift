@@ -16,6 +16,21 @@ class CoreDataStorage: AsyncItemStorage {
         self.coreDataStack = coreDataStack
     }
     
+    func flush() {
+        coreDataStack.context.perform { [self] in
+            let fetchRequest: NSFetchRequest<TodoItemDBModel> = TodoItemDBModel.fetchRequest()
+            do {
+                for object in try self.coreDataStack.context.fetch(fetchRequest) {
+                    DDLogInfo("DELETING \(object)")
+                    self.coreDataStack.context.delete(object)
+                }
+            } catch {
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
+        }
+    }
+    
     func todoItems(returnItems: @escaping ([TodoItem]) -> Void) {
         coreDataStack.context.perform {
             let fetchRequest: NSFetchRequest<TodoItemDBModel> = TodoItemDBModel.fetchRequest()
