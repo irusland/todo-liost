@@ -21,7 +21,7 @@ class FileCache: ItemStorage {
     init(coreDataStorage: CoreDataStorage) {
         self.coreDataStorage = coreDataStorage
         self._todoItems = []
-        coreDataStorage.getAll{ DBItems in
+        coreDataStorage.todoItems { DBItems in
             DDLogInfo("Current items in DB:\n\(DBItems)\nIn mem:\n\(self._todoItems)")
             self._todoItems = DBItems
         }
@@ -30,10 +30,6 @@ class FileCache: ItemStorage {
     public var todoItems: [TodoItem]
     {
         get {
-            coreDataStorage.getAll { DBItems in
-                DDLogInfo("Current items in DB:\n\(DBItems)\nIn mem:\n\(self._todoItems)")
-                
-            }
             return _todoItems
         }
     }
@@ -43,9 +39,16 @@ class FileCache: ItemStorage {
     }
 
     public func add(_ todoItem: TodoItem) {
-        coreDataStorage.add(todoItem) {
-            DDLogInfo("Item Added to DB")
+        coreDataStorage.get(by: todoItem.id) { item in
+            if item != nil {
+                return
+            } else {
+                self.coreDataStorage.add(todoItem) {
+                    DDLogInfo("Item Added to DB")
+                }
+            }
         }
+
         if self._todoItems.contains(where: { item in
             item.id == todoItem.id
         }) {

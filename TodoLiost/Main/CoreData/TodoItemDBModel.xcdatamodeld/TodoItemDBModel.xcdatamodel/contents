@@ -2,7 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20G165" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="TodoItemDBModel" representedClassName="TodoItemDBModel" syncable="YES">
         <attribute name="changedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="color" optional="YES" attributeType="Transformable"/>
+        <attribute name="color" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="."/>
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="deadLine" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>

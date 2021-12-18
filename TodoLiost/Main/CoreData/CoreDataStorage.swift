@@ -14,33 +14,6 @@ class CoreDataStorage: AsyncItemStorage {
 
     init(coreDataStack: CoreDataStack) {
         self.coreDataStack = coreDataStack
-        
-//        let fetchRequest: NSFetchRequest<TodoItemDBModel> = TodoItemDBModel.fetchRequest()
-//        do {
-//            for object in try coreDataStack.context.fetch(fetchRequest) {
-//                DDLogInfo("DELETING \(object)")
-//                coreDataStack.context.delete(object)
-//            }
-//        } catch {
-//            let nserror = error as NSError
-//            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-//        }
-    }
-    
-    func getAll(callback: @escaping ([TodoItem]) -> Void) {
-        let fetchRequest: NSFetchRequest<TodoItemDBModel> = TodoItemDBModel.fetchRequest()
-        do {
-            let objects = try coreDataStack.context.fetch(fetchRequest)
-            callback(objects.map({ modelDB in
-                guard let item = TodoItem.init(from: modelDB) else {
-                    fatalError("Cannot map DB item \(modelDB) from \(objects)")
-                }
-                return item
-            }))
-        } catch {
-            let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-        }
     }
     
     func todoItems(returnItems: @escaping ([TodoItem]) -> Void) {
@@ -67,6 +40,7 @@ class CoreDataStorage: AsyncItemStorage {
             let person = TodoItemDBModel(context: self.coreDataStack.context)
             person.fill(with: todoItem)
             self.coreDataStack.commit()
+            DDLogInfo("DB item added \(todoItem)")
             handler()
         }
     }
@@ -110,7 +84,6 @@ class CoreDataStorage: AsyncItemStorage {
                 }
                 DDLogInfo("Got object from DB \(item)")
                 self.coreDataStack.context.delete(item)
-//                self.coreDataStack.commit()
                 handler(true)
             } catch {
                 let nserror = error as NSError
