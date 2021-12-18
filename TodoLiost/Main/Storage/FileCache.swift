@@ -17,7 +17,7 @@ private enum FileCacheErrors: Error {
 class FileCache: ItemStorage {
     private let itemKey: String = "items"
     private let coreDataStorage: CoreDataStorage
-    
+
     init(coreDataStorage: CoreDataStorage) {
         self.coreDataStorage = coreDataStorage
         self._todoItems = []
@@ -27,13 +27,12 @@ class FileCache: ItemStorage {
         }
     }
     private var _todoItems: [TodoItem]
-    public var todoItems: [TodoItem]
-    {
+    public var todoItems: [TodoItem] {
         get {
             return _todoItems
         }
     }
-    
+
     func flush() {
         coreDataStorage.flush()
         _todoItems = []

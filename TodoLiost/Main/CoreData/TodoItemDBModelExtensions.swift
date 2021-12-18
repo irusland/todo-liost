@@ -20,7 +20,6 @@ extension TodoItemDBModel {
     }
 }
 
-
 extension TodoItem {
     init?(from todoItem: TodoItemDBModel) {
         self.id = todoItem.id

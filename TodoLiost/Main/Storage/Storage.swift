@@ -153,7 +153,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
     func flush() {
         self.fileCache.flush()
     }
-    
+
     var todoItems: [TodoItem] {
         get {
             withSyncronization(fromLocal: {

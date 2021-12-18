@@ -15,7 +15,7 @@ class CoreDataStorage: AsyncItemStorage {
     init(coreDataStack: CoreDataStack) {
         self.coreDataStack = coreDataStack
     }
-    
+
     func flush() {
         coreDataStack.context.perform { [self] in
             let fetchRequest: NSFetchRequest<TodoItemDBModel> = TodoItemDBModel.fetchRequest()
@@ -30,7 +30,7 @@ class CoreDataStorage: AsyncItemStorage {
             }
         }
     }
-    
+
     func todoItems(returnItems: @escaping ([TodoItem]) -> Void) {
         coreDataStack.context.perform {
             let fetchRequest: NSFetchRequest<TodoItemDBModel> = TodoItemDBModel.fetchRequest()
@@ -49,7 +49,7 @@ class CoreDataStorage: AsyncItemStorage {
             }
         }
     }
-    
+
     func add(_ todoItem: TodoItem, handler: @escaping () -> Void) {
         coreDataStack.context.perform {
             let person = TodoItemDBModel(context: self.coreDataStack.context)
@@ -59,7 +59,7 @@ class CoreDataStorage: AsyncItemStorage {
             handler()
         }
     }
-    
+
     func update(at id: UUID, todoItem: TodoItem, handler: @escaping (Bool) -> Void) {
         coreDataStack.context.perform {
             let fetchRequest: NSFetchRequest<TodoItemDBModel> = TodoItemDBModel.fetchRequest()
@@ -83,7 +83,7 @@ class CoreDataStorage: AsyncItemStorage {
             }
         }
     }
-    
+
     func remove(by id: UUID, handler: @escaping (Bool) -> Void) {
         coreDataStack.context.perform {
             let fetchRequest: NSFetchRequest<TodoItemDBModel> = TodoItemDBModel.fetchRequest()
@@ -106,7 +106,7 @@ class CoreDataStorage: AsyncItemStorage {
             }
         }
     }
-    
+
     func get(by id: UUID, handler: @escaping (TodoItem?) -> Void) {
         coreDataStack.context.perform {
             let fetchRequest: NSFetchRequest<TodoItemDBModel> = TodoItemDBModel.fetchRequest()
@@ -120,7 +120,7 @@ class CoreDataStorage: AsyncItemStorage {
                     handler(nil)
                     return
                 }
-                
+
                 let todoItem = TodoItem(from: item)
                 DDLogInfo("Got object from DB \(item) = \(String(describing: todoItem))")
                 handler(todoItem)

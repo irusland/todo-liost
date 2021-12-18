@@ -10,7 +10,7 @@ import CoreData
 class CoreDataStack {
     private var modelName: String = "TodoItemDBModel"
     private var filename: String = "DataModel.sql"
-    
+
     lazy var context: NSManagedObjectContext = {
         var managedObjectContext = NSManagedObjectContext(
             concurrencyType: .privateQueueConcurrencyType)
@@ -18,17 +18,17 @@ class CoreDataStack {
         managedObjectContext.persistentStoreCoordinator = self.psc
         return managedObjectContext
     }()
-    
+
     lazy var psc: NSPersistentStoreCoordinator = {
         let coordinator = NSPersistentStoreCoordinator(
             managedObjectModel: self.managedObjectModel)
-        
+
         let dirURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last
         let fileURL = URL(string: self.filename, relativeTo: dirURL)
         do {
             let options =
-                [NSMigratePersistentStoresAutomaticallyOption : true]
-            
+                [NSMigratePersistentStoresAutomaticallyOption: true]
+
             try coordinator.addPersistentStore(ofType: NSSQLiteStoreType,
                                        configurationName: nil,
                                        at: fileURL, options: nil)
@@ -37,7 +37,7 @@ class CoreDataStack {
         }
         return coordinator
     }()
-    
+
     lazy var managedObjectModel: NSManagedObjectModel = {
         guard let modelURL = Bundle.main.url(forResource: self.modelName,
                                              withExtension: "momd") else {
@@ -49,7 +49,7 @@ class CoreDataStack {
 
         return mom
     }()
-    
+
     func commit () {
         if context.hasChanges {
             do {

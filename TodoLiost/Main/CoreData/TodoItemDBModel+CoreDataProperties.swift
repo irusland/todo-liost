@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 
-
 extension TodoItemDBModel {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<TodoItemDBModel> {
@@ -26,6 +25,6 @@ extension TodoItemDBModel {
 
 }
 
-extension TodoItemDBModel : Identifiable {
+extension TodoItemDBModel: Identifiable {
 
 }
