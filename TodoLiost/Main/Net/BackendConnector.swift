@@ -15,54 +15,14 @@ class BackendConnector {
         self.authViewController = authViewController
     }
 
-    func getList(handler: @escaping (ListModel?, BackendErrors?) -> Void, using session: URLSession = .shared) {
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(nil, BackendErrors.tokenIsNone("Token is none"))
-            return
-        }
-
-        _ = session.request(.list(token: token)) { data, response, error in
-            if let backendError = self.checkStatus(response: response) {
-                handler(nil, backendError)
-            }
-            guard let body = data else {
-                DDLogError("Data is empty")
-                return
-            }
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            decoder.dateDecodingStrategy = .millisecondsSince1970
-            do {
-                let listResponse = try decoder.decode(ListModel.self, from: body)
-                DDLogInfo("Got list \(String(describing: listResponse))")
-                handler(listResponse, nil)
-            } catch {
-                DDLogInfo("Cannot parse \(body) \(error)")
-                handler(nil, BackendErrors.parseError(body, error))
-            }
-        }
-    }
-
-    func merge(with model: MergeModel, handler: @escaping (ListModel?, BackendErrors?) -> Void, using session: URLSession = .shared) {
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(nil, BackendErrors.tokenIsNone("Token is none"))
-            return
-        }
-
-        var endpoint: Endpoint?
-        do {
-            endpoint = try Endpoint.merge(with: model, token: token)
-        } catch {
-            handler(nil, BackendErrors.cannotPrepareEndpoint)
-        }
-        guard let endpoint = endpoint else {
-            handler(nil, BackendErrors.cannotPrepareEndpoint)
-            return
-        }
-
+    private func request<T: Decodable>(
+        endpoint: Endpoint,
+        with handler: @escaping (Result<T, BackendError>) -> Void,
+        using session: URLSession = .shared
+    ) {
         _ = session.request(endpoint) { data, response, error in
             if let backendError = self.checkStatus(response: response) {
-                handler(nil, backendError)
+                handler(Result.failure(backendError))
             }
             guard let body = data else {
                 DDLogError("Data is empty")
@@ -72,163 +32,84 @@ class BackendConnector {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             decoder.dateDecodingStrategy = .millisecondsSince1970
             do {
-                let listResponse = try decoder.decode(ListModel.self, from: body)
-                DDLogInfo("Got list \(String(describing: listResponse))")
-                handler(listResponse, nil)
+                let response = try decoder.decode(T.self, from: body)
+                DDLogInfo("Got \(String(describing: response))")
+                handler(Result.success(response))
             } catch {
                 DDLogInfo("Cannot parse \(body) \(error)")
-                handler(nil, BackendErrors.parseError(body, error))
+                handler(Result.failure(BackendError.parseError(body, error)))
             }
         }
     }
 
-    func add(todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> Void, using session: URLSession = .shared) {
+    private func prepareEndpoint(endpointInitialiser: (String) throws -> Endpoint?) -> Result<Endpoint, BackendError> {
         guard let token = authViewController.authCredentials?.accessToken else {
-            handler(nil, BackendErrors.tokenIsNone("Token is none"))
-            return
+            return Result.failure(BackendError.tokenIsNone("Token is none"))
         }
         var endpoint: Endpoint?
         do {
-            endpoint = try Endpoint.newItem(with: todoItem, last: lastKnownRevision, token: token)
+            endpoint = try endpointInitialiser(token)
         } catch {
-            handler(nil, BackendErrors.cannotPrepareEndpoint)
+            return Result.failure(BackendError.cannotPrepareEndpoint)
         }
         guard let endpoint = endpoint else {
-            handler(nil, BackendErrors.cannotPrepareEndpoint)
-            return
+            return Result.failure(BackendError.cannotPrepareEndpoint)
         }
-        _ = session.request(endpoint) { data, response, error in
-            if let backendError = self.checkStatus(response: response) {
-                handler(nil, backendError)
-            }
-            guard let body = data else {
-                DDLogError("Data is empty")
-                return
-            }
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            decoder.dateDecodingStrategy = .millisecondsSince1970
-            do {
-                let listResponse = try decoder.decode(NewItemResponse.self, from: body)
-                DDLogInfo("Got list \(String(describing: listResponse))")
-                handler(listResponse, nil)
-            } catch {
-                DDLogInfo("Cannot parse \(body) \(error)")
-                handler(nil, BackendErrors.parseError(body, error))
-            }
-        }
-
+        return Result.success(endpoint)
     }
 
-    func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> Void, using session: URLSession = .shared) {
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(nil, BackendErrors.tokenIsNone("Token is none"))
+    private func tryRequest<T: Decodable>(
+        handler: @escaping (Result<T, BackendError>) -> Void,
+        endpoint endpointInitialiser: (String) throws -> Endpoint?,
+        using session: URLSession = .shared
+    ) {
+        let preparation = prepareEndpoint(endpointInitialiser: endpointInitialiser)
+        switch preparation {
+        case .success(let endpoint):
+            self.request(endpoint: endpoint, with: handler)
             return
-        }
-
-        var endpoint: Endpoint?
-        do {
-            endpoint = try Endpoint.updateItem(with: id, newItemModel: todoItem, last: lastKnownRevision, token: token)
-        } catch {
-            handler(nil, BackendErrors.cannotPrepareEndpoint)
-        }
-        guard let endpoint = endpoint else {
-            handler(nil, BackendErrors.cannotPrepareEndpoint)
-            return
-        }
-
-        _ = session.request(endpoint) { data, response, error in
-            if let backendError = self.checkStatus(response: response) {
-                handler(nil, backendError)
-            }
-            guard let body = data else {
-                DDLogError("Data is empty")
-                return
-            }
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            decoder.dateDecodingStrategy = .millisecondsSince1970
-            do {
-                let listResponse = try decoder.decode(NewItemResponse.self, from: body)
-                DDLogInfo("Got list \(String(describing: listResponse))")
-                handler(listResponse, nil)
-            } catch {
-                DDLogInfo("Cannot parse \(body) \(error)")
-                handler(nil, BackendErrors.parseError(body, error))
-            }
-        }
-
-    }
-
-    func remove(by id: UUID, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> Void, using session: URLSession = .shared) {
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(nil, BackendErrors.tokenIsNone("Token is none"))
-            return
-        }
-
-        var endpoint: Endpoint?
-        do {
-            endpoint = try Endpoint.deleteItem(with: id, last: lastKnownRevision, token: token)
-        } catch {
-            handler(nil, BackendErrors.cannotPrepareEndpoint)
-        }
-        guard let endpoint = endpoint else {
-            handler(nil, BackendErrors.cannotPrepareEndpoint)
-            return
-        }
-
-        _ = session.request(endpoint) { data, response, error in
-            if let backendError = self.checkStatus(response: response) {
-                handler(nil, backendError)
-            }
-            guard let body = data else {
-                DDLogError("Data is empty")
-                return
-            }
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            decoder.dateDecodingStrategy = .millisecondsSince1970
-            do {
-                let listResponse = try decoder.decode(NewItemResponse.self, from: body)
-                DDLogInfo("Got list \(String(describing: listResponse))")
-                handler(listResponse, nil)
-            } catch {
-                DDLogInfo("Cannot parse \(body) \(error)")
-                handler(nil, BackendErrors.parseError(body, error))
-            }
+        case .failure(let error):
+            handler(Result.failure(error))
         }
     }
 
-    func get(by id: UUID, lastKnownRevision: Int32, handler: @escaping (NewItemResponse?, BackendErrors?) -> Void, using session: URLSession = .shared) {
-
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(nil, BackendErrors.tokenIsNone("Token is none"))
-            return
-        }
-
-        _ = session.request(.item(with: id, last: lastKnownRevision, token: token)) { data, response, error in
-            if let backendError = self.checkStatus(response: response) {
-                handler(nil, backendError)
-            }
-            guard let body = data else {
-                DDLogError("Data is empty")
-                return
-            }
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            decoder.dateDecodingStrategy = .millisecondsSince1970
-            do {
-                let listResponse = try decoder.decode(NewItemResponse.self, from: body)
-                DDLogInfo("Got list \(String(describing: listResponse))")
-                handler(listResponse, nil)
-            } catch {
-                DDLogInfo("Cannot parse \(body) \(error)")
-                handler(nil, BackendErrors.parseError(body, error))
-            }
+    func getList(handler: @escaping (Result<ListModel, BackendError>) -> Void, using session: URLSession = .shared) {
+        tryRequest(handler: handler) { token in
+            .list(token: token)
         }
     }
 
-    private func checkStatus(response: URLResponse?) -> BackendErrors? {
+    func merge(with model: MergeModel, handler: @escaping (Result<ListModel, BackendError>) -> Void, using session: URLSession = .shared) {
+        tryRequest(handler: handler) { token in
+            try .merge(with: model, token: token)
+        }
+    }
+
+    func add(todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendError>) -> Void, using session: URLSession = .shared) {
+        tryRequest(handler: handler) { token in
+            try .newItem(with: todoItem, last: lastKnownRevision, token: token)
+        }
+    }
+
+    func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendError>) -> Void, using session: URLSession = .shared) {
+        tryRequest(handler: handler) { token in
+            try .updateItem(with: id, newItemModel: todoItem, last: lastKnownRevision, token: token)
+        }
+    }
+
+    func remove(by id: UUID, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendError>) -> Void, using session: URLSession = .shared) {
+        tryRequest(handler: handler) { token in
+            try .deleteItem(with: id, last: lastKnownRevision, token: token)
+        }
+    }
+
+    func get(by id: UUID, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendError>) -> Void, using session: URLSession = .shared) {
+        tryRequest(handler: handler) { token in
+            .item(with: id, last: lastKnownRevision, token: token)
+        }
+    }
+
+    private func checkStatus(response: URLResponse?) -> BackendError? {
         guard let response = response as? HTTPURLResponse else {
             DDLogError("Response is nil")
             return nil
@@ -237,11 +118,11 @@ class BackendConnector {
         case 200:
             return nil
         case 400:
-            return BackendErrors.unsynchronizedRevision
+            return BackendError.unsynchronizedRevision
         case 404:
-            return BackendErrors.notFound
+            return BackendError.notFound
         case 401:
-            return BackendErrors.unauthorized
+            return BackendError.unauthorized
         default:
             return nil
         }

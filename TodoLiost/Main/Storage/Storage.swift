@@ -14,6 +14,7 @@ protocol ItemStorage {
     func update(at id: UUID, todoItem: TodoItem) -> Bool
     func remove(by id: UUID) -> Bool
     func get(by id: UUID) -> TodoItem?
+    func flush()
 }
 
 protocol AsyncItemStorage {
@@ -70,6 +71,7 @@ class UpdateCacheOperation: AsyncOperation {
 
     override func main() {
         guard let items = self.newItems else { return }
+        self.storage.flush()
         for item in items {
             if self.storage.update(at: item.id, todoItem: item) {
                 DDLogInfo("Item \(item.id) updated")
@@ -116,6 +118,7 @@ class AlertOperation: Operation {
 @objc protocol NotifierDelegate {
     func operationFinished()
     func errorOcurred(alertController: UIAlertController)
+    func sync()
 }
 
 class ExecutionOperation<T>: BlockOperation {
@@ -147,6 +150,10 @@ class ComparisonOperation<T: Equatable>: Operation {
 }
 
 class PersistentStorage: ItemStorage, ISyncStorage {
+    func flush() {
+        self.fileCache.flush()
+    }
+
     var todoItems: [TodoItem] {
         get {
             withSyncronization(fromLocal: {
@@ -171,7 +178,7 @@ class PersistentStorage: ItemStorage, ISyncStorage {
                 DDLogWarn("User canceled sync")
             }),
             ("Sync", { (_: UIAlertAction!) in
-                self.sync()
+                self.notifierDelegate?.sync()
             })
         ]
         displayError(message: "Server sync needed", actions: actions)

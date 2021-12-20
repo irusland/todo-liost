@@ -64,7 +64,7 @@ extension Endpoint {
             let body = try encoder.encode(mergeModel)
             return Endpoint(path: "list", body: body, token: token, method: "PATCH")
         } catch {
-            throw BackendErrors.encodingError("Cannot encode data: \(mergeModel)")
+            throw BackendError.encodingError("Cannot encode data: \(mergeModel)")
         }
     }
     static func item(with id: UUID, last revision: Int32, token: OAuth) -> Self {
@@ -77,7 +77,7 @@ extension Endpoint {
             let body = try encoder.encode(newItemModel)
             return Endpoint(path: "list", body: body, token: token, lastRevision: revision, method: "POST")
         } catch {
-            throw BackendErrors.encodingError("Cannot encode data: \(newItemModel)")
+            throw BackendError.encodingError("Cannot encode data: \(newItemModel)")
         }
     }
     static func updateItem(with id: UUID, newItemModel: NewItemModel, last revision: Int32, token: OAuth) throws -> Self {
@@ -87,7 +87,7 @@ extension Endpoint {
             let body = try encoder.encode(newItemModel)
             return Endpoint(path: "list/\(id)", body: body, token: token, lastRevision: revision, method: "PUT")
         } catch {
-            throw BackendErrors.encodingError("Cannot encode data: \(newItemModel)")
+            throw BackendError.encodingError("Cannot encode data: \(newItemModel)")
         }
     }
     static func deleteItem(with id: UUID, last revision: Int32, token: OAuth) throws -> Self {

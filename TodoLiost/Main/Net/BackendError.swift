@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum BackendErrors: Error {
+public enum BackendError: Error {
     case dataIsEmpty(String)
     case tokenIsNone(String)
     case encodingError(String)
