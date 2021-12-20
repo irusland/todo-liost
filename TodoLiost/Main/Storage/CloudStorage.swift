@@ -35,17 +35,16 @@ class CloudStorage: AsyncItemStorage {
             TodoItemModel(from: item, by: deviceId)
         }
         let model = MergeModel(list: itemModels)
-        connector.merge(with: model, handler: { model, errors in
-            if let errors = errors {
-                DDLogError("Cloud storage got an error \(errors)")
-                handler([])
-            }
-            guard let model = model else {
+        connector.merge(with: model, handler: { result in
+            switch result {
+            case .failure(let error):
+                DDLogError("Cloud storage got an error \(error)")
                 handler([])
                 return
+            case .success(let model):
+                self.lastKnownRevision = model.revision
+                handler(self.convert(listModel: model))
             }
-            self.lastKnownRevision = model.revision
-            handler(self.convert(listModel: model))
         })
     }
 
