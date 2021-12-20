@@ -7,16 +7,22 @@
 
 import UIKit
 import CocoaLumberjack
+import Foundation
 
-class SquaresViewController: UICollectionViewController {
-    var fileCache: FileCache
+class SquaresViewController: UICollectionViewController, NotifierDelegate, AuthentificationDelegate {
+    var storage: PersistentStorage
     var todoItemDetailViewController: TodoItemDetailViewController
+    var connector: BackendConnector
 
     var layoutTag: LayoutSize = .small
 
-    init(collectionViewLayout layout: UICollectionViewLayout, _ fileCache: FileCache, _ todoItemDetailViewController: TodoItemDetailViewController) {
-        self.fileCache = fileCache
+    private var authentificator: AuthViewController
+
+    init(collectionViewLayout layout: UICollectionViewLayout, _ storage: PersistentStorage, _ todoItemDetailViewController: TodoItemDetailViewController, _ authentificator: AuthViewController, _ connector: BackendConnector) {
+        self.storage = storage
         self.todoItemDetailViewController = todoItemDetailViewController
+        self.authentificator = authentificator
+        self.connector = connector
         super.init(collectionViewLayout: layout)
     }
 
@@ -49,7 +55,7 @@ class SquaresViewController: UICollectionViewController {
     }()
 
     func showItemDetails(_ indexPath: IndexPath) {
-        let itemToShow = fileCache.todoItems[indexPath.item]
+        let itemToShow = storage.todoItems[indexPath.item]
         todoItemDetailViewController.loadItem(item: itemToShow)
         DDLogInfo("Presenting todo item details for \(indexPath)")
 
@@ -67,8 +73,8 @@ class SquaresViewController: UICollectionViewController {
                 self.showItemDetails(indexPath)
             }
             let delete = UIAction(title: "Delete", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil, attributes: .destructive, state: .off) { (_) in
-                let itemSelected = self.fileCache.todoItems[indexPath.item]
-                _ = self.fileCache.remove(by: itemSelected.id)
+                let itemSelected = self.storage.todoItems[indexPath.item]
+                _ = self.storage.remove(by: itemSelected.id)
                 self.collectionView.reloadData()
             }
 
@@ -82,8 +88,8 @@ class SquaresViewController: UICollectionViewController {
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        DDLogInfo("Item count \(fileCache.todoItems.count)")
-        return fileCache.todoItems.count
+        DDLogInfo("Item count \(storage.todoItems.count)")
+        return storage.todoItems.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -103,7 +109,7 @@ class SquaresViewController: UICollectionViewController {
             return cell
         }
 
-        let item = fileCache.todoItems[indexPath.item]
+        let item = storage.todoItems[indexPath.item]
 
         todoCell.layer.borderColor = item.color?.cgColor
         todoCell.todoItemText.text = item.text
@@ -112,6 +118,93 @@ class SquaresViewController: UICollectionViewController {
             todoCell.dateLabel.text = deadLine.string
         }
         return todoCell
+    }
+
+    var refresher: UIRefreshControl!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.refresher = UIRefreshControl()
+        self.collectionView.alwaysBounceVertical = true
+        self.refresher.tintColor = UIColor.red
+        self.refresher.addTarget(self, action: #selector(loadData), for: .valueChanged)
+        self.collectionView.addSubview(refresher)
+        self.collectionView.refreshControl = refresher
+
+        authentificator.modalPresentationStyle = .popover
+    }
+
+    func operationFinished() {
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView.reloadData()
+            self?.stopRefresher()
+        }
+    }
+
+    func errorOcurred(alertController: UIAlertController) {
+        DispatchQueue.main.async { [weak self] in
+            DDLogInfo("UI Error presentation")
+            self?.present(alertController, animated: true, completion: nil)
+        }
+    }
+
+    func authentificationFinished() {
+        DispatchQueue.main.async { [weak self] in
+            DDLogInfo("Authentification finished")
+            self?.sync()
+        }
+    }
+
+    func authorize() -> Bool {
+        if !authentificator.isLoggedIn {
+            DDLogInfo("Authentification Started")
+            endRefresh()
+            show(authentificator, sender: self)
+            return false
+        } else {
+            DDLogInfo("Already authorized")
+            return true
+        }
+    }
+
+    private func sync() {
+        if !authentificator.isLoggedIn {
+            authorize()
+        } else {
+            storage.sync()
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+
+    private func endRefresh() {
+        if let refreshControl = self.collectionView.refreshControl {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                if refreshControl.isRefreshing {
+                    refreshControl.endRefreshing()
+                } else if !refreshControl.isHidden {
+                    refreshControl.beginRefreshing()
+                    refreshControl.endRefreshing()
+                }
+            }
+        }
+    }
+
+    @objc func loadData() {
+        if !authentificator.isLoggedIn {
+            authorize()
+        } else {
+            DDLogInfo("Refreshing Started")
+            sync()
+        }
+    }
+
+    func stopRefresher() {
+        endRefresh()
+        DDLogInfo("Refreshing Ended")
     }
 }
 
@@ -133,17 +226,21 @@ class SmallViewController: SquaresViewController {
         return slider
     }()
 
-    init(with fileCache: FileCache, _ todoItemDetailViewController: TodoItemDetailViewController) {
+    init(with storage: PersistentStorage, _ todoItemDetailViewController: TodoItemDetailViewController, authentificator: AuthViewController, connector: BackendConnector) {
         let layout = UICollectionViewFlowLayout.init()
-        super.init(collectionViewLayout: layout, fileCache, todoItemDetailViewController)
+        super.init(collectionViewLayout: layout, storage, todoItemDetailViewController, authentificator, connector)
 
         useLayoutToLayoutNavigationTransitions = false
     }
 
     @objc func addItem() {
+        guard authorize() else {
+            return
+        }
+
         let todoItem = TodoItem(text: "")
         DDLogInfo("Generatin new item \(todoItem)")
-        fileCache.add(todoItem)
+        storage.add(todoItem)
         collectionView.reloadData()
         todoItemDetailViewController.loadItem(item: todoItem)
         show(todoItemDetailViewController, sender: self)

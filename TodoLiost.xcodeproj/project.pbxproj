@@ -10,6 +10,9 @@
 		07857EA26DDCBA22D87500BB /* libPods-TodoLiost-TodoLiostUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBC184DBB9A6E0CD207BFA06 /* libPods-TodoLiost-TodoLiostUITests.a */; };
 		1F14B38D2951D76DC5634A56 /* libPods-TodoLiost.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6A5A4A2F32949A50A29B16 /* libPods-TodoLiost.a */; };
 		7A71B708FF784B1BB68FD4FA /* libPods-TodoLiostTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 514FF107E7F865316538D2B0 /* libPods-TodoLiostTests.a */; };
+		98136A33274A912500F216BB /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98136A32274A912500F216BB /* Storage.swift */; };
+		98136A35274A93FD00F216BB /* CloudStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98136A34274A93FD00F216BB /* CloudStorage.swift */; };
+		98136A37274AAE2C00F216BB /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98136A36274AAE2C00F216BB /* AsyncOperation.swift */; };
 		981A3823271C7E89007739C6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3822271C7E89007739C6 /* AppDelegate.swift */; };
 		981A3825271C7E89007739C6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3824271C7E89007739C6 /* SceneDelegate.swift */; };
 		981A3827271C7E89007739C6 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3826271C7E89007739C6 /* MainViewController.swift */; };
@@ -23,11 +26,20 @@
 		981A3857271C831D007739C6 /* TodoListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A3856271C831D007739C6 /* TodoListTests.swift */; };
 		982B9CD7272D214B005CB6B9 /* TodoItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982B9CD6272D214B005CB6B9 /* TodoItemDetailView.swift */; };
 		9836360A272EAFD7007B141A /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98363609272EAFD7007B141A /* ColorPicker.swift */; };
+		98893DDD2764933B009FC550 /* LogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98893DDC2764933B009FC550 /* LogFormatter.swift */; };
+		98A0E3E0275BEE3D0006E065 /* BackendErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A0E3DF275BEE3D0006E065 /* BackendErrors.swift */; };
+		98A0E3E2275BFAB90006E065 /* TodoItemConversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A0E3E1275BFAB90006E065 /* TodoItemConversions.swift */; };
 		98B3890B273DA805001AD82D /* TodoItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B3890A273DA805001AD82D /* TodoItemCell.swift */; };
 		98B3890D273DA837001AD82D /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B3890C273DA837001AD82D /* StringExtensions.swift */; };
 		98B38910273DA885001AD82D /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B3890F273DA885001AD82D /* DateExtension.swift */; };
 		98B38912273DA8B4001AD82D /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B38911273DA8B4001AD82D /* ColorExtensions.swift */; };
 		98B38914273DA8F4001AD82D /* SquaresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B38913273DA8F4001AD82D /* SquaresViewController.swift */; };
+		98D6AF7F275165E100F37B58 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF7E275165E100F37B58 /* AuthViewController.swift */; };
+		98D6AF812753716500F37B58 /* BackendConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF802753716500F37B58 /* BackendConnector.swift */; };
+		98D6AF83275383C300F37B58 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF82275383C300F37B58 /* Endpoint.swift */; };
+		98D6AF852753842B00F37B58 /* EndpointSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF842753842B00F37B58 /* EndpointSession.swift */; };
+		98D6AF8727539B8E00F37B58 /* RequestExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF8627539B8E00F37B58 /* RequestExtensions.swift */; };
+		98D6AF892753A7D500F37B58 /* ResponseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D6AF882753A7D500F37B58 /* ResponseModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +65,9 @@
 		514FF107E7F865316538D2B0 /* libPods-TodoLiostTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TodoLiostTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DF46C765176316A44D4D402 /* Pods-TodoLiostTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiostTests.release.xcconfig"; path = "Target Support Files/Pods-TodoLiostTests/Pods-TodoLiostTests.release.xcconfig"; sourceTree = "<group>"; };
 		826C1B0385B5B240FA81FA77 /* Pods-TodoLiost-TodoLiostUITests.testflight.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiost-TodoLiostUITests.testflight.xcconfig"; path = "Target Support Files/Pods-TodoLiost-TodoLiostUITests/Pods-TodoLiost-TodoLiostUITests.testflight.xcconfig"; sourceTree = "<group>"; };
+		98136A32274A912500F216BB /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		98136A34274A93FD00F216BB /* CloudStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudStorage.swift; sourceTree = "<group>"; };
+		98136A36274AAE2C00F216BB /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		981A381F271C7E89007739C6 /* TodoLiost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoLiost.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		981A3822271C7E89007739C6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		981A3824271C7E89007739C6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -72,11 +87,20 @@
 		981A3856271C831D007739C6 /* TodoListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListTests.swift; sourceTree = "<group>"; };
 		982B9CD6272D214B005CB6B9 /* TodoItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemDetailView.swift; sourceTree = "<group>"; };
 		98363609272EAFD7007B141A /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
+		98893DDC2764933B009FC550 /* LogFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFormatter.swift; sourceTree = "<group>"; };
+		98A0E3DF275BEE3D0006E065 /* BackendErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendErrors.swift; sourceTree = "<group>"; };
+		98A0E3E1275BFAB90006E065 /* TodoItemConversions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemConversions.swift; sourceTree = "<group>"; };
 		98B3890A273DA805001AD82D /* TodoItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemCell.swift; sourceTree = "<group>"; };
 		98B3890C273DA837001AD82D /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		98B3890F273DA885001AD82D /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		98B38911273DA8B4001AD82D /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		98B38913273DA8F4001AD82D /* SquaresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquaresViewController.swift; sourceTree = "<group>"; };
+		98D6AF7E275165E100F37B58 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
+		98D6AF802753716500F37B58 /* BackendConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendConnector.swift; sourceTree = "<group>"; };
+		98D6AF82275383C300F37B58 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		98D6AF842753842B00F37B58 /* EndpointSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndpointSession.swift; sourceTree = "<group>"; };
+		98D6AF8627539B8E00F37B58 /* RequestExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestExtensions.swift; sourceTree = "<group>"; };
+		98D6AF882753A7D500F37B58 /* ResponseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseModels.swift; sourceTree = "<group>"; };
 		A3E1F884A04BC8465659FF85 /* Pods-TodoLiostTests.testflight.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiostTests.testflight.xcconfig"; path = "Target Support Files/Pods-TodoLiostTests/Pods-TodoLiostTests.testflight.xcconfig"; sourceTree = "<group>"; };
 		BBA76BAE79B1C4E70FF1A50A /* Pods-TodoLiost-TodoLiostUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoLiost-TodoLiostUITests.debug.xcconfig"; path = "Target Support Files/Pods-TodoLiost-TodoLiostUITests/Pods-TodoLiost-TodoLiostUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		CE6A5A4A2F32949A50A29B16 /* libPods-TodoLiost.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TodoLiost.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -114,6 +138,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		98136A31274A90FC00F216BB /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				981A3852271C82B9007739C6 /* TodoItem.swift */,
+				981A3854271C82DD007739C6 /* FileCache.swift */,
+				98136A32274A912500F216BB /* Storage.swift */,
+				98136A34274A93FD00F216BB /* CloudStorage.swift */,
+				98136A36274AAE2C00F216BB /* AsyncOperation.swift */,
+				98A0E3E1275BFAB90006E065 /* TodoItemConversions.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
 		981A3816271C7E89007739C6 = {
 			isa = PBXGroup;
 			children = (
@@ -146,8 +183,6 @@
 				981A382B271C7E8C007739C6 /* Assets.xcassets */,
 				981A382D271C7E8C007739C6 /* LaunchScreen.storyboard */,
 				981A3830271C7E8C007739C6 /* Info.plist */,
-				981A3852271C82B9007739C6 /* TodoItem.swift */,
-				981A3854271C82DD007739C6 /* FileCache.swift */,
 			);
 			path = TodoLiost;
 			sourceTree = "<group>";
@@ -174,6 +209,8 @@
 		98B38908273DA6C9001AD82D /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				98D6AF7D275165C300F37B58 /* Net */,
+				98136A31274A90FC00F216BB /* Storage */,
 				98B3890E273DA86D001AD82D /* Extensions */,
 				98B38909273DA6EF001AD82D /* Details */,
 				981A3826271C7E89007739C6 /* MainViewController.swift */,
@@ -198,8 +235,23 @@
 				98B3890C273DA837001AD82D /* StringExtensions.swift */,
 				98B3890F273DA885001AD82D /* DateExtension.swift */,
 				98B38911273DA8B4001AD82D /* ColorExtensions.swift */,
+				98893DDC2764933B009FC550 /* LogFormatter.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		98D6AF7D275165C300F37B58 /* Net */ = {
+			isa = PBXGroup;
+			children = (
+				98D6AF7E275165E100F37B58 /* AuthViewController.swift */,
+				98D6AF802753716500F37B58 /* BackendConnector.swift */,
+				98D6AF82275383C300F37B58 /* Endpoint.swift */,
+				98D6AF842753842B00F37B58 /* EndpointSession.swift */,
+				98D6AF8627539B8E00F37B58 /* RequestExtensions.swift */,
+				98D6AF882753A7D500F37B58 /* ResponseModels.swift */,
+				98A0E3DF275BEE3D0006E065 /* BackendErrors.swift */,
+			);
+			path = Net;
 			sourceTree = "<group>";
 		};
 		AC86502F7F5513FC38098266 /* Pods */ = {
@@ -434,14 +486,26 @@
 				981A3827271C7E89007739C6 /* MainViewController.swift in Sources */,
 				98B38910273DA885001AD82D /* DateExtension.swift in Sources */,
 				9836360A272EAFD7007B141A /* ColorPicker.swift in Sources */,
+				98D6AF852753842B00F37B58 /* EndpointSession.swift in Sources */,
 				98B3890B273DA805001AD82D /* TodoItemCell.swift in Sources */,
 				98B38914273DA8F4001AD82D /* SquaresViewController.swift in Sources */,
+				98D6AF812753716500F37B58 /* BackendConnector.swift in Sources */,
 				98B3890D273DA837001AD82D /* StringExtensions.swift in Sources */,
+				98D6AF7F275165E100F37B58 /* AuthViewController.swift in Sources */,
 				981A3823271C7E89007739C6 /* AppDelegate.swift in Sources */,
+				98D6AF83275383C300F37B58 /* Endpoint.swift in Sources */,
 				981A3853271C82B9007739C6 /* TodoItem.swift in Sources */,
 				981A3855271C82DD007739C6 /* FileCache.swift in Sources */,
 				981A3825271C7E89007739C6 /* SceneDelegate.swift in Sources */,
+				98893DDD2764933B009FC550 /* LogFormatter.swift in Sources */,
+				98136A35274A93FD00F216BB /* CloudStorage.swift in Sources */,
+				98A0E3E2275BFAB90006E065 /* TodoItemConversions.swift in Sources */,
 				982B9CD7272D214B005CB6B9 /* TodoItemDetailView.swift in Sources */,
+				98A0E3E0275BEE3D0006E065 /* BackendErrors.swift in Sources */,
+				98D6AF8727539B8E00F37B58 /* RequestExtensions.swift in Sources */,
+				98136A37274AAE2C00F216BB /* AsyncOperation.swift in Sources */,
+				98136A33274A912500F216BB /* Storage.swift in Sources */,
+				98D6AF892753A7D500F37B58 /* ResponseModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

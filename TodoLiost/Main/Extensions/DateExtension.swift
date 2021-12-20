@@ -16,4 +16,12 @@ extension Date {
 
         return dateFormatter.string(from: self)
     }
+
+    var unixTimestamp: Int64 {
+        return Int64(self.timeIntervalSince1970)
+    }
+
+    public static var now: Date {
+        return Date(timeIntervalSinceReferenceDate: Date().timeIntervalSince1970.rounded())
+    }
 }

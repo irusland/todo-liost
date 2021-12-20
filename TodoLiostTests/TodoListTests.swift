@@ -168,7 +168,7 @@ class TodoListTests: XCTestCase {
 
     func testCacheDumpsDeadlineIfSet() throws {
         let sut = FileCache()
-        let todoItem = TodoItem(text: "sample", deadLine: Date())
+        let todoItem = TodoItem(text: "sample", deadLine: Date.now)
         let encoder = JSONEncoder()
         let jsonDate = String(data: try encoder.encode(todoItem.deadLine!), encoding: .utf8)
         let expected = [

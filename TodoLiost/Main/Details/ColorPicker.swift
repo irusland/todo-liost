@@ -17,19 +17,6 @@ import CocoaLumberjack
     func colorPickerTouchBegin(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State)
 }
 
-extension UIColor {
-    var hexString: String {
-        let components = self.cgColor.components
-        let r: CGFloat = components?[0] ?? 0.0
-        let g: CGFloat = components?[1] ?? 0.0
-        let b: CGFloat = components?[2] ?? 0.0
-
-        let hexString = String.init(format: "#%02lX%02lX%02lX", lroundf(Float(r * 255)), lroundf(Float(g * 255)), lroundf(Float(b * 255)))
-
-        return hexString
-    }
-}
-
 final class ColorPickerController: UIViewController, ColorPickerIntermediateDelegate {
     func colorPickerTouchBegin(sender: ColorPicker, color: UIColor, point: CGPoint, state: UIGestureRecognizer.State) {
         DDLogInfo("Color picker Controller touch began")

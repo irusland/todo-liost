@@ -11,24 +11,23 @@ import CocoaLumberjack
 class MainViewController: UIViewController {
     static let storyboardId = "MainViewController"
 
-    private var fileCache: FileCache
+    private var storage: PersistentStorage
     private let squaresViewController: SquaresViewController
     private let todoItemDetailViewController: TodoItemDetailViewController
 
     required init?(coder: NSCoder) {
 
-        fileCache = FileCache()
-        let todoItem1 = TodoItem(text: "sample", priority: .important, color: .red)
-        let todoItem2 = TodoItem(text: "sample", priority: .normal, color: .green)
-        let todoItem3 = TodoItem(text: "sample", priority: .no, color: .blue)
+        let authViewController = AuthViewController()
+        let connector = BackendConnector(authViewController: authViewController)
+        let cloudStorage = CloudStorage(connector: connector)
+        let fileCache = FileCache()
+        storage = PersistentStorage(fileCache: fileCache, cloudStorage: cloudStorage)
 
-        for item in [todoItem1, todoItem2, todoItem3] {
-            self.fileCache.add(item)
-        }
-        todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), fileCache: fileCache)
+        todoItemDetailViewController = TodoItemDetailViewController(rootViewController: UIViewController(), storage: storage)
 
-        squaresViewController = SmallViewController(with: fileCache, todoItemDetailViewController)
-
+        squaresViewController = SmallViewController(with: storage, todoItemDetailViewController, authentificator: authViewController, connector: connector)
+        storage.notifierDelegate = squaresViewController
+        authViewController.authentificationDelegate = squaresViewController
         super.init(coder: coder)
     }
 
