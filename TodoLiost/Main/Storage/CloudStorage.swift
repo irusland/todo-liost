@@ -50,17 +50,16 @@ class CloudStorage: AsyncItemStorage {
     }
 
     func todoItems(returnItems: @escaping ([TodoItem]) -> Void) {
-        connector.getList(handler: { model, errors in
-            if let errors = errors {
-                DDLogError("Cloud storage got an error \(errors)")
-                returnItems([])
-            }
-            guard let model = model else {
+        connector.getList(handler: { result in
+            switch result {
+            case .failure(let error):
+                DDLogError("Cloud storage got an error \(error)")
                 returnItems([])
                 return
+            case .success(let model):
+                self.lastKnownRevision = model.revision
+                returnItems(self.convert(listModel: model))
             }
-            self.lastKnownRevision = model.revision
-            returnItems(self.convert(listModel: model))
         })
     }
 

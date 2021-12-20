@@ -15,15 +15,15 @@ class BackendConnector {
         self.authViewController = authViewController
     }
 
-    func getList(handler: @escaping (ListModel?, BackendErrors?) -> Void, using session: URLSession = .shared) {
+    func getList(handler: @escaping (Result<ListModel, BackendErrors>) -> Void, using session: URLSession = .shared) {
         guard let token = authViewController.authCredentials?.accessToken else {
-            handler(nil, BackendErrors.tokenIsNone("Token is none"))
+            handler(Result.failure(BackendErrors.tokenIsNone("Token is none")))
             return
         }
 
         _ = session.request(.list(token: token)) { data, response, error in
             if let backendError = self.checkStatus(response: response) {
-                handler(nil, backendError)
+                handler(Result.failure(backendError))
             }
             guard let body = data else {
                 DDLogError("Data is empty")
@@ -35,10 +35,10 @@ class BackendConnector {
             do {
                 let listResponse = try decoder.decode(ListModel.self, from: body)
                 DDLogInfo("Got list \(String(describing: listResponse))")
-                handler(listResponse, nil)
+                handler(Result.success(listResponse))
             } catch {
                 DDLogInfo("Cannot parse \(body) \(error)")
-                handler(nil, BackendErrors.parseError(body, error))
+                handler(Result.failure(BackendErrors.parseError(body, error)))
             }
         }
     }
