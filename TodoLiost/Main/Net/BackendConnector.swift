@@ -14,7 +14,7 @@ class BackendConnector {
     init(authViewController: AuthViewController) {
         self.authViewController = authViewController
     }
-    
+
     private func request<T: Decodable>(
         endpoint: Endpoint,
         with handler: @escaping (Result<T, BackendError>) -> Void,
@@ -41,7 +41,7 @@ class BackendConnector {
             }
         }
     }
-    
+
     private func prepareEndpoint(endpointInitialiser: (String) throws -> Endpoint?) -> Result<Endpoint, BackendError> {
         guard let token = authViewController.authCredentials?.accessToken else {
             return Result.failure(BackendError.tokenIsNone("Token is none"))
@@ -57,7 +57,7 @@ class BackendConnector {
         }
         return Result.success(endpoint)
     }
-    
+
     private func tryRequest<T: Decodable>(
         handler: @escaping (Result<T, BackendError>) -> Void,
         endpoint endpointInitialiser: (String) throws -> Endpoint?,
