@@ -52,11 +52,13 @@ class CoreDataStack {
 
     func commit () {
         if context.hasChanges {
-            do {
-                try context.save()
-            } catch let error as NSError {
-                print("Error on commit: \(error.localizedDescription)")
-                abort()
+            context.performAndWait {
+                do {
+                    try self.context.save()
+                } catch let error as NSError {
+                    print("Error on commit: \(error.localizedDescription)")
+                    abort()
+                }
             }
         }
     }
