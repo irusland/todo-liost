@@ -41,102 +41,88 @@ class BackendConnector {
             }
         }
     }
+    
+    private func prepareEndpoint(endpointInitialiser: (String) throws -> Endpoint?) -> Result<Endpoint, BackendErrors> {
+        guard let token = authViewController.authCredentials?.accessToken else {
+            return Result.failure(BackendErrors.tokenIsNone("Token is none"))
+        }
+        var endpoint: Endpoint?
+        do {
+            endpoint = try endpointInitialiser(token)
+        } catch {
+            return Result.failure(BackendErrors.cannotPrepareEndpoint)
+        }
+        guard let endpoint = endpoint else {
+            return Result.failure(BackendErrors.cannotPrepareEndpoint)
+        }
+        return Result.success(endpoint)
+    }
 
     func getList(handler: @escaping (Result<ListModel, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(Result.failure(BackendErrors.tokenIsNone("Token is none")))
+        let preparation = prepareEndpoint(endpointInitialiser: { token in .list(token: token) })
+        switch preparation {
+        case .success(let endpoint):
+            self.request(endpoint: endpoint, with: handler)
             return
+        case .failure(let error):
+            handler(Result.failure(error))
         }
         
-        self.request(endpoint: .list(token: token), with: handler)
     }
 
     func merge(with model: MergeModel, handler: @escaping (Result<ListModel, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(Result.failure(BackendErrors.tokenIsNone("Token is none")))
+        let preparation = prepareEndpoint(endpointInitialiser: { token in try .merge(with: model, token: token) })
+        switch preparation {
+        case .success(let endpoint):
+            self.request(endpoint: endpoint, with: handler)
             return
+        case .failure(let error):
+            handler(Result.failure(error))
         }
-
-        var endpoint: Endpoint?
-        do {
-            endpoint = try Endpoint.merge(with: model, token: token)
-        } catch {
-            handler(Result.failure(BackendErrors.cannotPrepareEndpoint))
-        }
-        guard let endpoint = endpoint else {
-            handler(Result.failure(BackendErrors.cannotPrepareEndpoint))
-            return
-        }
-
-        self.request(endpoint: endpoint, with: handler)
     }
 
     func add(todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(Result.failure(BackendErrors.tokenIsNone("Token is none")))
+        let preparation = prepareEndpoint(endpointInitialiser: { token in try .newItem(with: todoItem, last: lastKnownRevision, token: token) })
+        switch preparation {
+        case .success(let endpoint):
+            self.request(endpoint: endpoint, with: handler)
             return
+        case .failure(let error):
+            handler(Result.failure(error))
         }
-        var endpoint: Endpoint?
-        do {
-            endpoint = try Endpoint.newItem(with: todoItem, last: lastKnownRevision, token: token)
-        } catch {
-            handler(Result.failure(BackendErrors.cannotPrepareEndpoint))
-        }
-        guard let endpoint = endpoint else {
-            handler(Result.failure(BackendErrors.cannotPrepareEndpoint))
-            return
-        }
-        
-        self.request(endpoint: endpoint, with: handler)
     }
 
     func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(Result.failure(BackendErrors.tokenIsNone("Token is none")))
+        let preparation = prepareEndpoint(endpointInitialiser: { token in try .updateItem(with: id, newItemModel: todoItem, last: lastKnownRevision, token: token) })
+        switch preparation {
+        case .success(let endpoint):
+            self.request(endpoint: endpoint, with: handler)
             return
+        case .failure(let error):
+            handler(Result.failure(error))
         }
-
-        var endpoint: Endpoint?
-        do {
-            endpoint = try Endpoint.updateItem(with: id, newItemModel: todoItem, last: lastKnownRevision, token: token)
-        } catch {
-            handler(Result.failure(BackendErrors.cannotPrepareEndpoint))
-        }
-        guard let endpoint = endpoint else {
-            handler(Result.failure(BackendErrors.cannotPrepareEndpoint))
-            return
-        }
-
-        self.request(endpoint: endpoint, with: handler)
     }
 
     func remove(by id: UUID, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(Result.failure(BackendErrors.tokenIsNone("Token is none")))
+        let preparation = prepareEndpoint(endpointInitialiser: { token in try .deleteItem(with: id, last: lastKnownRevision, token: token) })
+        switch preparation {
+        case .success(let endpoint):
+            self.request(endpoint: endpoint, with: handler)
             return
+        case .failure(let error):
+            handler(Result.failure(error))
         }
-
-        var endpoint: Endpoint?
-        do {
-            endpoint = try Endpoint.deleteItem(with: id, last: lastKnownRevision, token: token)
-        } catch {
-            handler(Result.failure(BackendErrors.cannotPrepareEndpoint))
-        }
-        guard let endpoint = endpoint else {
-            handler(Result.failure(BackendErrors.cannotPrepareEndpoint))
-            return
-        }
-
-        self.request(endpoint: endpoint, with: handler)
     }
 
     func get(by id: UUID, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        guard let token = authViewController.authCredentials?.accessToken else {
-            handler(Result.failure(BackendErrors.tokenIsNone("Token is none")))
+        let preparation = prepareEndpoint(endpointInitialiser: { token in try .item(with: id, last: lastKnownRevision, token: token) })
+        switch preparation {
+        case .success(let endpoint):
+            self.request(endpoint: endpoint, with: handler)
             return
+        case .failure(let error):
+            handler(Result.failure(error))
         }
-
-        self.request(endpoint: .item(with: id, last: lastKnownRevision, token: token), with: handler)
     }
 
     private func checkStatus(response: URLResponse?) -> BackendErrors? {
