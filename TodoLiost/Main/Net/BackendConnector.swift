@@ -57,9 +57,13 @@ class BackendConnector {
         }
         return Result.success(endpoint)
     }
-
-    func getList(handler: @escaping (Result<ListModel, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        let preparation = prepareEndpoint(endpointInitialiser: { token in .list(token: token) })
+    
+    private func tryRequest<T: Decodable>(
+        handler: @escaping (Result<T, BackendErrors>) -> Void,
+        endpoint endpointInitialiser: (String) throws -> Endpoint?,
+        using session: URLSession = .shared
+    ) {
+        let preparation = prepareEndpoint(endpointInitialiser: endpointInitialiser)
         switch preparation {
         case .success(let endpoint):
             self.request(endpoint: endpoint, with: handler)
@@ -67,61 +71,41 @@ class BackendConnector {
         case .failure(let error):
             handler(Result.failure(error))
         }
-        
+    }
+
+    func getList(handler: @escaping (Result<ListModel, BackendErrors>) -> Void, using session: URLSession = .shared) {
+        tryRequest(handler: handler) { token in
+            .list(token: token)
+        }
     }
 
     func merge(with model: MergeModel, handler: @escaping (Result<ListModel, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        let preparation = prepareEndpoint(endpointInitialiser: { token in try .merge(with: model, token: token) })
-        switch preparation {
-        case .success(let endpoint):
-            self.request(endpoint: endpoint, with: handler)
-            return
-        case .failure(let error):
-            handler(Result.failure(error))
+        tryRequest(handler: handler) { token in
+            try .merge(with: model, token: token)
         }
     }
 
     func add(todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        let preparation = prepareEndpoint(endpointInitialiser: { token in try .newItem(with: todoItem, last: lastKnownRevision, token: token) })
-        switch preparation {
-        case .success(let endpoint):
-            self.request(endpoint: endpoint, with: handler)
-            return
-        case .failure(let error):
-            handler(Result.failure(error))
+        tryRequest(handler: handler) { token in
+            try .newItem(with: todoItem, last: lastKnownRevision, token: token)
         }
     }
 
     func update(at id: UUID, todoItem: NewItemModel, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        let preparation = prepareEndpoint(endpointInitialiser: { token in try .updateItem(with: id, newItemModel: todoItem, last: lastKnownRevision, token: token) })
-        switch preparation {
-        case .success(let endpoint):
-            self.request(endpoint: endpoint, with: handler)
-            return
-        case .failure(let error):
-            handler(Result.failure(error))
+        tryRequest(handler: handler) { token in
+            try .updateItem(with: id, newItemModel: todoItem, last: lastKnownRevision, token: token)
         }
     }
 
     func remove(by id: UUID, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        let preparation = prepareEndpoint(endpointInitialiser: { token in try .deleteItem(with: id, last: lastKnownRevision, token: token) })
-        switch preparation {
-        case .success(let endpoint):
-            self.request(endpoint: endpoint, with: handler)
-            return
-        case .failure(let error):
-            handler(Result.failure(error))
+        tryRequest(handler: handler) { token in
+            try .deleteItem(with: id, last: lastKnownRevision, token: token)
         }
     }
 
     func get(by id: UUID, lastKnownRevision: Int32, handler: @escaping (Result<NewItemResponse, BackendErrors>) -> Void, using session: URLSession = .shared) {
-        let preparation = prepareEndpoint(endpointInitialiser: { token in try .item(with: id, last: lastKnownRevision, token: token) })
-        switch preparation {
-        case .success(let endpoint):
-            self.request(endpoint: endpoint, with: handler)
-            return
-        case .failure(let error):
-            handler(Result.failure(error))
+        tryRequest(handler: handler) { token in
+            .item(with: id, last: lastKnownRevision, token: token)
         }
     }
 
