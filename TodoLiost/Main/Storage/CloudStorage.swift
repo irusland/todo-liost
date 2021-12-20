@@ -81,17 +81,16 @@ class CloudStorage: AsyncItemStorage {
     func update(at id: UUID, todoItem: TodoItem, handler: @escaping (Bool) -> Void) {
         let model = NewItemModel(element: TodoItemModel(from: todoItem, by: deviceId))
 
-        connector.update(at: id, todoItem: model, lastKnownRevision: lastKnownRevision, handler: { result, errors in
-            if let errors = errors {
-                DDLogError("Cloud storage got an error \(errors)")
-                handler(false)
-            }
-            guard let result = result else {
+        connector.update(at: id, todoItem: model, lastKnownRevision: lastKnownRevision, handler: { result in
+            switch result {
+            case .failure(let error):
+                DDLogError("Cloud storage got an error \(error)")
                 handler(false)
                 return
+            case .success(let model):
+                self.lastKnownRevision = model.revision
+                handler(true)
             }
-            self.lastKnownRevision = result.revision
-            handler(true)
         })
     }
 
